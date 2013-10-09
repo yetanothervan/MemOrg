@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Practices.Prism.UnityExtensions;
 using Microsoft.Practices.Unity;
-using WinApp.Views;
+using MemOrg.WinApp.Views;
 
-namespace WinApp.Unity
+namespace MemOrg.WinApp.Unity
 {
     public class Bootstrapper : UnityBootstrapper
     {

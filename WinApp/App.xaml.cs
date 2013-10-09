@@ -5,9 +5,9 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using WinApp.Unity;
+using MemOrg.WinApp.Unity;
 
-namespace WinApp
+namespace MemOrg.WinApp
 {
     /// <summary>
     /// Interaction logic for App.xaml

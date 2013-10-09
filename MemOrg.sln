@@ -1,7 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinApp", "WinApp\WinApp.csproj", "{E2FF73B0-F51D-44DD-A46B-8B958BC44E52}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemOrg.WinApp", "WinApp\MemOrg.WinApp.csproj", "{E2FF73B0-F51D-44DD-A46B-8B958BC44E52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemOrg.Interfaces", "Interfaces\MemOrg.Interfaces.csproj", "{C7ECB5BA-4854-4842-B849-323D58E0DE32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{8808E1FA-5060-4314-9DA8-BCC37FBD60A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocksMapViewerModule", "Modules\BlocksMapViewerModule\BlocksMapViewerModule.csproj", "{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,9 +19,20 @@ Global
 		{E2FF73B0-F51D-44DD-A46B-8B958BC44E52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2FF73B0-F51D-44DD-A46B-8B958BC44E52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2FF73B0-F51D-44DD-A46B-8B958BC44E52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7ECB5BA-4854-4842-B849-323D58E0DE32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7ECB5BA-4854-4842-B849-323D58E0DE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7ECB5BA-4854-4842-B849-323D58E0DE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7ECB5BA-4854-4842-B849-323D58E0DE32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C} = {8808E1FA-5060-4314-9DA8-BCC37FBD60A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
