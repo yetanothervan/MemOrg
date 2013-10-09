@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("BlocksMapViewerModule")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Usetech")]
+[assembly: AssemblyCompany("AN")]
 [assembly: AssemblyProduct("BlocksMapViewerModule")]
-[assembly: AssemblyCopyright("Copyright © Usetech 2013")]
+[assembly: AssemblyCopyright("Copyright © AN 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

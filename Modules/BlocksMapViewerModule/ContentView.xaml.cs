@@ -13,30 +13,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MemOrg.Interfaces;
-using Microsoft.Practices.Prism.Modularity;
-using Microsoft.Practices.Prism.Regions;
-using Microsoft.Practices.Unity;
+
 
 namespace BlocksMapViewerModule
 {
     /// <summary>
     /// Interaction logic for ContentView.xaml
     /// </summary>
-    public partial class ContentView : UserControl, IModule
+    public partial class ContentView : UserControl 
     {
-        private IUnityContainer _container;
-        private IRegionManager _regionManager;
-        
-        public ContentView(IUnityContainer container, IRegionManager regionManager)
+        public ContentView()
         {
-            _container = container;
-            _regionManager = regionManager;
             InitializeComponent();
-        }
-
-        public void Initialize()
-        {
-            _regionManager.RegisterViewWithRegion(RegionNames.BlocksMapViewerRegion, typeof(ContentView));
         }
     }
 }

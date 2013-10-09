@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -101,6 +103,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Avalon\AnchorableRegionAdapter.cs" />
+    <Compile Include="Avalon\AvalonDockRegion.cs" />
+    <Compile Include="Avalon\DocumentRegionAdapter.cs" />
+    <Compile Include="Avalon\DockingManagerDocumentsSourceSyncBehavior.cs" />
+    <Compile Include="Avalon\DockingManagerRegionAdapter.cs" />
     <Compile Include="Unity\Bootstrapper.cs" />
     <Compile Include="Views\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
@@ -144,8 +151,13 @@
       <Project>{c7ecb5ba-4854-4842-b849-323d58e0de32}</Project>
       <Name>MemOrg.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modules\BlocksMapViewerModule\BlocksMapViewerModule.csproj">
+      <Project>{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}</Project>
+      <Name>BlocksMapViewerModule</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

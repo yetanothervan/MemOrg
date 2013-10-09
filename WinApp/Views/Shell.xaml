@@ -4,6 +4,7 @@
         xmlns:layout="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:prism="http://www.codeplex.com/prism" 
         xmlns:intr="clr-namespace:MemOrg.Interfaces;assembly=Interfaces"
+        xmlns:local="clr-namespace:MemOrg.WinApp.Avalon"
         Title="Shell">
     <Grid>
         <Grid.RowDefinitions>
@@ -22,7 +23,7 @@
                 <layout:LayoutPanel Orientation="Horizontal">
                     <layout:LayoutDocumentPaneGroup>
                         <layout:LayoutDocumentPane>
-                            <layout:LayoutDocument Title="Doc1" prism:RegionManager.RegionName="{x:Static intr:RegionNames.BlocksMapViewerRegion}">
+                            <layout:LayoutDocument Title="Doc1" local:AvalonDockRegion.DocName ="{x:Static intr:RegionNames.BlocksMapViewerRegion}">
                                 <TextBox/>
                             </layout:LayoutDocument>
                             <layout:LayoutDocument Title="Doc2">
@@ -37,7 +38,7 @@
                     </layout:LayoutDocumentPaneGroup>
                     <layout:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
                         <layout:LayoutAnchorablePane>
-                            <layout:LayoutAnchorable Title="Tool 1">
+                            <layout:LayoutAnchorable Title="Tool 1" local:AvalonDockRegion.AnchorName ="{x:Static intr:RegionNames.BlocksMapViewerRegion}">
                                 <TextBox/>
                             </layout:LayoutAnchorable>
                             <layout:LayoutAnchorable Title="Tool 2">
