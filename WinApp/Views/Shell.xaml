@@ -58,7 +58,7 @@
                 <layout:LayoutRoot.LeftSide>
                     <layout:LayoutAnchorSide>
                         <layout:LayoutAnchorGroup>
-                            <layout:LayoutAnchorable Title="Autohidden Content">
+                            <layout:LayoutAnchorable Title="Autohidden ContentView">
                                 <TextBox/>
                             </layout:LayoutAnchorable>
                         </layout:LayoutAnchorGroup>
