@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{47F51371-B9D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmpDal", "TmpDal\TmpDal.csproj", "{DA5C0B73-2CE1-44A5-B7F8-5CDFD6E7B5AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph2Plane", "Graph2Plane\Graph2Plane.csproj", "{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{DA5C0B73-2CE1-44A5-B7F8-5CDFD6E7B5AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA5C0B73-2CE1-44A5-B7F8-5CDFD6E7B5AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA5C0B73-2CE1-44A5-B7F8-5CDFD6E7B5AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C} = {8808E1FA-5060-4314-9DA8-BCC37FBD60A0}
 		{335B8662-F9FD-487D-9DE7-7DBD001A41FC} = {A0A474D0-97FE-4829-A742-84B15AD22DF9}
+		{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B} = {A0A474D0-97FE-4829-A742-84B15AD22DF9}
 		{DA5C0B73-2CE1-44A5-B7F8-5CDFD6E7B5AE} = {47F51371-B9D7-45EE-8113-09E858054C55}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

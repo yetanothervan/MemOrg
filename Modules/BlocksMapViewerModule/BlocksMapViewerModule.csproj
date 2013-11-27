@@ -108,9 +108,21 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BL\Models\Models.csproj">
+      <Project>{335B8662-F9FD-487D-9DE7-7DBD001A41FC}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Graph2Plane\Graph2Plane.csproj">
+      <Project>{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B}</Project>
+      <Name>Graph2Plane</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Interfaces\MemOrg.Interfaces.csproj">
       <Project>{C7ECB5BA-4854-4842-B849-323D58E0DE32}</Project>
       <Name>MemOrg.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TmpDal\TmpDal.csproj">
+      <Project>{DA5C0B73-2CE1-44A5-B7F8-5CDFD6E7B5AE}</Project>
+      <Name>TmpDal</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

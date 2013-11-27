@@ -10,12 +10,12 @@ namespace BlocksMapViewerModule
 {
     public class DrawingCanvas : FrameworkElement
     {
-        private readonly VisualCollection _visuals;
+        private VisualCollection _visuals;
 
         public DrawingCanvas()
         {
             _visuals = new VisualCollection(this);
-            var dv = new DrawingVisual();
+            /*var dv = new DrawingVisual();
             var dc = dv.RenderOpen();
             var b = new SolidColorBrush(Color.FromRgb(100, 100, 100));
             var p = new Pen(b, 2);
@@ -38,7 +38,7 @@ namespace BlocksMapViewerModule
                 }
 
             dc.Close();
-            _visuals.Add(dv);
+            _visuals.Add(dv);*/
         }
         
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -47,6 +47,15 @@ namespace BlocksMapViewerModule
             if (e.Property.Name == "Width" || e.Property.Name == "Height" || e.Property.Name == "Center")
             {
                 //UpdateVisualChildren();
+            }
+            if (e.Property.Name == "DataContext" && DataContext is ContentViewModel)
+            {
+                _visuals = new VisualCollection(this);
+                var dc = DataContext as ContentViewModel;
+
+                var blocks = dc.Graph.GetPlainBlocks();
+                foreach (var planeBlock in blocks)
+                    _visuals.Add(planeBlock.Render());
             }
         }
         

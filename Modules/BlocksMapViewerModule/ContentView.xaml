@@ -13,7 +13,7 @@
           MouseLeftButtonDown="Window_OnMouseLeftButtonDown"
           MouseMove="Window_OnMouseMove"
           MouseUp="Window_OnMouseUp" >
-            <model:DrawingCanvas/>
+            <model:DrawingCanvas DataContext="{StaticResource ContentViewModel}" />
         <!--<TextBlock Text="{Binding MyText}" />-->
     </Grid>
 </UserControl>
