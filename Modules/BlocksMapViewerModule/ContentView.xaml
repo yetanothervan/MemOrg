@@ -9,7 +9,11 @@
     <UserControl.Resources>
         <model:ContentViewModel x:Key="ContentViewModel" />
     </UserControl.Resources>
-    <Grid DataContext="{StaticResource ContentViewModel}">
-            <TextBlock Text="{Binding MyText}" />
+    <Grid x:Name ="ContentGrid" DataContext="{StaticResource ContentViewModel}" 
+          MouseLeftButtonDown="Window_OnMouseLeftButtonDown"
+          MouseMove="Window_OnMouseMove"
+          MouseUp="Window_OnMouseUp" >
+            <model:DrawingCanvas/>
+        <!--<TextBlock Text="{Binding MyText}" />-->
     </Grid>
 </UserControl>
