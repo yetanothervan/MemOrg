@@ -36,7 +36,10 @@
   <ItemGroup>
     <Compile Include="Block.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Link.cs" />
     <Compile Include="Paragraph.cs" />
+    <Compile Include="ParagraphRef.cs" />
+    <Compile Include="Particle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

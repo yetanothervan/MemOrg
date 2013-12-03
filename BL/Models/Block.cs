@@ -6,10 +6,11 @@ namespace Models
     {
         public Block()
         {
-            Paragraphs = new List<Paragraph>();
+            Particles = new List<Particle>();
         }
 
+        public long Id { get; set; }
         public string Caption { get; set; }
-        public IList<Paragraph> Paragraphs { get; set; }
+        public IList<Particle> Particles { get; set; }
     }
 }

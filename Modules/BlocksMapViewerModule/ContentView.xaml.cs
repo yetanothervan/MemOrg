@@ -23,18 +23,28 @@ namespace BlocksMapViewerModule
         {
             if (_mouseLbDown)
             {
-                var vm = (ContentViewModel)this.Resources["ContentViewModel"];
+                var vm = (ContentViewModel) this.Resources["ContentViewModel"];
                 if (vm != null)
-                    vm.MyText = String.Format("{0}, {1}", e.GetPosition(this).X, e.GetPosition(this).Y);
+                {
+                    var curPosition = new Vector(e.GetPosition(this).X, e.GetPosition(this).Y);
+                    vm.Offset = _startOffset - _startPosition + curPosition;
+                    vm.MyText = String.Format("{0}, {1}", vm.Offset.X, vm.Offset.Y);
+                }
             }
         }
 
+        private Vector _startPosition;
+        private Vector _startOffset;
         private bool _mouseLbDown;
+
         private void Window_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!_mouseLbDown)
+            var vm = (ContentViewModel) this.Resources["ContentViewModel"];
+            if (!_mouseLbDown && vm != null)
             {
                 _mouseLbDown = true;
+                _startPosition = new Vector(e.GetPosition(this).X, e.GetPosition(this).Y);
+                _startOffset = vm.Offset;
                 ContentGrid.CaptureMouse();
             }
         }

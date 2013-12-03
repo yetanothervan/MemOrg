@@ -1,4 +1,6 @@
-﻿using System.Windows.Documents;
+﻿using System;
+using System.Windows;
+using System.Windows.Documents;
 using Graph2Plane;
 using Interfaces;
 using TmpDal;
@@ -47,5 +49,19 @@ namespace BlocksMapViewerModule
             }
         }
 
+        private Vector _offset;
+        public Vector Offset
+        {
+            get { return _offset; }
+            set
+            {
+                if (Math.Abs(_offset.X - value.X) > 0.5
+                    || Math.Abs(_offset.Y - value.Y) > 0.5)
+                {
+                    _offset = value;
+                    RaisePropertyChangedEvent("Offset");
+                }
+            }
+        }
     }
 }
