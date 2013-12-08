@@ -10,6 +10,56 @@ namespace MemOrg.WinApp.Avalon
 {
     class AvalonDockRegion : DependencyObject
     {
+
+        #region DockRegionContext
+        public static readonly DependencyProperty DockRegionContextProperty =
+           DependencyProperty.RegisterAttached("DockRegionContext", typeof(object), typeof(AvalonDockRegion),
+               new FrameworkPropertyMetadata((string)null,
+                   new PropertyChangedCallback(OnDockRegionContextChanged)));
+
+        /// <summary>
+        /// Gets the AnchorName property.  This dependency property 
+        /// indicates the region name of the layout item.
+        /// </summary>
+        public static object GetDockRegionContext(DependencyObject d)
+        {
+            return d.GetValue(DockRegionContextProperty);
+        }
+
+        /// <summary>
+        /// Sets the AnchorName property.  This dependency property 
+        /// indicates the region name of the layout item.
+        /// </summary>
+        public static void SetDockRegionContext(DependencyObject d, object value)
+        {
+            d.SetValue(DockRegionContextProperty, value);
+        }
+
+        private static void OnDockRegionContextChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
+        {
+            //If I'm in design mode the main window is not set
+            if (Application.Current == null ||
+                Application.Current.MainWindow == null)
+                return;
+
+            try
+            {
+                if (ServiceLocator.Current == null) return;
+                
+                var docName = s.GetValue(DocNameProperty);
+                if (docName == null) return;
+                
+                var rm = ServiceLocator.Current.GetInstance<RegionManager>();
+                if (rm.Regions.ContainsRegionWithName((string) docName))
+                    rm.Regions[(string) docName].Context = e.NewValue;
+            }
+            catch
+            {
+                throw new UpdateRegionsException("Unable to update region context");
+            }
+        }
+        #endregion
+
         #region AnchorName
 
         /// <summary>
@@ -109,7 +159,10 @@ namespace MemOrg.WinApp.Avalon
                 if (regionAdapter == null)
                     return;
 
-                regionAdapter.Initialize(element, regionName);
+                var region = regionAdapter.Initialize(element, regionName);
+                
+                var rm = ServiceLocator.Current.GetInstance<RegionManager>();
+                rm.Regions.Add(region);
             }
             catch (Exception ex)
             {
@@ -141,7 +194,10 @@ namespace MemOrg.WinApp.Avalon
                 if (regionAdapter == null)
                     return;
 
-                regionAdapter.Initialize(element, regionName);
+                var region = regionAdapter.Initialize(element, regionName);
+                
+                var rm = ServiceLocator.Current.GetInstance<RegionManager>();
+                rm.Regions.Add(region);
             }
             catch (Exception ex)
             {

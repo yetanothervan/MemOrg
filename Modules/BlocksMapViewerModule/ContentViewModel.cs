@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Documents;
-using Graph2Plane;
+using BL.Graph2Plane;
 using Interfaces;
-using TmpDal;
+using MemOrg.Interfaces;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
 
-namespace BlocksMapViewerModule
+
+namespace BlocksMapViewer
 {
     public class ContentViewModel : ViewModelBase
     {
-        public ContentViewModel()
+        public ContentViewModel(IGraphService graphService)
         {
             MyText = "Some of my texts";
-            Graph = new PlaneGraph(new GraphLoader().GetGraph()); //GraphLoader should't be here
+            Graph = new PlaneGraph(graphService.Blocks);
         }
-
+        
         private string _myText;
         public string MyText
         {

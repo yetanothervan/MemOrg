@@ -6,20 +6,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Graph2Plane;
+using BL.Graph2Plane;
 
-namespace BlocksMapViewerModule
+namespace BlocksMapViewer
 {
     public class DrawingCanvas : FrameworkElement
     {
         private VisualCollection _visuals;
 
         public static readonly DependencyProperty OffsetProperty;
+        public static readonly DependencyProperty GraphSourceProperty;
         
         static DrawingCanvas()
         {
-            var metadata = new FrameworkPropertyMetadata(new Vector(), FrameworkPropertyMetadataOptions.AffectsRender);
-            OffsetProperty = DependencyProperty.Register("Offset", typeof (Vector), typeof (DrawingCanvas), metadata);
+            var offsetMetadata = new FrameworkPropertyMetadata(new Vector(), FrameworkPropertyMetadataOptions.AffectsRender);
+            OffsetProperty = DependencyProperty.Register("Offset", typeof (Vector), typeof (DrawingCanvas), offsetMetadata);
+
+            var graphSourceMetadata = new FrameworkPropertyMetadata(new PlaneGraph(), FrameworkPropertyMetadataOptions.AffectsRender);
+            GraphSourceProperty = DependencyProperty.Register("GraphSource", typeof(PlaneGraph), typeof(DrawingCanvas), graphSourceMetadata);
         }
 
 
@@ -55,17 +59,9 @@ namespace BlocksMapViewerModule
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            if (e.Property.Name == "ActualWidth" || e.Property.Name == "ActualHeight" || e.Property.Name == "Center")
+            if ((e.Property.Name == "DataContext" || e.Property.Name == "GraphSource") && DataContext is ContentViewModel)
             {
                 Refresh();
-            }
-            if (e.Property.Name == "DataContext" && DataContext is ContentViewModel)
-            {
-                Refresh();
-            }
-            if (e.Property.Name == "Offset" && DataContext is ContentViewModel)
-            {
-                //Refresh();
             }
         }
 
@@ -75,10 +71,16 @@ namespace BlocksMapViewerModule
             get { return (Vector) GetValue(OffsetProperty); }
         }
 
+        public PlaneGraph GraphSource
+        {
+            set { SetValue(GraphSourceProperty, value); }
+            get { return (PlaneGraph)GetValue(GraphSourceProperty); }
+        }
+
         public void Refresh()
         {
             var dc = DataContext as ContentViewModel;
-            if (dc != null)
+            if (dc != null && dc.Graph != null)
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);

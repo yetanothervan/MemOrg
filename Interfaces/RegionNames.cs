@@ -9,5 +9,6 @@ namespace MemOrg.Interfaces
     public class RegionNames
     {
         public static string BlocksMapViewerRegion = "BlocksMapViewerRegion";
+        public static string MainViewRegion = "MainViewRegion";
     }
 }

@@ -17,7 +17,7 @@ namespace MemOrg.WinApp.Avalon
 
         }
 
-
+        
         protected override void Adapt(IRegion region, LayoutAnchorable regionTarget)
         {
             if (regionTarget == null)

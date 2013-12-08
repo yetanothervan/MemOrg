@@ -5,25 +5,36 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using BL.Graph2Plane;
+using Microsoft.Practices.Prism;
+using Microsoft.Practices.Prism.Regions;
 
 
-namespace BlocksMapViewerModule
+namespace BlocksMapViewer
 {
     /// <summary>
     /// Interaction logic for ContentView.xaml
     /// </summary>
     public partial class ContentView
     {
-        public ContentView()
+        public ContentView(ContentViewModel viewModel)
         {
             InitializeComponent();
+            Loaded += (sender, args) => { DataContext = viewModel; };
+
+            /*RegionContext.GetObservableContext(this).PropertyChanged += (sender, args) =>
+            {
+                var vm = (ContentViewModel)this.Resources["ContentViewModel"];
+                var context = (ObservableObject<object>) sender;
+                vm.Graph = (PlaneGraph)context.Value;
+            };*/
         }
 
         private void Window_OnMouseMove(object sender, MouseEventArgs e)
         {
             if (_mouseLbDown)
             {
-                var vm = (ContentViewModel) this.Resources["ContentViewModel"];
+                var vm = (ContentViewModel) DataContext;
                 if (vm != null)
                 {
                     var curPosition = new Vector(e.GetPosition(this).X, e.GetPosition(this).Y);
@@ -39,7 +50,7 @@ namespace BlocksMapViewerModule
 
         private void Window_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var vm = (ContentViewModel) this.Resources["ContentViewModel"];
+            var vm = (ContentViewModel) DataContext;
             if (!_mouseLbDown && vm != null)
             {
                 _mouseLbDown = true;

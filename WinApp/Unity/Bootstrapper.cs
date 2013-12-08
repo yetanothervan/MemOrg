@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using BlocksMapViewerModule;
+using BlocksMapViewer;
+using BlocksMapViewer.ModuleDefinition;
+using GraphService.ModuleDefinition;
 using Microsoft.Practices.Prism.Modularity;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.Prism.UnityExtensions;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
-using MemOrg.WinApp.Views;
 using MemOrg.WinApp.Avalon;
+using WinApp.MainView;
+using WinApp.Shell;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -22,17 +25,20 @@ namespace MemOrg.WinApp.Unity
     {
         protected override DependencyObject CreateShell()
         {
+            var regionManager = Container.Resolve<IRegionManager>();
+            regionManager.RegisterViewWithRegion(Interfaces.RegionNames.MainViewRegion, typeof(MainView));
+
             return Container.Resolve<Shell>();
         }
 
         protected override void InitializeShell()
         {
             base.InitializeShell();
-
+            
             App.Current.MainWindow = (Window) Shell;
             App.Current.MainWindow.Show();
         }
-
+        
         RegionAdapterMappings _mappings;
         protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
         {
@@ -53,11 +59,18 @@ namespace MemOrg.WinApp.Unity
 
         protected override void ConfigureModuleCatalog()
         {
-            var blocksMapViewerType = typeof (BlocksMapViewer);
+            AddModule<GraphServiceModule>();
+            AddModule<BlocksMapViewerModule>();
+        }
+
+
+        private void AddModule<T>() where T : IModule
+        {
+            var moduleType = typeof(T);
             ModuleCatalog.AddModule(new ModuleInfo
             {
-                ModuleName = blocksMapViewerType.Name,
-                ModuleType = blocksMapViewerType.AssemblyQualifiedName,
+                ModuleName = moduleType.Name,
+                ModuleType = moduleType.AssemblyQualifiedName,
                 InitializationMode = InitializationMode.WhenAvailable
             });
         }
