@@ -10,5 +10,6 @@ namespace DAL.Entity
     {
         public Int32 ParticleId { get; set; }
         public Int32 BlockId { get; set; }
+        public Int32 Order { get; set; }
     }
 }

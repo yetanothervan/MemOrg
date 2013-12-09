@@ -19,5 +19,7 @@ namespace EF
         public DbSet<Particle> Particles { get; set; }
         public DbSet<Paragraph> Paragraphs { get; set; }
         public DbSet<ParagraphRef> ParagraphRefs { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Reference> References { get; set; }
     }
 }
