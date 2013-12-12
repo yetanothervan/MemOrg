@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Windows;
 using BlocksMapViewer;
 using BlocksMapViewer.ModuleDefinition;
 using GraphService.ModuleDefinition;
+using Interfaces;
 using Microsoft.Practices.Prism.Modularity;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.Prism.UnityExtensions;
@@ -28,6 +30,8 @@ namespace MemOrg.WinApp.Unity
             var regionManager = Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(Interfaces.RegionNames.MainViewRegion, typeof(MainView));
 
+            Container.RegisterType<ITmpXmlExportImportService, TmpXmlExportImportService.TmpXmlExportImportService>();
+
             return Container.Resolve<Shell>();
         }
 
@@ -35,10 +39,10 @@ namespace MemOrg.WinApp.Unity
         {
             base.InitializeShell();
             
-            App.Current.MainWindow = (Window) Shell;
-            App.Current.MainWindow.Show();
+            Application.Current.MainWindow = (Window) Shell;
+            Application.Current.MainWindow.Show();
         }
-        
+
         RegionAdapterMappings _mappings;
         protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
         {
@@ -62,7 +66,6 @@ namespace MemOrg.WinApp.Unity
             AddModule<GraphServiceModule>();
             AddModule<BlocksMapViewerModule>();
         }
-
 
         private void AddModule<T>() where T : IModule
         {

@@ -20,9 +20,10 @@ namespace WinApp.MainView
     /// </summary>
     public partial class MainView : UserControl
     {
-        public MainView()
+        public MainView(MainViewViewModel vm)
         {
             InitializeComponent();
+            Loaded += (sender, args) => { DataContext = vm; };
         }
     }
 }
