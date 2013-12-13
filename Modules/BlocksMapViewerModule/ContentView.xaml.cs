@@ -5,12 +5,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using BL.Graph2Plane;
+using GraphViewer;
 using Microsoft.Practices.Prism;
 using Microsoft.Practices.Prism.Regions;
 
 
-namespace BlocksMapViewer
+namespace GraphViewer
 {
     /// <summary>
     /// Interaction logic for ContentView.xaml

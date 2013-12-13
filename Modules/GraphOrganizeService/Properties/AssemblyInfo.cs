@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Graph2Plane")]
+[assembly: AssemblyTitle("GraphOrganizeService")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Graph2Plane")]
+[assembly: AssemblyProduct("GraphOrganizeService")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ff7d7af2-83a8-4229-9bb3-dc44f681a56a")]
+[assembly: Guid("2620eb6f-6655-4604-ba1a-968511d6e43b")]
 
 // Version information for an assembly consists of the following four values:
 //

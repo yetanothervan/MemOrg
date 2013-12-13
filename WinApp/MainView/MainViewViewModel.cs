@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Interfaces;
+using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 
 namespace WinApp.MainView

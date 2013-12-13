@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MemOrg.Interfaces
 {
-    public class RegionNames
+    public interface IPlanarGraph
     {
-        public static string GraphViewerRegion = "GraphViewerRegion";
-        public static string MainViewRegion = "MainViewRegion";
+        IList<IPlanarGraphBlock> GetBlocks();
+        GraphLayout GetGraphLayout();
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using DAL.Entity;
-using Interfaces;
+using MemOrg.Interfaces;
 using Microsoft.Practices.ServiceLocation;
 
 namespace TmpXmlExportImportService

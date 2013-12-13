@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Interfaces
+namespace MemOrg.Interfaces
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

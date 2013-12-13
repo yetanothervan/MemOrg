@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:layout="http://schemas.xceed.com/wpf/xaml/avalondock"
-             xmlns:intr="clr-namespace:MemOrg.Interfaces;assembly=Interfaces"
+             xmlns:intr="clr-namespace:MemOrg.Interfaces;assembly=MemOrg.Interfaces"
              xmlns:local="clr-namespace:MemOrg.WinApp.Avalon"
              xmlns:vm="clr-namespace:WinApp.MainView"
              mc:Ignorable="d">
@@ -32,7 +32,7 @@
                     <layout:LayoutDocumentPaneGroup>
                         <layout:LayoutDocumentPane>
                             <layout:LayoutDocument Title="Doc1"
-                                                   local:AvalonDockRegion.DocName ="{x:Static intr:RegionNames.BlocksMapViewerRegion}">
+                                                   local:AvalonDockRegion.DocName ="{x:Static intr:RegionNames.GraphViewerRegion}">
                             </layout:LayoutDocument>
                         </layout:LayoutDocumentPane>
                     </layout:LayoutDocumentPaneGroup>

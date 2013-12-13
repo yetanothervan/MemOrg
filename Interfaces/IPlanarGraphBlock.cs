@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MemOrg.Interfaces
 {
-    public class RegionNames
+    public interface IPlanarGraphBlock
     {
-        public static string GraphViewerRegion = "GraphViewerRegion";
-        public static string MainViewRegion = "MainViewRegion";
+        DrawingVisual Render(double offsetX, double offsetY);
     }
 }

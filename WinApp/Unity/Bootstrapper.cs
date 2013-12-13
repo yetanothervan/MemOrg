@@ -6,10 +6,12 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using BlocksMapViewer;
-using BlocksMapViewer.ModuleDefinition;
+using GraphDrawService.ModuleDefinition;
+using GraphOrganizeService.ModuleDefinition;
+using GraphViewer;
 using GraphService.ModuleDefinition;
-using Interfaces;
+using GraphViewer.ModuleDefinition;
+using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Modularity;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.Prism.UnityExtensions;
@@ -64,7 +66,9 @@ namespace MemOrg.WinApp.Unity
         protected override void ConfigureModuleCatalog()
         {
             AddModule<GraphServiceModule>();
-            AddModule<BlocksMapViewerModule>();
+            AddModule<GraphDrawServiceModule>();
+            AddModule<GraphOrganizeServiceModule>();
+            AddModule<GraphViewerModule>();
         }
 
         private void AddModule<T>() where T : IModule

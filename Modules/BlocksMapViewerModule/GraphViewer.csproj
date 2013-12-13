@@ -7,8 +7,8 @@
     <ProjectGuid>{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BlocksMapViewer</RootNamespace>
-    <AssemblyName>BlocksMapViewer</AssemblyName>
+    <RootNamespace>GraphViewer</RootNamespace>
+    <AssemblyName>GraphViewer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -71,7 +71,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModuleDefinition\BlocksMapViewerModule.cs" />
+    <Compile Include="ModuleDefinition\GraphViewerModule.cs" />
     <Compile Include="ContentView.xaml.cs">
       <DependentUpon>ContentView.xaml</DependentUpon>
     </Compile>
@@ -108,10 +108,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BL\Graph2Plane\Graph2Plane.csproj">
-      <Project>{9E0F42AD-0B1B-44FF-BF2F-D0AFF7AB028B}</Project>
-      <Name>Graph2Plane</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DAL\Entity\Entity.csproj">
       <Project>{335b8662-f9fd-487d-9de7-7dbd001a41fc}</Project>
       <Name>Entity</Name>

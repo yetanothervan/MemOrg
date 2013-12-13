@@ -1,19 +1,17 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using DAL.Entity;
+using MemOrg.Interfaces;
 
-namespace BL.Graph2Plane
+namespace GraphOrganizeService
 {
-    public class PlaneBlock
+    public class PlanarGraphBlock : IPlanarGraphBlock
     {
-        public PlaneBlock(Block block, double desiredTextWidth)
+        public PlanarGraphBlock(Block block, int desiredTextWidth)
         {
             _text = CreateFormattedText(block, desiredTextWidth);
         }
@@ -81,7 +79,7 @@ namespace BL.Graph2Plane
         public double TextWidth { get { return _text.Width; } }
         public double TextHeight { get { return _text.Height; } }
 
-        static PlaneBlock()
+        static PlanarGraphBlock()
         {
             Brush = new SolidColorBrush(Color.FromRgb(100, 100, 100));
             Pen = new Pen(Brush, 2.0);

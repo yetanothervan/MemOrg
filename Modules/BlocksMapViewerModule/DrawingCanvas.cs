@@ -6,9 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using BL.Graph2Plane;
+using GraphViewer;
+using MemOrg.Interfaces;
 
-namespace BlocksMapViewer
+namespace GraphViewer
 {
     public class DrawingCanvas : FrameworkElement
     {
@@ -22,8 +23,8 @@ namespace BlocksMapViewer
             var offsetMetadata = new FrameworkPropertyMetadata(new Vector(), FrameworkPropertyMetadataOptions.AffectsRender);
             OffsetProperty = DependencyProperty.Register("Offset", typeof (Vector), typeof (DrawingCanvas), offsetMetadata);
 
-            var graphSourceMetadata = new FrameworkPropertyMetadata(new PlaneGraph(), FrameworkPropertyMetadataOptions.AffectsRender);
-            GraphSourceProperty = DependencyProperty.Register("GraphSource", typeof(PlaneGraph), typeof(DrawingCanvas), graphSourceMetadata);
+            var graphSourceMetadata = new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender);
+            GraphSourceProperty = DependencyProperty.Register("GraphSource", typeof(IPlanarGraph), typeof(DrawingCanvas), graphSourceMetadata);
         }
 
 
@@ -71,10 +72,10 @@ namespace BlocksMapViewer
             get { return (Vector) GetValue(OffsetProperty); }
         }
 
-        public PlaneGraph GraphSource
+        public IPlanarGraph GraphSource
         {
             set { SetValue(GraphSourceProperty, value); }
-            get { return (PlaneGraph)GetValue(GraphSourceProperty); }
+            get { return (IPlanarGraph)GetValue(GraphSourceProperty); }
         }
 
         public void Refresh()
@@ -84,22 +85,16 @@ namespace BlocksMapViewer
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
-
-                double xmin = 0, xmax = 0, ymin = 0, ymax = 0;
-                var blocks = dc.Graph.GetPlainBlocks();
+                
+                var blocks = dc.Graph.GetBlocks();
                 foreach (var planeBlock in blocks)
-                {
                     _visuals.Add(planeBlock.Render(Offset.X, Offset.Y));
-                    xmin = Math.Min(xmin, planeBlock.P1.X);
-                    ymin = Math.Min(ymin, planeBlock.P1.Y);
-                    xmax = Math.Max(xmax, planeBlock.P2.X);
-                    ymax = Math.Max(ymax, planeBlock.P2.Y);
-                }
 
+                GraphLayout gl = dc.Graph.GetGraphLayout();
                 var dvtb = new DrawingVisual();
                 using (var dvtbdc = dvtb.RenderOpen())
                     dvtbdc.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Transparent, 0),
-                        new Rect(xmin, ymin, xmax, ymax));
+                        new Rect(gl.X1, gl.Y1, gl.X2, gl.Y2));
                 _visuals.Add(dvtb);
 
                 var text = new FormattedText(dc.MyText,

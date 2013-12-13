@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Documents;
-using BL.Graph2Plane;
-using Interfaces;
 using MemOrg.Interfaces;
-using Microsoft.Practices.Prism.Regions;
-using Microsoft.Practices.ServiceLocation;
 
-
-namespace BlocksMapViewer
+namespace GraphViewer
 {
     public class ContentViewModel : ViewModelBase
     {
-        public ContentViewModel(IGraphService graphService)
+        public ContentViewModel(IGraphService graphService, IGraphOrganizeService graphOrganizeService)
         {
             MyText = "Some of my texts";
-            Graph = new PlaneGraph(graphService.Blocks);
+            Graph = graphOrganizeService.MakePlanarGraph(graphService.Blocks);
         }
         
         private string _myText;
@@ -35,8 +29,8 @@ namespace BlocksMapViewer
             }
         }
 
-        private PlaneGraph _graph;
-        public PlaneGraph Graph
+        private IPlanarGraph _graph;
+        public IPlanarGraph Graph
         {
             get
             {

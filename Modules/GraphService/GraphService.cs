@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
 using EF;
-using Interfaces;
+using MemOrg.Interfaces;
 
 namespace GraphService
 {
