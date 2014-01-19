@@ -5,6 +5,6 @@ namespace MemOrg.Interfaces
 {
     public interface IGraphOrganizeService
     {
-        IPlanarGraph MakePlanarGraph(IList<Block> blocks);
+        IVisualGraph ProcessGraph(IGraph graph);
     }
 }

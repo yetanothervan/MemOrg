@@ -9,12 +9,18 @@ using MemOrg.Interfaces;
 
 namespace GraphOrganizeService
 {
-    public class PlanarGraphBlock : IPlanarGraphBlock
+    public abstract class VisualGraphElem : IVisualGraphElem
     {
-        public PlanarGraphBlock(Block block, int desiredTextWidth)
+        public VisualGraphElem(Block block, int desiredTextWidth, VisualGraphBlockType blockType)
         {
             _text = CreateFormattedText(block, desiredTextWidth);
+            BlockType = blockType;
         }
+
+        public int GridXPos;
+        public int GridYPos;
+
+        public readonly VisualGraphBlockType BlockType;
 
         private enum FormatType
         {
@@ -41,16 +47,16 @@ namespace GraphOrganizeService
             
             foreach (var particle in block.Particles.OrderBy(t => t.Order))
             {
-                if (particle is Paragraph)
+                if (particle is SourceTextParticle)
                 {
-                    var content = (particle as Paragraph).Content;
+                    var content = (particle as SourceTextParticle).Content;
                     sb.Append(content);
                     sb.Append("\r\n");
                     pos += content.Length + 2;
                 }
-                else if (particle is ParagraphRef)
+                else if (particle is QuoteSourceParticle)
                 {
-                    var content = (particle as ParagraphRef).Paragraph.Content;
+                    var content = (particle as QuoteSourceParticle).SourceTextParticle.Content;
                     sb.Append(content);
                     sb.Append("\r\n");
                     funits.Add(new FormatUnit {StartIndex = pos, Count = content.Length + 2, Type = FormatType.Italic});
@@ -79,14 +85,14 @@ namespace GraphOrganizeService
         public double TextWidth { get { return _text.Width; } }
         public double TextHeight { get { return _text.Height; } }
 
-        static PlanarGraphBlock()
+        static VisualGraphElem()
         {
             Brush = new SolidColorBrush(Color.FromRgb(100, 100, 100));
             Pen = new Pen(Brush, 2.0);
             Brush.Freeze();
             Pen.Freeze();
         }
-
+        
         public Point P1, P2;
 
         public DrawingVisual Render(double offsetX, double offsetY)

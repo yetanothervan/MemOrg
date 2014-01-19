@@ -16,7 +16,7 @@ namespace GraphViewer
         private VisualCollection _visuals;
 
         public static readonly DependencyProperty OffsetProperty;
-        public static readonly DependencyProperty GraphSourceProperty;
+        public static readonly DependencyProperty SourceProperty;
         
         static DrawingCanvas()
         {
@@ -24,46 +24,20 @@ namespace GraphViewer
             OffsetProperty = DependencyProperty.Register("Offset", typeof (Vector), typeof (DrawingCanvas), offsetMetadata);
 
             var graphSourceMetadata = new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender);
-            GraphSourceProperty = DependencyProperty.Register("GraphSource", typeof(IPlanarGraph), typeof(DrawingCanvas), graphSourceMetadata);
+            SourceProperty = DependencyProperty.Register("Source", typeof(IGrid), typeof(DrawingCanvas), graphSourceMetadata);
         }
 
 
         public DrawingCanvas()
         {
-            _visuals = new VisualCollection(this);
-            /*var dv = new DrawingVisual();
-            var dc = dv.RenderOpen();
-            var b = new SolidColorBrush(Color.FromRgb(100, 100, 100));
-            var p = new Pen(b, 2);
-            b.Freeze();
-            p.Freeze();
-
-            int count = 10000;
-            int width = 800;
-            double elemSideCount = Math.Sqrt(count);
-            double elemSideSize = width/elemSideCount;
-
-
-            for (double i = 0; i < elemSideCount; i += 1)
-                for (double j = 0; j < elemSideCount; j += 1)
-                {
-                    double x = elemSideSize * i;
-                    double y = elemSideSize * j;
-                    dc.DrawLine(p, new Point(x, y), new Point(x + elemSideSize, y + elemSideSize));
-                    dc.DrawLine(p, new Point(x + elemSideSize, y), new Point(x, y + elemSideSize));
-                }
-
-            dc.Close();
-            _visuals.Add(dv);*/
+            _visuals = new VisualCollection(this);            
         }
         
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            if ((e.Property.Name == "DataContext" || e.Property.Name == "GraphSource") && DataContext is ContentViewModel)
-            {
+            if ((e.Property.Name == "DataContext" || e.Property.Name == "Source") && DataContext is ContentViewModel)
                 Refresh();
-            }
         }
 
         public Vector Offset
@@ -72,38 +46,30 @@ namespace GraphViewer
             get { return (Vector) GetValue(OffsetProperty); }
         }
 
-        public IPlanarGraph GraphSource
+        public IGrid Source
         {
-            set { SetValue(GraphSourceProperty, value); }
-            get { return (IPlanarGraph)GetValue(GraphSourceProperty); }
+            set { SetValue(SourceProperty, value); }
+            get { return (IGrid)GetValue(SourceProperty); }
         }
 
         public void Refresh()
         {
             var dc = DataContext as ContentViewModel;
-            if (dc != null && dc.Graph != null)
+            if (dc != null && dc.Grid != null)
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
-                
-                var blocks = dc.Graph.GetBlocks();
-                foreach (var planeBlock in blocks)
-                    _visuals.Add(planeBlock.Render(Offset.X, Offset.Y));
+                var g2R = dc.GraphDrawService.PrepareGrid(dc.Grid);
 
-                GraphLayout gl = dc.Graph.GetGraphLayout();
                 var dvtb = new DrawingVisual();
                 using (var dvtbdc = dvtb.RenderOpen())
                     dvtbdc.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Transparent, 0),
-                        new Rect(gl.X1, gl.Y1, gl.X2, gl.Y2));
+                        new Rect(g2R.Layout.X, g2R.Layout.Y, g2R.Layout.Width, g2R.Layout.Height));
                 _visuals.Add(dvtb);
 
-                var text = new FormattedText(dc.MyText,
-                    CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Times New Roman"), 10,
-                    Brushes.Black);
-                var dv = new DrawingVisual();
-                using (var drwc = dv.RenderOpen())
-                    drwc.DrawText(text, new Point(0, 0));
-                _visuals.Add(dv);
+                var elems = g2R.Render();
+                foreach (var elem in elems)
+                    _visuals.Add(elem);
             }
         }
         

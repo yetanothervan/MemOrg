@@ -23,6 +23,8 @@ namespace GraphService.ModuleDefinition
         {
             _container.RegisterType<IGraphService, GraphService>();
             _container.RegisterType<IBlockRepository, BlockRepository>();
+            _container.RegisterType<IRelationRepository, RelationRepository>();
+            _container.RegisterType<ITagRepository, TagRepository>();
         }
     }
 }

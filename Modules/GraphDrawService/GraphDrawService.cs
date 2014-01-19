@@ -10,5 +10,9 @@ namespace GraphDrawService
 {
     public class GraphDrawService : IGraphDrawService
     {
+        public IComponent PrepareGrid(IGrid grid)
+        {
+            return null;
+        }
     }
 }

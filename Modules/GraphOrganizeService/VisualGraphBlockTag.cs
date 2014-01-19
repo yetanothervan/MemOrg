@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Entity
+namespace GraphOrganizeService
 {
-    public class ParagraphRef : Particle
+    public class VisualGraphBlockTag : VisualGraphElem
     {
-        public Paragraph Paragraph { get; set; }
     }
 }

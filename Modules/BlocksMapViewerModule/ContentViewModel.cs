@@ -6,12 +6,17 @@ namespace GraphViewer
 {
     public class ContentViewModel : ViewModelBase
     {
-        public ContentViewModel(IGraphService graphService, IGraphOrganizeService graphOrganizeService)
+        private readonly IGraphDrawService _graphDrawService;
+
+        public ContentViewModel(IGraphService graphService, IGraphOrganizeService graphOrganizeService, IGraphDrawService graphDrawService)
         {
+            _graphDrawService = graphDrawService;
             MyText = "Some of my texts";
-            Graph = graphOrganizeService.MakePlanarGraph(graphService.Blocks);
+            Grid = graphOrganizeService.ProcessGraph(graphService.Graph);
         }
         
+        public IGraphDrawService GraphDrawService { get { return _graphDrawService; } }
+
         private string _myText;
         public string MyText
         {
@@ -29,19 +34,19 @@ namespace GraphViewer
             }
         }
 
-        private IPlanarGraph _graph;
-        public IPlanarGraph Graph
+        private IGrid _grid;
+        public IGrid Grid
         {
             get
             {
-                return _graph;
+                return _grid;
             }
             set
             {
-                if (_graph != value)
+                if (_grid != value)
                 {
-                    _graph = value;
-                    RaisePropertyChangedEvent("Graph");
+                    _grid = value;
+                    RaisePropertyChangedEvent("Grid");
                 }
             }
         }

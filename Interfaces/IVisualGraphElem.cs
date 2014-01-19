@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MemOrg.Interfaces
 {
-    public interface IPlanarGraph
+    public interface IVisualGraphElem
     {
-        IList<IPlanarGraphBlock> GetBlocks();
-        GraphLayout GetGraphLayout();
+        
     }
 }

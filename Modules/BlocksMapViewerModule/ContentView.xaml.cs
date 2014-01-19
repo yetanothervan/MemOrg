@@ -26,7 +26,7 @@ namespace GraphViewer
             {
                 var vm = (ContentViewModel)this.Resources["ContentViewModel"];
                 var context = (ObservableObject<object>) sender;
-                vm.Graph = (PlaneGraph)context.Value;
+                vm.Grid = (PlaneGraph)context.Value;
             };*/
         }
 

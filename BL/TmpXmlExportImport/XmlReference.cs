@@ -15,8 +15,8 @@ namespace TmpXmlExportImportService
         {
             return references.Select(reference => new XmlReference
             {
-                BlockId = reference.Block.BlockId, 
-                Caption = reference.Caption, 
+                BlockId = reference.ReferencedBlock.BlockId, 
+                Caption = reference.CaptionsString,
                 ReferenceId = reference.ReferenceId
             }).ToList();
         }

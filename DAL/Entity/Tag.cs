@@ -9,6 +9,8 @@ namespace DAL.Entity
     public class Tag
     {
         public Int32 TagId { get; set; }
-        public virtual Block Block { get; set; }
+        
+        public virtual Tag Parent { get; set; }
+        public virtual Block TagBlock { get; set; }
     }
 }

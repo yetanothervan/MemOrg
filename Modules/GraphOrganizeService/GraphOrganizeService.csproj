@@ -63,10 +63,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GraphOrganizeService.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Grid2Render.cs" />
+    <Compile Include="VisaulGraphProcessing.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />
-    <Compile Include="PlanarGraph.cs" />
-    <Compile Include="PlanarGraphBlock.cs" />
+    <Compile Include="VisualGraph.cs" />
+    <Compile Include="VisualGraphBlock.cs" />
+    <Compile Include="VisualGraphBlockTag.cs" />
+    <Compile Include="VisualGraphElem.cs" />
+    <Compile Include="VisualGraphTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SnapGraphToGrid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

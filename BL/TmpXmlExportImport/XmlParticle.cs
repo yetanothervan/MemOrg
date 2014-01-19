@@ -19,26 +19,26 @@ namespace TmpXmlExportImportService
 
             foreach (var particle in particles)
             {
-                if (particle is Paragraph)
+                if (particle is SourceTextParticle)
                 {
                     var xmlParagraph = new XmlParagraph
                     {
                         BlockId = particle.BlockId,
                         Order = particle.Order,
                         ParticleId = particle.ParticleId,
-                        Content = (particle as Paragraph).Content
+                        Content = (particle as SourceTextParticle).Content
                     };
                     xmlParticles.Add(xmlParagraph);
                 } 
                 
-                if (particle is ParagraphRef)
+                if (particle is QuoteSourceParticle)
                 {
                     var xmlParagraphRef = new XmlParagraphRef
                     {
                         BlockId = particle.BlockId,
                         Order = particle.Order,
                         ParticleId = particle.ParticleId,
-                        ParagraphId = (particle as ParagraphRef).ParticleId
+                        ParagraphId = (particle as QuoteSourceParticle).ParticleId
                     };
                     xmlParticles.Add(xmlParagraphRef);
                 }

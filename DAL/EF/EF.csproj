@@ -76,9 +76,15 @@
   <ItemGroup>
     <Compile Include="BlockRepository.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="RelationRepository.cs" />
+    <Compile Include="IRelationRepository.cs" />
     <Compile Include="IBlockRepository.cs" />
+    <Compile Include="ITagRepository.cs" />
     <Compile Include="MemOrgContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeedConceptualWar.cs" />
+    <Compile Include="SeedSample.cs" />
+    <Compile Include="TagRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Entity\Entity.csproj">

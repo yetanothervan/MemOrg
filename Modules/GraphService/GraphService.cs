@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using DAL.Entity;
 using EF;
 using MemOrg.Interfaces;
@@ -14,22 +9,52 @@ namespace GraphService
     public class GraphService : IGraphService
     {
         readonly IBlockRepository _blockRepository;
-
-        private List<Block> _blocks;
-
-        public GraphService(IBlockRepository blockRepository)
+        readonly ITagRepository _tagRepository;
+        readonly IRelationRepository _relationRepository;
+        
+        public GraphService(IBlockRepository blockRepository, ITagRepository tagRepository, IRelationRepository relationRepository)
         {
-            this._blockRepository = blockRepository;
+            _blockRepository = blockRepository;
+            _tagRepository = tagRepository;
+            _relationRepository = relationRepository;
         }
 
-        public IList<Block> Blocks
+        public List<Block> BlockTags
         {
-            get { return _blocks ?? (_blocks = LoadGraph()); }
+            get { return _tagRepository.All.Where(tag => tag.TagBlock != null).Select(t => t.TagBlock).ToList(); }
         }
 
-        List<Block> LoadGraph()
+        public List<Block> BlockSources
         {
-            return _blockRepository.All.ToList();
+            get { return _blockRepository.All.Where(b => b.Particles.Any(p => p is SourceTextParticle)).ToList(); }
+        }
+
+        public List<Block> BlockRels
+        {
+            get { return _relationRepository.All.Where(rel => rel.RelationBlock != null).Select(r => r.RelationBlock).ToList(); }
+        }
+
+        public List<Block> BlockOthers
+        {
+            get
+            {
+                var res = _blockRepository.All.Select(b => b)
+                    .Except(_tagRepository.All.Where(tag => tag.TagBlock != null).Select(t => t.TagBlock))
+                    .Except(_relationRepository.All.Where(rel => rel.RelationBlock != null).Select(r => r.RelationBlock))
+                    .Except(_blockRepository.All.Where(b => b.Particles.Any(p => p is SourceTextParticle)));
+
+                return res.ToList();
+            }
+        }
+
+        public List<Tag> TagsNoBlock
+        {
+            get { return _tagRepository.All.Where(tag => tag.TagBlock == null).ToList(); }
+        }
+
+        public List<Tag> TagsBlock
+        {
+            get { return _tagRepository.All.Where(tag => tag.TagBlock != null).ToList(); }
         }
     }
 }
