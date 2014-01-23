@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphOrganizeService
 {
-    public class VisualGraphBlockTag : VisualGraphElem
+    public class VisualGridBlock : VisualGridElem
     {
     }
 }

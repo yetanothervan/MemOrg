@@ -33,7 +33,7 @@ namespace GraphOrganizeService
 
     public class GridRingCell
     {
-        public VisualGraphElem Elem;
+        public VisualGridElem Elem;
     }
 
     public class GraphRingLayout
@@ -68,11 +68,11 @@ namespace GraphOrganizeService
         {
             var blocks = _graph.GetGraphElems();
             foreach (var block in blocks)
-                PlaceBlock(block as VisualGraphElem);
+                PlaceBlock(block as VisualGridElem);
             return _graph;
         }
 
-        private void PlaceBlock(VisualGraphElem block)
+        private void PlaceBlock(VisualGridElem block)
         {
             switch (block.BlockType)
             {

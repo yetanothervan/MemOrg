@@ -15,21 +15,21 @@ namespace GraphOrganizeService
     {
     }
 
-    public static class Grid2Render
+    public static class Grid2VisualGrid
     {
-        public static void Process(Grid grid, IDrawer drawer)
+        public static VisualGrid Process(Grid grid, IDrawer drawer)
         {
+            var vGrid = new VisualGrid(grid);
             foreach (var gridElem in grid)
             {
+
                 
             }
         }
 
-        public static void ProcessPlanarGraphElem(VisualGraphElem graphElem)
+        public static void ProcessPlanarGraphElem(VisualGridElem gridElem)
         {
-            if (graphElem is )
+            if (gridElem is )
         }
     }
-
-    
 }

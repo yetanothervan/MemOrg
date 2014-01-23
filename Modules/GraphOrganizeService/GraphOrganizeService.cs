@@ -25,7 +25,7 @@ namespace GraphOrganizeService
 
         /*private IVisualGraph GenerateGraph(IList<Block> blocks)
         {
-            var planeBlocks = new List<IVisualGraphElem>();
+            var planeBlocks = new List<IVisualGridElem>();
             const double sp = 10;
             double x = 0;
             var layout = new Layout {X = 0, Width = 0, Y = 0, Height = 0};
@@ -33,7 +33,7 @@ namespace GraphOrganizeService
             foreach (var b in blocks)
             {
                 x += sp;
-                var pb = new VisualGraphBlock(b, 200);
+                var pb = new VisualGridBlock(b, 200);
                 pb.P1 = new Point(x, sp);
                 x += pb.TextWidth + 2*sp;
                 pb.P2 = new Point(x, pb.TextHeight + 3*sp);

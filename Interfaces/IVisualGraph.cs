@@ -8,6 +8,6 @@ namespace MemOrg.Interfaces
 {
     public interface IVisualGraph
     {
-        IList<IVisualGraphElem> GetGraphElems();
+        IList<IVisualGridElem> GetGraphElems();
     }
 }

@@ -9,16 +9,13 @@ namespace GraphOrganizeService
     {
         public static VisualGraph CreateVisualGraph(IGraphService gs)
         {
-            var visualGraphElems = new List<IVisualGraphElem>();
+            var visualGraphElems = new List<IVisualGridElem>();
             
             foreach (var b in gs.BlockTags)
             {
-
-
-
                 if (b.Particles.Count == 0)
                 {
-                    var planarGraphBlock = new VisualGraphElem(b, 200, VisualGraphBlockType.ReferenceBlock);
+                    var planarGraphBlock = new VisualGridElem(b, 200, VisualGraphBlockType.ReferenceBlock);
                     visualGraphElems.Add(planarGraphBlock);
             
                     continue;
@@ -42,20 +39,20 @@ namespace GraphOrganizeService
                 }
                 if (severalSources)
                 {
-                    var planarGraphBlock = new VisualGraphElem(b, 200, VisualGraphBlockType.SeveralSourcesQuoteBlock);
+                    var planarGraphBlock = new VisualGridElem(b, 200, VisualGraphBlockType.SeveralSourcesQuoteBlock);
                     visualGraphElems.Add(planarGraphBlock);
                     ++stats.SeveralSourcesQuoteBlockCount;
                     continue;
                 }
                 if (lastId != -1)
                 {
-                    var planarGraphBlock = new VisualGraphElem(b, 200, VisualGraphBlockType.OneSourceQuoteBlock);
+                    var planarGraphBlock = new VisualGridElem(b, 200, VisualGraphBlockType.OneSourceQuoteBlock);
                     visualGraphElems.Add(planarGraphBlock);
                     ++stats.OneSourceQuoteBlockCount;
                     continue;
                 }
                 {
-                    var planarGraphBlock = new VisualGraphElem(b, 200, VisualGraphBlockType.SourceBlock);
+                    var planarGraphBlock = new VisualGridElem(b, 200, VisualGraphBlockType.SourceBlock);
                     visualGraphElems.Add(planarGraphBlock);
                     ++stats.SourceBlockCount;
                 }

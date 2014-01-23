@@ -47,7 +47,7 @@
     <Compile Include="IGraphService.cs" />
     <Compile Include="IGrid.cs" />
     <Compile Include="IVisualGraph.cs" />
-    <Compile Include="IVisualGraphElem.cs" />
+    <Compile Include="IVisualGridElem.cs" />
     <Compile Include="ITmpXmlExportImportService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNames.cs" />

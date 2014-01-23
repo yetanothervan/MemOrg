@@ -9,9 +9,9 @@ using MemOrg.Interfaces;
 
 namespace GraphOrganizeService
 {
-    public abstract class VisualGraphElem : IVisualGraphElem
+    public abstract class VisualGridElem : IVisualGridElem
     {
-        public VisualGraphElem(Block block, int desiredTextWidth, VisualGraphBlockType blockType)
+        public VisualGridElem(Block block, int desiredTextWidth, VisualGridBlockType blockType)
         {
             _text = CreateFormattedText(block, desiredTextWidth);
             BlockType = blockType;
@@ -85,7 +85,7 @@ namespace GraphOrganizeService
         public double TextWidth { get { return _text.Width; } }
         public double TextHeight { get { return _text.Height; } }
 
-        static VisualGraphElem()
+        static VisualGridElem()
         {
             Brush = new SolidColorBrush(Color.FromRgb(100, 100, 100));
             Pen = new Pen(Brush, 2.0);
