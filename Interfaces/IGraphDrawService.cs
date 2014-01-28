@@ -4,6 +4,7 @@ namespace MemOrg.Interfaces
 {
     public interface IGraphDrawService
     {
-        IComponent PrepareGrid(IGrid grid);
+        IDrawer GetDrawer(IDrawStyle style);
+        IDrawStyle GetStyle();
     }
 }

@@ -1,6 +1,6 @@
 namespace MemOrg.Interfaces
 {
-    public interface IGrid
+    public interface IDrawer
     {
     }
 }

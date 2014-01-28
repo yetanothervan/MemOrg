@@ -59,8 +59,7 @@ namespace GraphViewer
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
-                var g2R = dc.GraphDrawService.PrepareGrid(dc.Grid);
-
+                
                 var dvtb = new DrawingVisual();
                 using (var dvtbdc = dvtb.RenderOpen())
                     dvtbdc.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Transparent, 0),

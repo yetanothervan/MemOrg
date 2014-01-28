@@ -1,11 +1,19 @@
-﻿namespace GraphOrganizeService
+﻿using MemOrg.Interfaces;
+
+namespace GraphOrganizeService
 {
-    public class VisualGrid
+    public class VisualGrid : IVisualGrid
     {
-        private Grid _grid;
-        public VisualGrid(Grid grid)
+        private readonly IGrid _grid;
+
+        public VisualGrid(IGrid grid)
         {
             _grid = grid;
+        }
+        
+        public void Prerender(IDrawer drawer)
+        {
+            
         }
     }
 }

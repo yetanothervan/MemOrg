@@ -3,67 +3,76 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL.Entity;
 using MemOrg.Interfaces;
 
 namespace GraphOrganizeService
 {
-    public class Graph2Grid
+    public class LayoutRawSquare : IGridLayout
     {
-        public static Grid ProcessGraph(IGraphService graphService)
-        {
-            var elemsCount = graphService.BlockOthers.Count
-                            + graphService.BlockRels.Count
-                            + graphService.BlockSources.Count
-                            + graphService.BlockTags.Count
-                            + graphService.TagsNoBlock.Count;
-            var squareSide = CalculateSquareSideLength(elemsCount);
+        private List<List<IGridElem>> _elems;
+        private int _sideSize;
 
-            var grid = new Grid(squareSide, squareSide);
+        public List<List<IGridElem>> DoLayout(IGraph graph)
+        {
+            var graphService = graph.GraphService;
+
+            var elemsCount = graphService.BlockOthers.Count
+                             + graphService.BlockRels.Count
+                             + graphService.BlockSources.Count
+                             + graphService.BlockTags.Count
+                             + graphService.TagsNoBlock.Count;
+
+            _sideSize = CalculateSquareSideLength(elemsCount);
+
+            //create elems
+            _elems = new List<List<IGridElem>>(_sideSize);
+            for (int index = 0; index < _elems.Count; ++index)
+                _elems[index] = new List<IGridElem>(_sideSize);
 
             int curElem = 0;
             foreach (var blockTag in graphService.BlockTags)
             {
                 var gridElem = new GridElemBasedOnBlock(blockTag, GridElemBasedOnBlockType.BlockTag);
-                PlaceNextGridElem(grid, gridElem, curElem++);
+                PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var blockSource in graphService.BlockSources)
             {
                 var gridElem = new GridElemBasedOnBlock(blockSource, GridElemBasedOnBlockType.BlockSource);
-                PlaceNextGridElem(grid, gridElem, curElem++);
+                PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var blockRel in graphService.BlockRels)
             {
                 var gridElem = new GridElemBasedOnBlock(blockRel, GridElemBasedOnBlockType.BlockRel);
-                PlaceNextGridElem(grid, gridElem, curElem++);
+                PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var block in graphService.BlockOthers)
             {
                 var gridElem = new GridElemBasedOnBlock(block, GridElemBasedOnBlockType.BlockOther);
-                PlaceNextGridElem(grid, gridElem, curElem++);
+                PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var tagNoBlock in graphService.TagsNoBlock)
             {
                 var gridElem = new GridElemBasedOnTag(tagNoBlock);
-                PlaceNextGridElem(grid, gridElem, curElem++);
+                PlaceNextGridElem(gridElem, curElem++);
             }
-            return grid;
+            return _elems;
         }
 
-        private static int PlaceNextGridElem(Grid grid, GridElem gridElem, int gridElemIndex)
+        private void PlaceNextGridElem(GridElem gridElem, int gridElemIndex)
         {
-            int rowIndex = gridElemIndex / grid.GetRowLength;
-            int colIndex = gridElemIndex % grid.GetRowLength;
-            grid.SetElemOn(rowIndex, colIndex, gridElem);
+            int rowIndex = gridElemIndex/_sideSize;
+            int colIndex = gridElemIndex%_sideSize;
+            _elems[rowIndex][colIndex] = gridElem;
         }
 
         private static int CalculateSquareSideLength(int elemsCount)
         {
             var res = 0;
 // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
-            while (elemsCount >= res * res)
+            while (elemsCount >= res*res)
                 ++res;
             return res;
         }
     }
 }
+

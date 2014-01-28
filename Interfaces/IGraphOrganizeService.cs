@@ -5,6 +5,9 @@ namespace MemOrg.Interfaces
 {
     public interface IGraphOrganizeService
     {
-        IVisualGraph ProcessGraph(IGraph graph);
+        IGraph GetGraph(IGraphFilter filter);
+        IGrid GetGrid(IGraph graph, IGridLayout layout);
+        IVisualGrid GetVisualGrid(IGrid grid, IDrawer drawer);
+        IGridLayout GetLayout();
     }
 }

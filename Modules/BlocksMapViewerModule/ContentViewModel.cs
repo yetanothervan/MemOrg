@@ -6,16 +6,16 @@ namespace GraphViewer
 {
     public class ContentViewModel : ViewModelBase
     {
-        private readonly IGraphDrawService _graphDrawService;
-
         public ContentViewModel(IGraphService graphService, IGraphOrganizeService graphOrganizeService, IGraphDrawService graphDrawService)
         {
-            _graphDrawService = graphDrawService;
             MyText = "Some of my texts";
-            Grid = graphOrganizeService.ProcessGraph(graphService.Graph);
+            IGraph graph = graphOrganizeService.GetGraph(null);
+            IGridLayout layout = graphOrganizeService.GetLayout();
+            IGrid grid = graphOrganizeService.GetGrid(graph, layout);
+            IDrawStyle style = graphDrawService.GetStyle();
+            IDrawer drawer = graphDrawService.GetDrawer(style);
+            Grid = graphOrganizeService.GetVisualGrid(grid, drawer);
         }
-        
-        public IGraphDrawService GraphDrawService { get { return _graphDrawService; } }
 
         private string _myText;
         public string MyText
@@ -34,8 +34,8 @@ namespace GraphViewer
             }
         }
 
-        private IGrid _grid;
-        public IGrid Grid
+        private IVisualGrid _grid;
+        public IVisualGrid Grid
         {
             get
             {
