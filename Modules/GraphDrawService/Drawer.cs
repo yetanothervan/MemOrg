@@ -10,6 +10,12 @@ namespace GraphDrawService
 {
     public class Drawer : IDrawer
     {
+        private readonly IDrawStyle _style;
+        public Drawer(IDrawStyle style)
+        {
+            _style = style;
+        }
+
         public IComponent DrawGrid()
         {
             return new Grid();
@@ -17,22 +23,22 @@ namespace GraphDrawService
 
         public IComponent DrawCaption(string text)
         {
-            return new Caption();
+            return new Caption(text, _style);
         }
 
         public IComponent DrawBox()
         {
-            return new Block();
+            return new Block(_style);
         }
 
         public IComponent DrawQuoteText(string text)
         {
-            return new Text();
+            return new Text(text, _style);
         }
 
         public IComponent DrawQuoteBox()
         {
-            return new QuoteBlock();
+            return new QuoteBlock(_style);
         }
     }
 }

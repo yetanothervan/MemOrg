@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,17 @@ using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
 {
-    class Caption : IComponent
+    internal class Caption : IComponent
     {
+        private readonly FormattedText _text;
+
+        public Caption(string text, IDrawStyle style)
+        {
+            _text = new FormattedText(text, CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight, style.CaptionTypeface, style.CaptionEmSize, style.CaptionBrush);
+            _text.MaxTextWidth = style.DesiredTextBlockWidth;
+        }
+
         private List<IComponent> _childs;
         public List<IComponent> Childs
         {
@@ -22,14 +32,19 @@ namespace GraphDrawService.Draw
             set { _childs = value; }
         }
 
-        public List<DrawingVisual> Render()
+        public List<DrawingVisual> Render(Point p)
         {
-            throw new NotImplementedException();
+            var dv = new DrawingVisual();
+            using (var dc = dv.RenderOpen())
+            {
+                dc.DrawText(_text, p);
+            }
+            return new List<DrawingVisual> {dv};
         }
 
         public Size GetSize()
         {
-            throw new NotImplementedException();
+            return new Size(_text.Width, _text.Height);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace GraphViewer
 {
     public class ContentViewModel : ViewModelBase
     {
-        public ContentViewModel(IGraphService graphService, IGraphOrganizeService graphOrganizeService, IGraphDrawService graphDrawService)
+        public ContentViewModel(IGraphOrganizeService graphOrganizeService, IGraphDrawService graphDrawService)
         {
             MyText = "Some of my texts";
             IGraph graph = graphOrganizeService.GetGraph(null);

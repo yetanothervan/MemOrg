@@ -18,7 +18,7 @@ namespace GraphDrawService
 
         public IDrawer GetDrawer(IDrawStyle style)
         {
-            return new Drawer();
+            return new Drawer(style);
         }
 
         public IDrawStyle GetStyle()

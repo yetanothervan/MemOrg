@@ -5,28 +5,34 @@ namespace GraphDrawService
 {
     public class DrawStyle : IDrawStyle
     {
-        public const double TextMaxWidth = 200;
-
-        public static readonly Brush SourceBlockBrush;
-        public static readonly Brush BlockBrush;
-        public static readonly Brush TagBrush;
-        public static readonly Brush RelationBrush;
-        public static readonly Brush UserBlockBrush;
-
-        //private static readonly Pen Pen;
-
-
-        static DrawStyle()
+        public DrawStyle()
         {
-            (SourceBlockBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))).Freeze();
-            (BlockBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))).Freeze();
-            (TagBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))).Freeze();
-            (RelationBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))).Freeze();
-            (UserBlockBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))).Freeze();
-            
-          //  Pen = new Pen(Brush, 2.0);
-            //Brush.Freeze();
-            //Pen.Freeze();
+            TextBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100));
+            TextBrush.Freeze();
+            CaptionBrush = new SolidColorBrush(Color.FromRgb(50, 50, 50));
+            CaptionBrush.Freeze();
+            TextTypeface = new Typeface("Times New Roman");
+            CaptionTypeface = new Typeface("Arial");
+            DesiredTextBlockWidth = 200;
+            TextEmSize = 12;
+            CaptionEmSize = 20;
+            QuoteBlockBrush =  new SolidColorBrush(Color.FromArgb(127, 255, 255, 255));
+            QuoteBlockBrush.Freeze();
+            var quoteBlockPenBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100));
+            quoteBlockPenBrush.Freeze();
+            const double quoteBlockPenSize = 2.0;
+            QuoteBlockPen = new Pen(quoteBlockPenBrush, quoteBlockPenSize);
+            QuoteBlockPen.Freeze();
         }
+
+        public double DesiredTextBlockWidth { get; set; }
+        public Typeface TextTypeface { get; set; }
+        public double TextEmSize { get; set; }
+        public Brush TextBrush { get; set; }
+        public Typeface CaptionTypeface { get; set; }
+        public double CaptionEmSize { get; set; }
+        public Brush CaptionBrush { get; set; }
+        public Brush QuoteBlockBrush { get; set; }
+        public Pen QuoteBlockPen { get; set; }
     }
 }

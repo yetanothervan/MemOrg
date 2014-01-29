@@ -59,16 +59,8 @@ namespace GraphViewer
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
-                
-                var dvtb = new DrawingVisual();
-                using (var dvtbdc = dvtb.RenderOpen())
-                    dvtbdc.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Transparent, 0),
-                        new Rect(g2R.Layout.X, g2R.Layout.Y, g2R.Layout.Width, g2R.Layout.Height));
-                _visuals.Add(dvtb);
-
-                var elems = g2R.Render();
-                foreach (var elem in elems)
-                    _visuals.Add(elem);
+                var elems = dc.Grid.Render(new Point(Offset.X, Offset.Y));
+                foreach (var elem in elems) _visuals.Add(elem);
             }
         }
         

@@ -72,10 +72,6 @@
     <Compile Include="GridEnumerator.cs" />
     <Compile Include="LayoutRawSquare.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />
-    <Compile Include="VisualGridBlock.cs" />
-    <Compile Include="VisualGridBlockTag.cs" />
-    <Compile Include="VisualGridElem.cs" />
-    <Compile Include="VisualGridTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="zSnapGraphToGrid.cs" />
     <Compile Include="VisualGrid.cs" />

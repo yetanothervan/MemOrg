@@ -11,6 +11,11 @@ namespace GraphDrawService.Draw
 {
     class Block : IComponent
     {
+        public Block(IDrawStyle style)
+        {
+            
+        }
+
         private List<IComponent> _childs;
         public List<IComponent> Childs
         {
@@ -21,8 +26,8 @@ namespace GraphDrawService.Draw
             }
             set { _childs = value; }
         }
-
-        public List<DrawingVisual> Render()
+        
+        public List<DrawingVisual> Render(Point p)
         {
             throw new NotImplementedException();
         }

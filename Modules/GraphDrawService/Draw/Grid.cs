@@ -21,8 +21,8 @@ namespace GraphDrawService.Draw
             }
             set { _childs = value; }
         }
-
-        public List<DrawingVisual> Render()
+        
+        public List<DrawingVisual> Render(Point p)
         {
             throw new NotImplementedException();
         }

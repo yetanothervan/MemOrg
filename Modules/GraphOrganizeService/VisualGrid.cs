@@ -50,6 +50,11 @@ namespace GraphOrganizeService
                                     var t = drawer.DrawQuoteText((part as SourceTextParticle).Content);
                                     visElem.Childs.Add(t);
                                 }
+                                else if (part is UserTextParticle)
+                                {
+                                    var t = drawer.DrawQuoteText((part as UserTextParticle).Content);
+                                    visElem.Childs.Add(t);
+                                }
                                 else if (part is QuoteSourceParticle)
                                 {
                                     var t = drawer.DrawQuoteText((part as QuoteSourceParticle).SourceTextParticle.Content);
@@ -100,14 +105,14 @@ namespace GraphOrganizeService
             set { _mySelf.Childs = value; }
         }
         
-        public List<DrawingVisual> Render()
+        public List<DrawingVisual> Render(Point p)
         {
-            throw new NotImplementedException();
+            return _mySelf != null ? _mySelf.Render(p) : null;
         }
 
         public Size GetSize()
         {
-            throw new NotImplementedException();
+            return _mySelf != null ? _mySelf.GetSize() : new Size();
         }
     }
 }

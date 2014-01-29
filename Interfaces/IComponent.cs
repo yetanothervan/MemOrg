@@ -7,7 +7,7 @@ namespace MemOrg.Interfaces
     public interface IComponent
     {
         List<IComponent> Childs { get; set; }
-        List<DrawingVisual> Render();
+        List<DrawingVisual> Render(Point p);
         Size GetSize();
     }
 }

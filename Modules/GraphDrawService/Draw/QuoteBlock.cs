@@ -11,7 +11,15 @@ namespace GraphDrawService.Draw
 {
     public class QuoteBlock : IComponent
     {
+        private readonly IDrawStyle _style;
+        private const double Margin = 5.0;
         private List<IComponent> _childs;
+        
+        public QuoteBlock(IDrawStyle style)
+        {
+            _style = style;
+        }
+
         public List<IComponent> Childs
         {
             get
@@ -22,14 +30,33 @@ namespace GraphDrawService.Draw
             set { _childs = value; }
         }
 
-        public List<DrawingVisual> Render()
+        public List<DrawingVisual> Render(Point p)
         {
-            throw new NotImplementedException();
+            var result = new List<DrawingVisual>();
+            
+            var dv = new DrawingVisual();
+            using (var dc = dv.RenderOpen())
+            {
+                var rect = new Rect(p, GetSize());
+                dc.DrawRectangle(_style.QuoteBlockBrush, _style.QuoteBlockPen, rect);
+            }
+            result.Add(dv);
+
+            Point curPt = p;
+            curPt.Offset(Margin, Margin);
+            foreach (var child in _childs)
+            {
+                result.AddRange(child.Render(curPt));
+                curPt.Offset(0.0, child.GetSize().Height + Margin);
+            }
+            return result;
         }
 
         public Size GetSize()
         {
-            throw new NotImplementedException();
+            double height = _childs.Sum(child => (child.GetSize().Height + Margin)) + Margin;
+            double width = _childs.Max(child => (child.GetSize().Height)) + Margin * 2;
+            return new Size {Height = height, Width = width};
         }
     }
 }
