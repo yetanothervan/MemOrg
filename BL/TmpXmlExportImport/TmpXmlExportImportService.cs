@@ -18,7 +18,7 @@ namespace TmpXmlExportImportService
         public void SaveGraph()
         {
             var graphService = (IGraphService)ServiceLocator.Current.GetService(typeof(IGraphService));
-            var g = Graph2XmlGraphConverter.Convert(graphService.Graph.Blocks);
+            var g = Graph2XmlGraphConverter.Convert(graphService);
             SerializeGraph(g);
         }
 

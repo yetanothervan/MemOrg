@@ -8,7 +8,7 @@ using MemOrg.Interfaces;
 
 namespace GraphOrganizeService
 {
-    public class Grid : IGrid, IEnumerable<IGridElem>
+    public class Grid : IGrid
     {
         private readonly List<List<IGridElem>> _elems;
 
@@ -16,9 +16,6 @@ namespace GraphOrganizeService
         {
             _elems = layout.DoLayout(graph);
         }
-
-        public int GetRowsCount { get { return _elems.Count; } }
-        public int GetRowLength { get { return _elems.Count == 0 ? 0 : _elems[0].Count; } }
         
         public IEnumerator<IGridElem> GetEnumerator()
         {
@@ -29,5 +26,8 @@ namespace GraphOrganizeService
         {
             return GetEnumerator();
         }
+
+        public int RowCount { get { return _elems.Count; } }
+        public int RowLength { get { return _elems.Count == 0 ? 0 : _elems[0].Count; } }
     }
 }

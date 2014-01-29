@@ -47,10 +47,13 @@
     <Compile Include="TmpXmlExportImportService.cs" />
     <Compile Include="XmlBlock.cs" />
     <Compile Include="XmlGraph.cs" />
-    <Compile Include="XmlParagraph.cs" />
-    <Compile Include="XmlParagraphRef.cs" />
+    <Compile Include="XmlRelationType.cs" />
+    <Compile Include="XmlSourceText.cs" />
+    <Compile Include="XmlUserText.cs" />
+    <Compile Include="XmlQuoteSource.cs" />
     <Compile Include="XmlParticle.cs" />
     <Compile Include="XmlReference.cs" />
+    <Compile Include="XmlRelation.cs" />
     <Compile Include="XmlTag.cs" />
   </ItemGroup>
   <ItemGroup>

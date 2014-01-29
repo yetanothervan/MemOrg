@@ -5,15 +5,16 @@ using DAL.Entity;
 
 namespace TmpXmlExportImportService
 {
-    [XmlInclude(typeof(XmlParagraph))]
-    [XmlInclude(typeof(XmlParagraphRef))]
+    [XmlInclude(typeof(XmlQuoteSource))]
+    [XmlInclude(typeof(XmlUserText))]
+    [XmlInclude(typeof(XmlSourceText))]
     public abstract class XmlParticle
     {
         public Int32 ParticleId;
         public Int32 BlockId;
         public Int32 Order;
 
-        public static List<XmlParticle> Convert(IList<Particle> particles)
+        public static List<XmlParticle> Convert(IEnumerable<Particle> particles)
         {
             var xmlParticles = new List<XmlParticle>();
 
@@ -21,27 +22,39 @@ namespace TmpXmlExportImportService
             {
                 if (particle is SourceTextParticle)
                 {
-                    var xmlParagraph = new XmlParagraph
+                    var xmlSourceText = new XmlSourceText
                     {
                         BlockId = particle.BlockId,
                         Order = particle.Order,
                         ParticleId = particle.ParticleId,
                         Content = (particle as SourceTextParticle).Content
                     };
-                    xmlParticles.Add(xmlParagraph);
+                    xmlParticles.Add(xmlSourceText);
                 } 
                 
                 if (particle is QuoteSourceParticle)
                 {
-                    var xmlParagraphRef = new XmlParagraphRef
+                    var xmlQuoteParticle = new XmlQuoteSource()
                     {
                         BlockId = particle.BlockId,
                         Order = particle.Order,
                         ParticleId = particle.ParticleId,
-                        ParagraphId = (particle as QuoteSourceParticle).ParticleId
+                        SourceTextId = (particle as QuoteSourceParticle).SourceTextParticle.BlockId
                     };
-                    xmlParticles.Add(xmlParagraphRef);
+                    xmlParticles.Add(xmlQuoteParticle);
                 }
+
+                if (particle is UserTextParticle)
+                {
+                    var xmlUserText = new XmlUserText
+                    {
+                        BlockId = particle.BlockId,
+                        Order = particle.Order,
+                        ParticleId = particle.ParticleId,
+                        Content = (particle as UserTextParticle).Content
+                    };
+                    xmlParticles.Add(xmlUserText);
+                } 
             }
 
             return xmlParticles;

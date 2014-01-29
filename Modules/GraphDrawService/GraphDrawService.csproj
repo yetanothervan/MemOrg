@@ -62,6 +62,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawer.cs" />
     <Compile Include="Draw\Block.cs" />
     <Compile Include="Draw\Caption.cs" />
     <Compile Include="Draw\Grid.cs" />
@@ -69,7 +70,7 @@
     <Compile Include="Draw\Text.cs" />
     <Compile Include="GraphDrawService.cs" />
     <Compile Include="ModuleDefinition\GraphDrawServiceModule.cs" />
-    <Compile Include="GridElemStyle.cs" />
+    <Compile Include="DrawStyle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,10 @@
+using System.Collections.Generic;
+
 namespace MemOrg.Interfaces
 {
-    public interface IGrid
+    public interface IGrid : IEnumerable<IGridElem>
     {
+        int RowCount { get; }
+        int RowLength { get; }
     }
 }

@@ -1,6 +1,6 @@
 namespace MemOrg.Interfaces
 {
-    public interface IVisualGrid
+    public interface IVisualGrid : IGrid
     {
         void Prerender(IDrawer drawer);
     }

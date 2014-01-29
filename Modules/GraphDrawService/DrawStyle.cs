@@ -1,8 +1,9 @@
 ﻿using System.Windows.Media;
+using MemOrg.Interfaces;
 
 namespace GraphDrawService
 {
-    public class GridElemStyle
+    public class DrawStyle : IDrawStyle
     {
         public const double TextMaxWidth = 200;
 
@@ -15,7 +16,7 @@ namespace GraphDrawService
         //private static readonly Pen Pen;
 
 
-        static GridElemStyle()
+        static DrawStyle()
         {
             (SourceBlockBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))).Freeze();
             (BlockBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))).Freeze();

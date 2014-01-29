@@ -1,6 +1,6 @@
 ﻿namespace TmpXmlExportImportService
 {
-    public class XmlParagraph : XmlParticle
+    public class XmlSourceText : XmlParticle
     {
         public string Content;
     }

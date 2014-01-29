@@ -4,22 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
+using MemOrg.Interfaces;
 
 namespace TmpXmlExportImportService
 {
-    internal class Graph2XmlGraphConverter
+    internal static class Graph2XmlGraphConverter
     {
-        public static XmlGraph Convert(IList<Block> blocks)
+        public static XmlGraph Convert(IGraphService graphService)
         {
-            var xmlBlocks = blocks.Select(block => new XmlBlock
+            var xmlBlocks = 
+            graphService.BlockOthers
+                .Union(graphService.BlockRels)
+                .Union(graphService.BlockSources)
+                .Union(graphService.BlockTags).Select(block => new XmlBlock
             {
+                
                 BlockId = block.BlockId, 
                 Caption = block.Caption, 
                 Particles = XmlParticle.Convert(block.Particles),
-                References = XmlReference.Convert(block.References)
+                References = XmlReference.Convert(block.References),
+                Tags = XmlTag.Convert(block.Tags)
             }).ToList();
 
-            return new XmlGraph { Blocks = xmlBlocks };
+            var xmlTags =
+            graphService.TagsBlock.Union(graphService.TagsNoBlock).Select(tag => new XmlTag
+                {
+                    ParentTagId = tag.Parent.TagId,
+                    TagBlockId = tag.TagBlock.BlockId,
+                    TagId = tag.TagId
+                }).ToList();
+
+            return new XmlGraph { Blocks = xmlBlocks, Tags = xmlTags};
         }
     }
 }

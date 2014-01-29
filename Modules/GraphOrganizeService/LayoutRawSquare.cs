@@ -62,7 +62,7 @@ namespace GraphOrganizeService
         {
             int rowIndex = gridElemIndex/_sideSize;
             int colIndex = gridElemIndex%_sideSize;
-            _elems[rowIndex][colIndex] = gridElem;
+            gridElem.PlaceOn(rowIndex, colIndex, _elems);
         }
 
         private static int CalculateSquareSideLength(int elemsCount)
