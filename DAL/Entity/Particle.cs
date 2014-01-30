@@ -9,7 +9,7 @@ namespace DAL.Entity
     public abstract class Particle
     {
         public Int32 ParticleId { get; set; }
-        public Int32 BlockId { get; set; }
         public Int32 Order { get; set; }
+        public virtual Block Block { get; set; }
     }
 }

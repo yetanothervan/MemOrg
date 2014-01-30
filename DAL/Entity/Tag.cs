@@ -8,9 +8,17 @@ namespace DAL.Entity
 {
     public class Tag
     {
+        public Tag()
+        {
+            this.Childs = new List<Tag>();
+            this.Blocks = new List<Block>();
+        }
         public Int32 TagId { get; set; }
+        public string Caption { get; set; }
         
         public virtual Tag Parent { get; set; }
+        public virtual ICollection<Tag> Childs { get; set; }
         public virtual Block TagBlock { get; set; }
+        public virtual ICollection<Block> Blocks { get; set; }
     }
 }

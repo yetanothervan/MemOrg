@@ -9,7 +9,7 @@ namespace DAL.Entity
     public class Reference
     {
         public Int32 ReferenceId { get; set; }
-        public Int32 BlockId { get; set; }
+        public virtual Block Block{ get; set; }
         public virtual Block ReferencedBlock { get; set; }
         public string CaptionsString { get; set; }
     }

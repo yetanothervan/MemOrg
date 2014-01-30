@@ -10,6 +10,7 @@ namespace TmpXmlExportImportService
         public Int32 TagId;
         public Int32 ParentTagId;
         public Int32 TagBlockId;
+        public String Caption;
 
         public static List<XmlTag> Convert(IEnumerable<Tag> tags)
         {
@@ -17,7 +18,8 @@ namespace TmpXmlExportImportService
             {
                 TagId = tag.TagId,
                 ParentTagId = tag.Parent.TagId,
-                TagBlockId = tag.TagBlock.BlockId
+                TagBlockId = tag.TagBlock.BlockId,
+                Caption = tag.Caption
             }).ToList();
         }
     }

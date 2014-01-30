@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
+using DAL.Entity.Mapping;
 
 namespace EF
 {
@@ -24,5 +25,17 @@ namespace EF
         public DbSet<Reference> References { get; set; }
         public DbSet<RelationType> RelationTypes { get; set; }
         public DbSet<Relation> Relations { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Configurations.Add(new QuoteSourceParticleMap());
+            modelBuilder.Configurations.Add(new SourceTextParticleMap());
+            modelBuilder.Configurations.Add(new UserTextParticleMap());
+            modelBuilder.Configurations.Add(new ParticleMap());
+            modelBuilder.Configurations.Add(new BlockMap());
+            modelBuilder.Configurations.Add(new TagMap());
+            modelBuilder.Configurations.Add(new ReferenceMap());
+            modelBuilder.Configurations.Add(new RelationMap());
+        }
     }
 }

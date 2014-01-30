@@ -8,6 +8,6 @@ namespace DAL.Entity
 {
     public class QuoteSourceParticle : Particle
     {
-        public SourceTextParticle SourceTextParticle { get; set; }
+        public virtual SourceTextParticle SourceTextParticle { get; set; }
     }
 }

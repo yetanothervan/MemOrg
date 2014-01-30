@@ -44,6 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Block.cs" />
+    <Compile Include="Mapping\BlockMap.cs" />
+    <Compile Include="Mapping\ParticleMap.cs" />
+    <Compile Include="Mapping\QuoteSourceParticleMap.cs" />
+    <Compile Include="Mapping\ReferenceMap.cs" />
+    <Compile Include="Mapping\SourceTextParticleMap.cs" />
+    <Compile Include="Mapping\TagMap.cs" />
+    <Compile Include="Mapping\UserTextParticleMap.cs" />
+    <Compile Include="Mapping\RelationMap.cs" />
     <Compile Include="Reference.cs" />
     <Compile Include="Relation.cs" />
     <Compile Include="RelationType.cs" />
@@ -58,6 +66,7 @@
     <None Include="App.Config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

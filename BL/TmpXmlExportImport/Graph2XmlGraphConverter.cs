@@ -27,14 +27,9 @@ namespace TmpXmlExportImportService
             }).ToList();
 
             var xmlTags =
-            graphService.TagsBlock.Union(graphService.TagsNoBlock).Select(tag => new XmlTag
-                {
-                    ParentTagId = tag.Parent.TagId,
-                    TagBlockId = tag.TagBlock.BlockId,
-                    TagId = tag.TagId
-                }).ToList();
+                graphService.TagsBlock.Union(graphService.TagsNoBlock).ToList();
 
-            return new XmlGraph { Blocks = xmlBlocks, Tags = xmlTags};
+            return new XmlGraph { Blocks = xmlBlocks, Tags = XmlTag.Convert(xmlTags)};
         }
     }
 }

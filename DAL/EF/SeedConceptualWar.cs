@@ -96,7 +96,9 @@ namespace EF
 
             var kafedraTag = CreateTag("Кафедра", null);
             var kafedraConceptualWarTag = CreateTag("Концептуальная война", kafedraTag);
+            kafedraConceptualWarTag.TagBlock = new Block();
             var bookConceptualWarTag = CreateTag("«Концептуальная война»", kafedraConceptualWarTag);
+            bookConceptualWarTag.TagBlock = new Block();
 
             var theWordTag = CreateTag("Понятие", null);
             var eotTag = CreateTag("СВ", theWordTag);
@@ -236,8 +238,7 @@ namespace EF
 
         private static Tag CreateTag(string caption, Tag parent)
         {
-            var tagBlock = new Block {Caption = caption};
-            return new Tag {Parent = parent, TagBlock = tagBlock};
+            return new Tag {Parent = parent, Caption = caption};
         }
 
         private static void CreateDoubleEndedReference(Block first, Block second)

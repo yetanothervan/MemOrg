@@ -24,7 +24,7 @@ namespace TmpXmlExportImportService
                 {
                     var xmlSourceText = new XmlSourceText
                     {
-                        BlockId = particle.BlockId,
+                        BlockId = particle.Block.BlockId,
                         Order = particle.Order,
                         ParticleId = particle.ParticleId,
                         Content = (particle as SourceTextParticle).Content
@@ -36,10 +36,10 @@ namespace TmpXmlExportImportService
                 {
                     var xmlQuoteParticle = new XmlQuoteSource()
                     {
-                        BlockId = particle.BlockId,
+                        BlockId = particle.Block.BlockId,
                         Order = particle.Order,
                         ParticleId = particle.ParticleId,
-                        SourceTextId = (particle as QuoteSourceParticle).SourceTextParticle.BlockId
+                        SourceTextId = (particle as QuoteSourceParticle).SourceTextParticle.Block.BlockId
                     };
                     xmlParticles.Add(xmlQuoteParticle);
                 }
@@ -48,7 +48,7 @@ namespace TmpXmlExportImportService
                 {
                     var xmlUserText = new XmlUserText
                     {
-                        BlockId = particle.BlockId,
+                        BlockId = particle.Block.BlockId,
                         Order = particle.Order,
                         ParticleId = particle.ParticleId,
                         Content = (particle as UserTextParticle).Content
