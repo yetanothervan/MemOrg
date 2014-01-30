@@ -9,14 +9,17 @@ using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
 {
-    class Block : IComponent
+    class Block : IComponent, IGridElem
     {
-        public Block(IDrawStyle style)
+        private readonly IGridElem _gridElem;
+        public Block(IDrawStyle style, IGridElem gridElem)
         {
-            
+            _gridElem = gridElem;
         }
 
         private List<IComponent> _childs;
+        
+
         public List<IComponent> Childs
         {
             get
@@ -35,6 +38,21 @@ namespace GraphDrawService.Draw
         public Size GetSize()
         {
             throw new NotImplementedException();
+        }
+
+        public void PlaceOn(int row, int col, List<List<IGridElem>> elems)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int RowIndex
+        {
+            get { return _gridElem.RowIndex; }
+        }
+
+        public int ColIndex
+        {
+            get { return _gridElem.ColIndex; }
         }
     }
 }

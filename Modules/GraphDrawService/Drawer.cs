@@ -26,9 +26,9 @@ namespace GraphDrawService
             return new Caption(text, _style);
         }
 
-        public IComponent DrawBox()
+        public IComponent DrawBox(IGridElem gridElem)
         {
-            return new Block(_style);
+            return new Block(_style, gridElem);
         }
 
         public IComponent DrawQuoteText(string text)

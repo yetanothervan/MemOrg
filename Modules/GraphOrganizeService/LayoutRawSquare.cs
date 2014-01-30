@@ -26,8 +26,12 @@ namespace GraphOrganizeService
 
             //create elems
             _elems = new List<List<IGridElem>>(_sideSize);
-            for (int index = 0; index < _elems.Count; ++index)
-                _elems[index] = new List<IGridElem>(_sideSize);
+            for (int index = 0; index < _sideSize; ++index)
+            {
+                _elems.Add(new List<IGridElem>(_sideSize));
+                for (int i = 0; i < _sideSize; i++)
+                    _elems[index].Add(null);
+            }
 
             int curElem = 0;
             foreach (var blockTag in graphService.BlockTags)

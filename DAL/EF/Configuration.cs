@@ -9,7 +9,8 @@ using DAL.Entity;
 
 namespace EF
 {
-    public class Configuration : DropCreateDatabaseAlways<MemOrgContext> //CreateDatabaseIfNotExists<MemOrgContext>
+    public class Configuration : CreateDatabaseIfNotExists<MemOrgContext>
+        //DropCreateDatabaseAlways<MemOrgContext> 
     {
         protected override void Seed(MemOrgContext context)
         {

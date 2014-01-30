@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawer.cs" />
+    <Compile Include="DrawerFuncs.cs" />
     <Compile Include="Draw\Block.cs" />
     <Compile Include="Draw\Caption.cs" />
     <Compile Include="Draw\Grid.cs" />

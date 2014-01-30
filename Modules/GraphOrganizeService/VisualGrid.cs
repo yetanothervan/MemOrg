@@ -18,9 +18,15 @@ namespace GraphOrganizeService
         public VisualGrid(IGrid grid)
         {
             _grid = grid;
+            
+            //create elems
             _elems = new List<List<IGridElem>>(RowCount);
-            for (int index = 0; index < _elems.Count; ++index)
-                _elems[index] = new List<IGridElem>(RowLength);
+            for (int index = 0; index < RowCount; ++index)
+            {
+                _elems.Add(new List<IGridElem>(RowLength));
+                for (int i = 0; i < RowLength; i++)
+                    _elems[index].Add(null);
+            }
         }
         
         public void Prerender(IDrawer drawer)
@@ -37,10 +43,9 @@ namespace GraphOrganizeService
                     {
                         case GridElemBasedOnBlockType.BlockOther:
                         case GridElemBasedOnBlockType.BlockSource:
-                        case GridElemBasedOnBlockType.BlockTag:
                         case GridElemBasedOnBlockType.BlockRel:
                         {
-                            visElem = drawer.DrawBox();
+                            visElem = drawer.DrawBox(elem);
                             IComponent caption = drawer.DrawCaption(elem.Block.Caption);
                             visElem.Childs.Add(caption);
                             foreach (var part in elem.Block.Particles.OrderBy(o => o.Order))
@@ -69,12 +74,18 @@ namespace GraphOrganizeService
                             }
                         }
                             break;
+                        case GridElemBasedOnBlockType.BlockTag:
+                            continue;
                         default:
                             throw new NotImplementedException();
                     }
                     _mySelf.Childs.Add(visElem);
                 }
                 else if (gridElem is GridElemBasedOnTag)
+                {
+                    
+                }
+                else if (gridElem == null)
                 {
                     
                 }
