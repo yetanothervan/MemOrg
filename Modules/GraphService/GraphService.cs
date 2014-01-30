@@ -21,30 +21,27 @@ namespace GraphService
 
         public List<Block> BlockTags
         {
-            get { return _tagRepository.All.Where(tag => tag.TagBlock != null).Select(t => t.TagBlock).ToList(); }
+            get { return _blockRepository.BlockTags.ToList(); }
         }
 
         public List<Block> BlockSources
         {
-            get { return _blockRepository.All.Where(b => b.Particles.Any(p => p is SourceTextParticle)).ToList(); }
+            get { return _blockRepository.BlockSources.ToList(); }
         }
 
         public List<Block> BlockRels
         {
-            get { return _relationRepository.All.Where(rel => rel.RelationBlock != null).Select(r => r.RelationBlock).ToList(); }
+            get { return _blockRepository.BlockRels.ToList(); }
         }
 
         public List<Block> BlockOthers
         {
-            get
-            {
-                var res = _blockRepository.All.Select(b => b)
-                    .Except(_tagRepository.All.Where(tag => tag.TagBlock != null).Select(t => t.TagBlock))
-                    .Except(_relationRepository.All.Where(rel => rel.RelationBlock != null).Select(r => r.RelationBlock))
-                    .Except(_blockRepository.All.Where(b => b.Particles.Any(p => p is SourceTextParticle)));
+            get { return _blockRepository.BlockOthers.ToList(); }
+        }
 
-                return res.ToList();
-            }
+        public List<Block> BlockAll
+        {
+            get { return _blockRepository.All.ToList(); }
         }
 
         public List<Tag> TagsNoBlock

@@ -6,10 +6,7 @@ namespace DAL.Entity.Mapping
     {
         public RelationMap()
         {
-            this.HasRequired(t => t.FirstBlock).WithRequiredDependent();
-            this.HasRequired(t => t.SecondBlock).WithRequiredDependent();
-            this.HasOptional(t => t.RelationBlock).WithOptionalDependent();
-            this.HasRequired(t => t.RelationType).WithRequiredDependent();
+         
         }
     }
 }

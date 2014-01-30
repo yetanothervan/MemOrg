@@ -9,12 +9,17 @@ namespace EF
 {
     public class TagRepository : ITagRepository
     {
-        private MemOrgContext _context;
+        private readonly MemOrgContext _context;
+
+        public TagRepository()
+        {
+            if (_context == null) _context = new MemOrgContext();
+        }
+
         public IQueryable<Tag> All
         {
             get
             {
-                if (_context == null) _context = new MemOrgContext();
                 return _context.Tags;
             }
         }

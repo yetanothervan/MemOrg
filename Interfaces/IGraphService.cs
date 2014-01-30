@@ -21,9 +21,15 @@ namespace MemOrg.Interfaces
         List<Block> BlockRels { get; }
         
         /// <summary>
-        /// Любые другие блоки. Все блоки = BlockTags + BlockSources + BlockRels + BlockOthers;
+        /// Любые другие блоки.
         /// </summary>
         List<Block> BlockOthers { get; }
+
+        /// <summary>
+        /// Все блоки = BlockTags + BlockSources + BlockRels + BlockOthers;
+        /// </summary>
+        List<Block> BlockAll { get; }
+
 
         /// <summary>
         /// Таги, у которых нет тела-блока. 

@@ -6,7 +6,7 @@ namespace DAL.Entity.Mapping
     {
         public ParticleMap()
         {
-            this.HasRequired(t => t.Block).WithRequiredPrincipal();
+            this.HasRequired(t => t.Block).WithMany();
         }
     }
 }

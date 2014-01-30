@@ -10,5 +10,9 @@ namespace EF
     public interface IBlockRepository
     {
         IQueryable<Block> All { get; }
+        IQueryable<Block> BlockOthers { get; }
+        IQueryable<Block> BlockSources { get; }
+        IQueryable<Block> BlockTags { get; }
+        IQueryable<Block> BlockRels { get; }
     }
 }

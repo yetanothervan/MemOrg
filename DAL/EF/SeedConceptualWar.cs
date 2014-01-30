@@ -216,8 +216,14 @@ namespace EF
 
             #region Define references
 
-            philosofyOfHistiry.References = new List<Reference> {new Reference {ReferencedBlock = conceptBlock}};
-            utConceptWarBlock.References = new List<Reference> {new Reference {ReferencedBlock = conceptWarBlock}};
+            philosofyOfHistiry.References = new List<Reference>
+            {
+                new Reference {ReferencedBlock = conceptBlock}
+            };
+            utConceptWarBlock.References = new List<Reference>
+            {
+                new Reference {ReferencedBlock = conceptWarBlock}
+            };
             CreateDoubleEndedReference(conceptWarBlock, kafedraConceptualWarTag.TagBlock);
             CreateDoubleEndedReference(conceptWarBlock, conceptBlock);
 
@@ -234,6 +240,8 @@ namespace EF
 
             context.Relations.Add(abelarAboutConceptRelation);
             context.Relations.Add(byalyAuthorConceptWarBookRelation);
+
+            context.SaveChanges();
         }
 
         private static Tag CreateTag(string caption, Tag parent)

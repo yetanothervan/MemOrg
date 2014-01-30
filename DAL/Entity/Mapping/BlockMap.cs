@@ -14,6 +14,10 @@ namespace DAL.Entity.Mapping
                     m.MapLeftKey("Blocks_BlockId");
                     m.MapRightKey("Tags_TagId");
                 });
+
+            this.HasMany(t => t.Particles).WithRequired(d => d.Block);
+
+            this.HasMany(t => t.References).WithRequired(d => d.Block);
         }
     }
 }
