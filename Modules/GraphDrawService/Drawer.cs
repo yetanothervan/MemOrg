@@ -31,6 +31,11 @@ namespace GraphDrawService
             return new Block(_style, gridElem);
         }
 
+        public IComponent DrawSourceBox()
+        {
+            return new 
+        }
+
         public IComponent DrawQuoteText(string text)
         {
             return new Text(text, _style);

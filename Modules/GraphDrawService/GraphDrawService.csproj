@@ -69,6 +69,8 @@
     <Compile Include="Draw\Grid.cs" />
     <Compile Include="Draw\QuoteBlock.cs" />
     <Compile Include="Draw\Text.cs" />
+    <Compile Include="Draw\BlockOthers.cs" />
+    <Compile Include="Draw\BlockSource.cs" />
     <Compile Include="GraphDrawService.cs" />
     <Compile Include="ModuleDefinition\GraphDrawServiceModule.cs" />
     <Compile Include="DrawStyle.cs" />

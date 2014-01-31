@@ -34,7 +34,9 @@ namespace GraphOrganizeService
             int curElem = 0;
             foreach (var blockTag in graphService.BlockTags)
             {
-                var gridElem = new GridElemBlockTag(blockTag, grid);
+// ReSharper disable once AccessToForEachVariableInClosure
+                var tag = graphService.TagsBlock.First(o => o.TagBlock.BlockId == blockTag.BlockId);
+                var gridElem = new GridElemBlockTag(blockTag, tag, grid);
                 PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var blockSource in graphService.BlockSources)

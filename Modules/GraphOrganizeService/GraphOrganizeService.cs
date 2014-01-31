@@ -26,22 +26,21 @@ namespace GraphOrganizeService
             return graph;
         }
 
-        public IGrid GetGrid(IGraph graph, IGridLayout layout)
+        public IGrid GetGrid(IGridLayout layout)
         {
-            IGrid grid = new Grid(graph, layout);
+            IGrid grid = new Grid(layout);
             return grid;
         }
 
-        public IVisualGrid GetVisualGrid(IGrid grid, IDrawer drawer)
+        public IComponent GetVisualGrid(IGrid grid, IDrawer drawer)
         {
-            IVisualGrid visGrid = new VisualGrid(grid);
-            visGrid.Prerender(drawer);
-            return visGrid;
+            var visGrid = new VisualGrid(grid);
+            return visGrid.Prerender(drawer);
         }
 
-        public IGridLayout GetLayout()
+        public IGridLayout GetLayout(IGraph graph)
         {
-            return new LayoutRawSquare();
+            return new LayoutRawSquare(graph);
         }
     }
 }

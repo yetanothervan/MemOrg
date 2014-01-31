@@ -75,6 +75,13 @@
     <Compile Include="LayoutRawSquare.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VisualElems\VisualGridElem.cs" />
+    <Compile Include="VisualElems\VisualGridElemBlock.cs" />
+    <Compile Include="VisualElems\VisualGridElemBlockRel.cs" />
+    <Compile Include="VisualElems\VisualGridElemBlockSource.cs" />
+    <Compile Include="VisualElems\VisualGridElemBlockTag.cs" />
+    <Compile Include="VisualElems\VisualGridElemTag.cs" />
+    <Compile Include="VisualFuncs.cs" />
     <Compile Include="VisualGrid.cs" />
     <Compile Include="zSnapGraphToGrid.cs" />
   </ItemGroup>
@@ -91,9 +98,7 @@
       <Name>MemOrg.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="VisualElems\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

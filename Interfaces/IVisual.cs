@@ -4,9 +4,8 @@ using System.Windows.Media;
 
 namespace MemOrg.Interfaces
 {
-    public interface IVisualGrid : IGrid
+    public interface IVisual
     {
-        void Prerender(IDrawer drawer);
-        List<DrawingVisual> Render(Point p);
+        IComponent Prerender(IDrawer drawer);
     }
 }

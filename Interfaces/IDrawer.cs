@@ -5,6 +5,7 @@ namespace MemOrg.Interfaces
         IComponent DrawGrid();
         IComponent DrawCaption(string text);
         IComponent DrawBox(IGridElem gridElem);
+        IComponent DrawSourceBox();
         IComponent DrawQuoteText(string text);
         IComponent DrawQuoteBox();
     }

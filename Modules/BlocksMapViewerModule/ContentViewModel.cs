@@ -10,8 +10,8 @@ namespace GraphViewer
         {
             MyText = "Some of my texts";
             IGraph graph = graphOrganizeService.GetGraph(null);
-            IGridLayout layout = graphOrganizeService.GetLayout();
-            IGrid grid = graphOrganizeService.GetGrid(graph, layout);
+            IGridLayout layout = graphOrganizeService.GetLayout(graph);
+            IGrid grid = graphOrganizeService.GetGrid(layout);
             IDrawStyle style = graphDrawService.GetStyle();
             IDrawer drawer = graphDrawService.GetDrawer(style);
             Grid = graphOrganizeService.GetVisualGrid(grid, drawer);
@@ -34,8 +34,8 @@ namespace GraphViewer
             }
         }
 
-        private IVisualGrid _grid;
-        public IVisualGrid Grid
+        private IComponent _grid;
+        public IComponent Grid
         {
             get
             {

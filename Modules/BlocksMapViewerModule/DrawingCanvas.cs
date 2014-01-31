@@ -24,7 +24,7 @@ namespace GraphViewer
             OffsetProperty = DependencyProperty.Register("Offset", typeof (Vector), typeof (DrawingCanvas), offsetMetadata);
 
             var graphSourceMetadata = new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender);
-            SourceProperty = DependencyProperty.Register("Source", typeof(IGrid), typeof(DrawingCanvas), graphSourceMetadata);
+            SourceProperty = DependencyProperty.Register("Source", typeof(IComponent), typeof(DrawingCanvas), graphSourceMetadata);
         }
 
 

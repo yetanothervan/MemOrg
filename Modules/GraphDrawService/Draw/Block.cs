@@ -9,15 +9,15 @@ using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
 {
-    class Block : IComponent, IGridElem
+    abstract class Block : IComponent, IGridElem
     {
-        private readonly IDrawStyle _style;
+        protected readonly IDrawStyle Style;
         private readonly IGridElem _gridElem;
-        private const double Margin = 5.0;
+        protected const double Margin = 5.0;
 
-        public Block(IDrawStyle style, IGridElem gridElem)
+        protected Block(IDrawStyle style, IGridElem gridElem)
         {
-            _style = style;
+            Style = style;
             _gridElem = gridElem;
         }
 
@@ -33,21 +33,7 @@ namespace GraphDrawService.Draw
             set { _childs = value; }
         }
 
-        public List<DrawingVisual> Render(Point p)
-        {
-            var result = new List<DrawingVisual>();
-
-            var dv = new DrawingVisual();
-            using (var dc = dv.RenderOpen())
-            {
-                var rect = new Rect(p, GetSize());
-                dc.DrawRectangle(_style.QuoteBlockBrush, _style.QuoteBlockPen, rect);
-            }
-            result.Add(dv);
-            result.AddRange(DrawerFuncs.RenderStackLayout(p, _childs, Margin));
-
-            return result;
-        }
+        public abstract List<DrawingVisual> Render(Point p);
 
         public Size GetSize()
         {
