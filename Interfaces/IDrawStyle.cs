@@ -6,7 +6,8 @@ namespace MemOrg.Interfaces
 {
     public interface IDrawStyle
     {
-        double DesiredTextBlockWidth { get; set; }
+        double MaxTextBlockWidth { get; set; }
+        double MaxTextBlockHeight { get; set; }
         Typeface TextTypeface { get; set; }
         double TextEmSize { get; set; }
         Brush TextBrush { get; set; }

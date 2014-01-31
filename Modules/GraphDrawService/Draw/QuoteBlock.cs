@@ -41,22 +41,14 @@ namespace GraphDrawService.Draw
                 dc.DrawRectangle(_style.QuoteBlockBrush, _style.QuoteBlockPen, rect);
             }
             result.Add(dv);
+            result.AddRange(DrawerFuncs.RenderStackLayout(p, _childs, Margin));
 
-            Point curPt = p;
-            curPt.Offset(Margin, Margin);
-            foreach (var child in _childs)
-            {
-                result.AddRange(child.Render(curPt));
-                curPt.Offset(0.0, child.GetSize().Height + Margin);
-            }
             return result;
         }
 
         public Size GetSize()
         {
-            double height = _childs.Sum(child => (child.GetSize().Height + Margin)) + Margin;
-            double width = _childs.Max(child => (child.GetSize().Height)) + Margin * 2;
-            return new Size {Height = height, Width = width};
+            return DrawerFuncs.CalculateSizeStackLayout(_childs, Margin);
         }
     }
 }

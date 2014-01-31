@@ -1,13 +1,15 @@
-﻿using DAL.Entity;
+﻿using System.Dynamic;
+using DAL.Entity;
 
 namespace GraphOrganizeService
 {
     public class GridElemBasedOnTag : GridElem
     {
-        private Tag _tag;
         public GridElemBasedOnTag(Tag tag)
         {
-            _tag = tag;
+            Tag = tag;
         }
+
+        public Tag Tag { get; private set; }
     }
 }

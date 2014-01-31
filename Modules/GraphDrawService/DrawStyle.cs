@@ -13,7 +13,8 @@ namespace GraphDrawService
             CaptionBrush.Freeze();
             TextTypeface = new Typeface("Times New Roman");
             CaptionTypeface = new Typeface("Arial");
-            DesiredTextBlockWidth = 200;
+            MaxTextBlockWidth = 200;
+            MaxTextBlockHeight = 200;
             TextEmSize = 12;
             CaptionEmSize = 20;
             QuoteBlockBrush =  new SolidColorBrush(Color.FromArgb(127, 255, 255, 255));
@@ -25,7 +26,8 @@ namespace GraphDrawService
             QuoteBlockPen.Freeze();
         }
 
-        public double DesiredTextBlockWidth { get; set; }
+        public double MaxTextBlockWidth { get; set; }
+        public double MaxTextBlockHeight { get; set; }
         public Typeface TextTypeface { get; set; }
         public double TextEmSize { get; set; }
         public Brush TextBrush { get; set; }

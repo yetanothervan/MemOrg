@@ -83,7 +83,13 @@ namespace GraphOrganizeService
                 }
                 else if (gridElem is GridElemBasedOnTag)
                 {
-                    
+                    var elem = gridElem as GridElemBasedOnTag;
+
+                    IComponent visElem = drawer.DrawBox(elem);
+
+                    IComponent caption = drawer.DrawCaption(elem.Tag.Caption);
+                    visElem.Childs.Add(caption);
+                    _mySelf.Childs.Add(visElem);
                 }
                 else if (gridElem == null)
                 {

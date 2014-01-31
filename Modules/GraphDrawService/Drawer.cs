@@ -18,7 +18,7 @@ namespace GraphDrawService
 
         public IComponent DrawGrid()
         {
-            return new Grid();
+            return new Grid(_style);
         }
 
         public IComponent DrawCaption(string text)

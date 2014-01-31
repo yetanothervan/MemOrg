@@ -18,7 +18,8 @@ namespace GraphDrawService.Draw
         {
             _text = new FormattedText(text, CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight, style.CaptionTypeface, style.CaptionEmSize, style.CaptionBrush);
-            _text.MaxTextWidth = style.DesiredTextBlockWidth;
+            _text.MaxTextWidth = style.MaxTextBlockWidth;
+            _text.MaxTextHeight = style.MaxTextBlockHeight;
         }
 
         private List<IComponent> _childs;

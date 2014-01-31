@@ -11,14 +11,17 @@ namespace GraphDrawService.Draw
 {
     class Block : IComponent, IGridElem
     {
+        private readonly IDrawStyle _style;
         private readonly IGridElem _gridElem;
+        private const double Margin = 5.0;
+
         public Block(IDrawStyle style, IGridElem gridElem)
         {
+            _style = style;
             _gridElem = gridElem;
         }
 
         private List<IComponent> _childs;
-        
 
         public List<IComponent> Childs
         {
@@ -29,15 +32,26 @@ namespace GraphDrawService.Draw
             }
             set { _childs = value; }
         }
-        
+
         public List<DrawingVisual> Render(Point p)
         {
-            throw new NotImplementedException();
+            var result = new List<DrawingVisual>();
+
+            var dv = new DrawingVisual();
+            using (var dc = dv.RenderOpen())
+            {
+                var rect = new Rect(p, GetSize());
+                dc.DrawRectangle(_style.QuoteBlockBrush, _style.QuoteBlockPen, rect);
+            }
+            result.Add(dv);
+            result.AddRange(DrawerFuncs.RenderStackLayout(p, _childs, Margin));
+
+            return result;
         }
 
         public Size GetSize()
         {
-            throw new NotImplementedException();
+            return DrawerFuncs.CalculateSizeStackLayout(_childs, Margin);
         }
 
         public void PlaceOn(int row, int col, List<List<IGridElem>> elems)
