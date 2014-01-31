@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GraphOrganizeService.Elems;
 using MemOrg.Interfaces;
 
 namespace GraphOrganizeService
 {
     public class LayoutRawSquare : IGridLayout
     {
-        private List<List<IGridElem>> _elems;
         private int _sideSize;
 
-        public List<List<IGridElem>> DoLayout(IGraph graph)
+        private readonly IGraph _graph;
+
+        public LayoutRawSquare(IGraph graph)
         {
-            var graphService = graph.GraphService;
+            _graph = graph;
+        }
+
+        public void DoLayout(IGrid grid)
+        {
+            var graphService = _graph.GraphService;
 
             var elemsCount = graphService.BlockOthers.Count
                              + graphService.BlockRels.Count
@@ -23,50 +30,40 @@ namespace GraphOrganizeService
                              + graphService.TagsNoBlock.Count;
 
             _sideSize = CalculateSquareSideLength(elemsCount);
-
-            //create elems
-            _elems = new List<List<IGridElem>>(_sideSize);
-            for (int index = 0; index < _sideSize; ++index)
-            {
-                _elems.Add(new List<IGridElem>(_sideSize));
-                for (int i = 0; i < _sideSize; i++)
-                    _elems[index].Add(null);
-            }
-
+            
             int curElem = 0;
             foreach (var blockTag in graphService.BlockTags)
             {
-                var gridElem = new GridElemBasedOnBlock(blockTag, GridElemBasedOnBlockType.BlockTag);
+                var gridElem = new GridElemBlockTag(blockTag, grid);
                 PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var blockSource in graphService.BlockSources)
             {
-                var gridElem = new GridElemBasedOnBlock(blockSource, GridElemBasedOnBlockType.BlockSource);
+                var gridElem = new GridElemBlockSource(blockSource, grid);
                 PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var blockRel in graphService.BlockRels)
             {
-                var gridElem = new GridElemBasedOnBlock(blockRel, GridElemBasedOnBlockType.BlockRel);
+                var gridElem = new GridElemBlockRel(blockRel, grid);
                 PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var block in graphService.BlockOthers)
             {
-                var gridElem = new GridElemBasedOnBlock(block, GridElemBasedOnBlockType.BlockOther);
+                var gridElem = new GridElemBlock(block, grid);
                 PlaceNextGridElem(gridElem, curElem++);
             }
             foreach (var tagNoBlock in graphService.TagsNoBlock)
             {
-                var gridElem = new GridElemBasedOnTag(tagNoBlock);
+                var gridElem = new GridElemTag(tagNoBlock, grid);
                 PlaceNextGridElem(gridElem, curElem++);
             }
-            return _elems;
         }
 
         private void PlaceNextGridElem(GridElem gridElem, int gridElemIndex)
         {
             int rowIndex = gridElemIndex/_sideSize;
             int colIndex = gridElemIndex%_sideSize;
-            gridElem.PlaceOn(rowIndex, colIndex, _elems);
+            gridElem.PlaceOn(rowIndex, colIndex);
         }
 
         private static int CalculateSquareSideLength(int elemsCount)

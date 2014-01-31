@@ -1,61 +1,51 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MemOrg.Interfaces;
+using Microsoft.Practices.Unity.Utility;
+
 
 namespace GraphOrganizeService
 {
-    public class GridEnumerator : IEnumerator<IGridElem>
+    public class GridEnumerator<T> : IEnumerator<T> where T : IGridElem
     {
-        private readonly List<List<IGridElem>> _elems;
-        public GridEnumerator(List<List<IGridElem>> elems)
+        private readonly Dictionary<Pair<int, int>, T> _elems;
+        private readonly List<Pair<int, int>> _pairs; 
+
+        public GridEnumerator(Dictionary<Pair<int, int>, T> elems)
         {
             _elems = elems;
+            _pairs = _elems.Keys.OrderBy(o => o.First).ThenBy(o => o.Second).ToList();
             Reset();
         }
 
         public void Dispose()
         {
-            if (_rowsEnumerator != null) _rowsEnumerator.Dispose();
-            if (_cellsEnumerator != null) _cellsEnumerator.Dispose();
+            if (_iter != null) _iter.Dispose();
         }
         
         public bool MoveNext()
         {
-            if (_rowsEnumerator == null)
-            {
-                _rowsEnumerator = _elems.GetEnumerator();
-                if (_rowsEnumerator.MoveNext() == false)
-                    return false;
-                //else
-                _cellsEnumerator = _rowsEnumerator.Current.GetEnumerator();
-            }
+            if (_iter == null)
+                _iter = _pairs.GetEnumerator();
 
-            if (_cellsEnumerator.MoveNext() == false)
-            {
-                if (_rowsEnumerator.MoveNext() == false)
-                    return false;
-                _cellsEnumerator = _rowsEnumerator.Current.GetEnumerator();
-                MoveNext();
-            }
-            return true;
+            return _iter.MoveNext();
         }
-
-        private IEnumerator<List<IGridElem>> _rowsEnumerator;
-        private IEnumerator<IGridElem> _cellsEnumerator;
+        
         public void Reset()
         {
-            _rowsEnumerator = null;
-            _cellsEnumerator = null;
+            _iter = null;
         }
 
-        public IGridElem Current
+        private IEnumerator<Pair<int, int>> _iter;
+        public T Current
         {
             get
             {
-                if (_cellsEnumerator == null)
+                if (_iter == null)
                     throw new IndexOutOfRangeException();
-                return _cellsEnumerator.Current;
+                return _elems[_iter.Current];
             }
         }
 

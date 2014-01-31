@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using DAL.Entity;
+using GraphOrganizeService.Elems;
 using MemOrg.Interfaces;
 
 namespace GraphOrganizeService
@@ -12,21 +13,12 @@ namespace GraphOrganizeService
     public class VisualGrid : IVisualGrid, IComponent
     {
         private readonly IGrid _grid;
-
-        private readonly List<List<IGridElem>> _elems;
-
+        //private readonly List<IVisualGridElem> _elems;
+        
         public VisualGrid(IGrid grid)
         {
             _grid = grid;
-            
-            //create elems
-            _elems = new List<List<IGridElem>>(RowCount);
-            for (int index = 0; index < RowCount; ++index)
-            {
-                _elems.Add(new List<IGridElem>(RowLength));
-                for (int i = 0; i < RowLength; i++)
-                    _elems[index].Add(null);
-            }
+            //_elems = new List<IVisualGridElem>();
         }
         
         public void Prerender(IDrawer drawer)
@@ -34,9 +26,9 @@ namespace GraphOrganizeService
             _mySelf = drawer.DrawGrid();
             foreach (var gridElem in _grid)
             {
-                if (gridElem is GridElemBasedOnBlock)
+                if (gridElem is GridElemBlock)
                 {
-                    var elem = gridElem as GridElemBasedOnBlock;
+                    var elem = gridElem as GridElemBlock;
 
                     IComponent visElem;
                     switch (elem.Type)
@@ -104,7 +96,7 @@ namespace GraphOrganizeService
 
         public IEnumerator<IGridElem> GetEnumerator()
         {
-            return new GridEnumerator(_elems);
+            return new GridEnumerator<IVisualGridElem>(_elems);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
