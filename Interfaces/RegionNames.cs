@@ -9,6 +9,7 @@ namespace MemOrg.Interfaces
     public class RegionNames
     {
         public static string GraphViewerRegion = "GraphViewerRegion";
+        public static string TempToolbarRegion = "TempToolbarRegion";
         public static string MainViewRegion = "MainViewRegion";
     }
 }

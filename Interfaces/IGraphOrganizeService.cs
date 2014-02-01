@@ -7,7 +7,6 @@ namespace MemOrg.Interfaces
     {
         IGraph GetGraph(IGraphFilter filter);
         IGrid GetGrid(IGridLayout layout);
-        IComponent GetVisualGrid(IGrid grid, IDrawer drawer);
         IGridLayout GetLayout(IGraph graph);
     }
 }

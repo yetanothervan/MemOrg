@@ -18,5 +18,8 @@ namespace MemOrg.Interfaces
 
         Brush QuoteBlockBrush { get; set; }
         Pen QuoteBlockPen { get; set; }
+
+        Brush SourceBlockBrush { get; set; }
+        Pen SourceBlockPen { get; set; }
     }
 }

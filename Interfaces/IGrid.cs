@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MemOrg.Interfaces.GridElems;
 
 namespace MemOrg.Interfaces
 {

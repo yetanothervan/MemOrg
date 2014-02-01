@@ -150,21 +150,29 @@
       <Project>{c7ecb5ba-4854-4842-b849-323d58e0de32}</Project>
       <Name>MemOrg.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Modules\BlocksMapViewerModule\GraphViewer.csproj">
-      <Project>{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}</Project>
+    <ProjectReference Include="..\Regions\GraphViewer\GraphViewer.csproj">
+      <Project>{6b694e9c-fbe2-4cd5-b99a-7c020e85fb6c}</Project>
       <Name>GraphViewer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Modules\GraphDrawService\GraphDrawService.csproj">
-      <Project>{54E15FCA-48F8-4F1A-AC45-5000E4CA3208}</Project>
+    <ProjectReference Include="..\Regions\TempToolbar\TempToolbar.csproj">
+      <Project>{7f1d2bd3-668f-4bb8-b79a-740c8b72a879}</Project>
+      <Name>TempToolbar</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\GraphDrawService\GraphDrawService.csproj">
+      <Project>{54e15fca-48f8-4f1a-ac45-5000e4ca3208}</Project>
       <Name>GraphDrawService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Modules\GraphOrganizeService\GraphOrganizeService.csproj">
-      <Project>{EF60D379-D2FD-41B7-9CF9-0BDE55A5F1DA}</Project>
+    <ProjectReference Include="..\Services\GraphOrganizeService\GraphOrganizeService.csproj">
+      <Project>{ef60d379-d2fd-41b7-9cf9-0bde55a5f1da}</Project>
       <Name>GraphOrganizeService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Modules\GraphService\GraphService.csproj">
-      <Project>{263EECCC-F725-420B-8DB0-5913B9258CAD}</Project>
+    <ProjectReference Include="..\Services\GraphService\GraphService.csproj">
+      <Project>{263eeccc-f725-420b-8db0-5913b9258cad}</Project>
       <Name>GraphService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\GraphVizualizeService\GraphVizualizeService.csproj">
+      <Project>{3c65acb0-7205-4958-892a-64e12a1192e6}</Project>
+      <Name>GraphVizualizeService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

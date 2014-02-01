@@ -38,7 +38,7 @@
                     </layout:LayoutDocumentPaneGroup>
                     <layout:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
                         <layout:LayoutAnchorablePane>
-                            <layout:LayoutAnchorable Title="Tool 1">
+                            <layout:LayoutAnchorable Title="Tool 1" local:AvalonDockRegion.AnchorName="{x:Static intr:RegionNames.TempToolbarRegion}">
                             </layout:LayoutAnchorable>
                             <layout:LayoutAnchorable Title="Tool 2">
                             </layout:LayoutAnchorable>
