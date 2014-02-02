@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Entity;
 using GraphOrganizeService.Elems;
 using MemOrg.Interfaces;
 
@@ -51,8 +52,11 @@ namespace GraphOrganizeService
             }
             foreach (var block in graphService.BlockOthers)
             {
-                var gridElem = new GridElemBlockOthers(block, grid);
-                PlaceNextGridElem(gridElem, curElem++);
+                if (block.Particles.Count == block.Particles.OfType<UserTextParticle>().Count()
+                    && block.Particles.Count != 0)
+                    PlaceNextGridElem(new GridElemBlockUserText(block, grid), curElem++);
+                else
+                    PlaceNextGridElem(new GridElemBlockOthers(block, grid), curElem++);
             }
             foreach (var tagNoBlock in graphService.TagsNoBlock)
             {

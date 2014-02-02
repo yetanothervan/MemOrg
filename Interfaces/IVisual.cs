@@ -6,6 +6,6 @@ namespace MemOrg.Interfaces
 {
     public interface IVisual
     {
-        IComponent Visualize(IDrawer drawer);
+        IComponent Visualize(IDrawer drawer, IVisualizeOptions options);
     }
 }

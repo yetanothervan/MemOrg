@@ -60,6 +60,7 @@
     <Compile Include="GridElems\IGridElemBlockOthers.cs" />
     <Compile Include="GridElems\IGridElemBlockRel.cs" />
     <Compile Include="GridElems\IGridElemBlockTag.cs" />
+    <Compile Include="GridElems\IGridElemBlockUserText.cs" />
     <Compile Include="GridElems\IGridElemTag.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="IDrawer.cs" />

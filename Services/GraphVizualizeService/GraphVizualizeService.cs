@@ -11,13 +11,13 @@ namespace GraphVizualizeService
     {
         public IVisualizeOptions GetVisualizeOptions()
         {
-            throw new NotImplementedException();
+            return new VisualizeOptions();
         }
-
-        public IComponent VisualizeGrid(IGrid grid, IDrawer drawer)
+        
+        public IComponent VisualizeGrid(IGrid grid, IVisualizeOptions options, IDrawer drawer)
         {
             var visGrid = new VisualGrid(grid);
-            return visGrid.Visualize(drawer);
+            return visGrid.Visualize(drawer, options);
         }
     }
 }

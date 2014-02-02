@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,16 +26,6 @@ namespace GraphDrawService
             return new Caption(text, _style);
         }
 
-        public IComponent DrawBox(IGridElem gridElem)
-        {
-            return new BlockOthers(_style, gridElem);
-        }
-        
-        public IComponent DrawSourceBox(IGridElem gridElem)
-        {
-            return new BlockSource(_style, gridElem);
-        }
-
         public IComponent DrawQuoteText(string text)
         {
             return new Text(text, _style);
@@ -45,6 +34,36 @@ namespace GraphDrawService
         public IComponent DrawQuoteBox()
         {
             return new QuoteBlock(_style);
+        }
+
+        public IComponent DrawBlockOthers(IGridElem gridElem)
+        {
+            return new BlockOthers(_style, gridElem);
+        }
+
+        public IComponent DrawBlockSource(IGridElem gridElem)
+        {
+            return new BlockSource(_style, gridElem);
+        }
+
+        public IComponent DrawBlockRelation(IGridElem gridElem)
+        {
+            return new BlockRelation(_style, gridElem);
+        }
+
+        public IComponent DrawBlockTag(IGridElem gridElem)
+        {
+            return new BlockTag(_style, gridElem);
+        }
+
+        public IComponent DrawBlockUserText(IGridElem gridElem)
+        {
+            return new BlockUserText(_style, gridElem);
+        }
+
+        public IComponent DrawTag(IGridElem gridElem)
+        {
+            return new TagBox(_style, gridElem);
         }
     }
 }

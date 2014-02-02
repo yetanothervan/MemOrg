@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using MemOrg.Interfaces;
+using Microsoft.Practices.Unity.Utility;
 
 namespace GraphDrawService
 {
@@ -17,23 +18,48 @@ namespace GraphDrawService
             MaxTextBlockHeight = 200;
             TextEmSize = 12;
             CaptionEmSize = 20;
-            QuoteBlockBrush =  new SolidColorBrush(Color.FromArgb(127, 255, 255, 255));
-            QuoteBlockBrush.Freeze();
-            var quoteBlockPenBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100));
-            quoteBlockPenBrush.Freeze();
-            const double quoteBlockPenSize = 2.0;
-            QuoteBlockPen = new Pen(quoteBlockPenBrush, quoteBlockPenSize);
-            QuoteBlockPen.Freeze();
 
-            SourceBlockBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-            SourceBlockBrush.Freeze();
-            var sourceBlockPenBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            sourceBlockPenBrush.Freeze();
-            const double sourceBlockPenSize = 2.0;
-            SourceBlockPen = new Pen(sourceBlockPenBrush, sourceBlockPenSize);
-            SourceBlockPen.Freeze();
+            var p = CreateGridElemBrushNPen(Color.FromArgb(127, 255, 255, 255), Color.FromRgb(100, 100, 100));
+            QuoteBlockBrush = p.First;
+            QuoteBlockPen = p.Second;
+
+            p = CreateGridElemBrushNPen(Color.FromRgb(255, 0, 0), Color.FromRgb(0, 0, 0));
+            SourceBlockBrush = p.First;
+            SourceBlockPen = p.Second;
+
+            p = CreateGridElemBrushNPen(Color.FromRgb(127, 127, 127), Color.FromRgb(0, 0, 0));
+            TagBlockBrush = p.First;
+            TagBlockPen = p.Second;
+
+            p = CreateGridElemBrushNPen(Color.FromRgb(255, 255, 0), Color.FromRgb(0, 0, 0));
+            RelationBlockBrush = p.First;
+            RelationBlockPen = p.Second;
+
+            p = CreateGridElemBrushNPen(Color.FromRgb(0, 127, 0), Color.FromRgb(0, 0, 0));
+            UserTextBlockBrush = p.First;
+            UserTextBlockPen = p.Second;
+
+            p = CreateGridElemBrushNPen(Color.FromRgb(127, 127, 127), Color.FromRgb(0, 0, 0));
+            TagBrush = p.First;
+            TagPen = p.Second;
+
+            p = CreateGridElemBrushNPen(Color.FromRgb(255, 255, 255), Color.FromRgb(0, 0, 0));
+            OthersBlockBrush = p.First;
+            OthersBlockPen = p.Second;
         }
 
+        Pair<Brush, Pen> CreateGridElemBrushNPen(Color brushColor, Color penColor)
+        {
+            Brush brush = new SolidColorBrush(brushColor);
+            brush.Freeze();
+            var quoteBlockPenBrush = new SolidColorBrush(penColor);
+            quoteBlockPenBrush.Freeze();
+            const double quoteBlockPenSize = 2.0;
+            var pen = new Pen(quoteBlockPenBrush, quoteBlockPenSize);
+            pen.Freeze();
+            return new Pair<Brush, Pen>(brush, pen);
+        }
+        
         public double MaxTextBlockWidth { get; set; }
         public double MaxTextBlockHeight { get; set; }
         public Typeface TextTypeface { get; set; }
@@ -44,7 +70,17 @@ namespace GraphDrawService
         public Brush CaptionBrush { get; set; }
         public Brush QuoteBlockBrush { get; set; }
         public Pen QuoteBlockPen { get; set; }
+        public Brush OthersBlockBrush { get; set; }
+        public Pen OthersBlockPen { get; set; }
         public Brush SourceBlockBrush { get; set; }
         public Pen SourceBlockPen { get; set; }
+        public Brush TagBlockBrush { get; set; }
+        public Pen TagBlockPen { get; set; }
+        public Brush RelationBlockBrush { get; set; }
+        public Pen RelationBlockPen { get; set; }
+        public Brush UserTextBlockBrush { get; set; }
+        public Pen UserTextBlockPen { get; set; }
+        public Brush TagBrush { get; set; }
+        public Pen TagPen { get; set; }
     }
 }

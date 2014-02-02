@@ -14,11 +14,13 @@ namespace GraphVizualizeService.VisualElems
             _ge = ge;
         }
 
-        public override IComponent Visualize(IDrawer drawer)
+        public override IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            var res = drawer.DrawSourceBox(_ge);
+            var res = drawer.DrawBlockSource(_ge);
             var caption = drawer.DrawCaption(_ge.Block.Caption);
             res.Childs.Add(caption);
+            if (options.HeadersOnly) return res;
+
             foreach (var part in _ge.Block.Particles.OrderBy(o => o.Order))
             {
                 if (part is SourceTextParticle)

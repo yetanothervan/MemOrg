@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using GraphDrawService.ModuleDefinition;
+using GraphVizualizeService.ModuleDefinition;
 using TempToolbar.ModuleDefinition;
 using GraphOrganizeService.ModuleDefinition;
 using GraphService.ModuleDefinition;
@@ -69,6 +70,7 @@ namespace MemOrg.WinApp.Unity
             AddModule<GraphServiceModule>();
             AddModule<GraphDrawServiceModule>();
             AddModule<GraphOrganizeServiceModule>();
+            AddModule<GraphVisualizeServiceModule>();
             AddModule<GraphViewerModule>();
             AddModule<TempToolbarModule>();
         }

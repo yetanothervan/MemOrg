@@ -5,11 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemOrg.WinApp", "WinApp\Mem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemOrg.Interfaces", "Interfaces\MemOrg.Interfaces.csproj", "{C7ECB5BA-4854-4842-B849-323D58E0DE32}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{8808E1FA-5060-4314-9DA8-BCC37FBD60A0}"
-	ProjectSection(SolutionItems) = preProject
-		Process.txt = Process.txt
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{07FA4CAD-2C01-4170-B208-456CFBB2FA94}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -30,6 +25,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Regions", "Regions", "{888359A9-A2AB-42A4-82CB-3BC47866E338}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{92129A69-5915-4CC8-B4FA-011A65A2CB9E}"
+	ProjectSection(SolutionItems) = preProject
+		Process.txt = Process.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphViewer", "Regions\GraphViewer\GraphViewer.csproj", "{6B694E9C-FBE2-4CD5-B99A-7C020E85FB6C}"
 EndProject

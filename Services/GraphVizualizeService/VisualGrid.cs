@@ -13,29 +13,29 @@ namespace GraphVizualizeService
     public class VisualGrid : IVisual, IGrid, IComponent
     {
         private readonly IGrid _grid;
-        //private readonly List<IVisualGridElem> _elems;
 
         public VisualGrid(IGrid grid)
         {
             _grid = grid;
-            //_elems = new List<IVisualGridElem>();
         }
 
-        public IComponent Visualize(IDrawer drawer)
+        public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
             _mySelf = drawer.DrawGrid();
             foreach (var gridElem in _grid)
             {
                 if (gridElem is IGridElemBlockOthers)
-                    Childs.Add(new VisualGridElemBlock(gridElem as IGridElemBlockOthers).Visualize(drawer));
+                    Childs.Add(new VisualGridElemBlock(gridElem as IGridElemBlockOthers).Visualize(drawer, options));
+                else if (gridElem is IGridElemBlockUserText)
+                    Childs.Add(new VisualGridElemBlockUserText(gridElem as IGridElemBlockUserText).Visualize(drawer, options));
                 else if (gridElem is IGridElemBlockRel)
-                    Childs.Add(new VisualGridElemBlockRel(gridElem as IGridElemBlockRel).Visualize(drawer));
+                    Childs.Add(new VisualGridElemBlockRel(gridElem as IGridElemBlockRel).Visualize(drawer, options));
                 else if (gridElem is IGridElemBlockSource)
-                    Childs.Add(new VisualGridElemBlockSource(gridElem as IGridElemBlockSource).Visualize(drawer));
+                    Childs.Add(new VisualGridElemBlockSource(gridElem as IGridElemBlockSource).Visualize(drawer, options));
                 else if (gridElem is IGridElemBlockTag)
-                    Childs.Add(new VisualGridElemBlockTag(gridElem as IGridElemBlockTag).Visualize(drawer));
+                    Childs.Add(new VisualGridElemBlockTag(gridElem as IGridElemBlockTag).Visualize(drawer, options));
                 else if (gridElem is IGridElemTag)
-                    Childs.Add(new VisualGridElemTag(gridElem as IGridElemTag).Visualize(drawer));
+                    Childs.Add(new VisualGridElemTag(gridElem as IGridElemTag).Visualize(drawer, options));
                 else
                     throw new NotImplementedException();
             }

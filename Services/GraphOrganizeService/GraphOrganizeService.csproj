@@ -62,6 +62,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Elems\GridElemBlockUserText.cs" />
     <Compile Include="Elems\GridElemBlockOthers.cs" />
     <Compile Include="Elems\GridElemBlockTag.cs" />
     <Compile Include="Elems\GridElemBlockRel.cs" />

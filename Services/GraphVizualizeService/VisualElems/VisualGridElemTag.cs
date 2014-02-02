@@ -16,9 +16,9 @@ namespace GraphOrganizeService.VisualElems
             _ge = ge;
         }
 
-        public override IComponent Visualize(IDrawer drawer)
+        public override IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            var res = drawer.DrawBox(_ge);
+            var res = drawer.DrawTag(_ge);
             var caption = drawer.DrawCaption(_ge.Tag.Caption);
             res.Childs.Add(caption);
             return res;

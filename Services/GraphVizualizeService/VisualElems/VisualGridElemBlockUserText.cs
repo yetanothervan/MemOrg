@@ -6,17 +6,18 @@ using MemOrg.Interfaces.GridElems;
 
 namespace GraphVizualizeService.VisualElems
 {
-    public class VisualGridElemBlockRel : VisualGridElem
+    public class VisualGridElemBlockUserText : VisualGridElem
     {
-        private readonly IGridElemBlockRel _ge;
-        public VisualGridElemBlockRel(IGridElemBlockRel ge) : base(ge)
+        private readonly IGridElemBlockUserText _ge;
+        public VisualGridElemBlockUserText(IGridElemBlockUserText ge)
+            : base(ge)
         {
             _ge = ge;
         }
 
         public override IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            var res = drawer.DrawBlockRelation(_ge);
+            var res = drawer.DrawBlockUserText(_ge);
             var caption = drawer.DrawCaption(_ge.Block.Caption);
             res.Childs.Add(caption);
             if (options.HeadersOnly) return res;
@@ -25,8 +26,6 @@ namespace GraphVizualizeService.VisualElems
             {
                 if (part is UserTextParticle)
                     res.Childs.Add(VisualFuncs.UserText(part as UserTextParticle, drawer));
-                else if (part is QuoteSourceParticle)
-                    res.Childs.Add(VisualFuncs.QuoteSourceText(part as QuoteSourceParticle, drawer));
                 else
                 {
                     throw new NotImplementedException();

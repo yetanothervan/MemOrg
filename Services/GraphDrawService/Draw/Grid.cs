@@ -55,7 +55,7 @@ namespace GraphDrawService.Draw
                 var y = _rowHeights.Where(o => o.Key < gridElem.RowIndex).Sum(o => o.Value)
                            + (_rowHeights.Count(o => o.Key < gridElem.RowIndex) + 1) * Margin;
 
-                var pC= new Point(x,y);
+                var pC = new Point(x + p.X, y + p.Y);
                 result.AddRange(child.Render(pC));
             }
 

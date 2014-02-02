@@ -6,8 +6,12 @@ namespace MemOrg.Interfaces
     {
         IComponent DrawGrid();
         IComponent DrawCaption(string text);
-        IComponent DrawBox(IGridElem gridElem);
-        IComponent DrawSourceBox(IGridElem gridElem);
+        IComponent DrawBlockOthers(IGridElem gridElem);
+        IComponent DrawBlockSource(IGridElem gridElem);
+        IComponent DrawBlockRelation(IGridElem gridElem);
+        IComponent DrawBlockTag(IGridElem gridElem);
+        IComponent DrawBlockUserText(IGridElem gridElem);
+        IComponent DrawTag(IGridElem gridElem);
         IComponent DrawQuoteText(string text);
         IComponent DrawQuoteBox();
     }

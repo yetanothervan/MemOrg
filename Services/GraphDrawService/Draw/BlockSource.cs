@@ -25,7 +25,7 @@ namespace GraphDrawService.Draw
             using (var dc = dv.RenderOpen())
             {
                 var rect = new Rect(p, GetSize());
-                dc.DrawRoundedRectangle(Style.SourceBlockBrush, Style.SourceBlockPen, rect, 10.0, 10.0);
+                dc.DrawRectangle(Style.SourceBlockBrush, Style.SourceBlockPen, rect);
             }
             result.Add(dv);
             result.AddRange(DrawerFuncs.RenderStackLayout(p, Childs, Margin));

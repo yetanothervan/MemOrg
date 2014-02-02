@@ -2,5 +2,6 @@
 {
     public interface IVisualizeOptions
     {
+        bool HeadersOnly { get; set; }
     }
 }

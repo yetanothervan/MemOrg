@@ -3,6 +3,6 @@
     public interface IGraphVizulaizeService
     {
         IVisualizeOptions GetVisualizeOptions();
-        IComponent VisualizeGrid(IGrid grid, IDrawer drawer);
+        IComponent VisualizeGrid(IGrid grid, IVisualizeOptions options, IDrawer drawer);
     }
 }
