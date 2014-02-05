@@ -17,7 +17,7 @@ namespace GraphDrawService
             MaxTextBlockWidth = 200;
             MaxTextBlockHeight = 200;
             TextEmSize = 12;
-            CaptionEmSize = 20;
+            CaptionEmSize = 14;
 
             var p = CreateGridElemBrushNPen(Color.FromArgb(127, 255, 255, 255), Color.FromRgb(100, 100, 100));
             QuoteBlockBrush = p.First;

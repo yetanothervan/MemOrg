@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Navigation;
 using MemOrg.Interfaces;
@@ -8,27 +9,38 @@ namespace GraphViewer
 {
     public class ContentViewModel : ViewModelBase
     {
-        private readonly IGraphVizulaizeService _graphVizulaizeService;
+        private readonly IGraphVizualizeService _graphVizualizeService;
         private readonly IDrawer _drawer;
-        private readonly IGrid _iGrid;
+
+        readonly IGrid _blockGrid;
+        readonly IGrid _tagGrid;
 
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
-            IGraphDrawService graphDrawService, IGraphVizulaizeService graphVizulaizeService)
+            IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService)
         {
-            _graphVizulaizeService = graphVizulaizeService;
+            _graphVizualizeService = graphVizualizeService;
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
 
             MyText = "Some of my texts";
             IGraph graph = graphOrganizeService.GetGraph(null);
-            IGridLayout layout = graphOrganizeService.GetLayout(graph);
+            IGridLayout blockLayout = graphOrganizeService.GetLayout(graph);
+            IGridLayout tagLayout = graphOrganizeService.GetTagLayout(graph);
             
-            _iGrid = graphOrganizeService.GetGrid(layout);
+            _blockGrid = graphOrganizeService.GetGrid(blockLayout);
+            _tagGrid = graphOrganizeService.GetGrid(tagLayout);
+
             IDrawStyle style = graphDrawService.GetStyle();
-            
             _drawer = graphDrawService.GetDrawer(style);
-            IVisualizeOptions options = graphVizulaizeService.GetVisualizeOptions();
-            Grid = graphVizulaizeService.VisualizeGrid(_iGrid, options, _drawer);
+            IVisualizeOptions options = graphVizualizeService.GetVisualizeOptions();
+
+            var blockVisGrid = graphVizualizeService.VisualizeGrid(_blockGrid, options, _drawer);
+            var tagVisGrid = graphVizualizeService.VisualizeGrid(_tagGrid, options, _drawer);
+
+            var stack = graphVizualizeService.StackPanel(options, _drawer);
+            stack.Childs = new List<IComponent> {tagVisGrid, blockVisGrid};
+
+            Grid = stack;
         }
         
         private bool _headersOnly = true;
@@ -36,9 +48,16 @@ namespace GraphViewer
         private void ToggleHeaders()
         {
             _headersOnly = !_headersOnly;
-            IVisualizeOptions options = _graphVizulaizeService.GetVisualizeOptions();
+            IVisualizeOptions options = _graphVizualizeService.GetVisualizeOptions();
             options.HeadersOnly = _headersOnly;
-            Grid = _graphVizulaizeService.VisualizeGrid(_iGrid, options, _drawer);
+
+            var blockVisGrid = _graphVizualizeService.VisualizeGrid(_blockGrid, options, _drawer);
+            var tagVisGrid = _graphVizualizeService.VisualizeGrid(_tagGrid, options, _drawer);
+
+            var stack = _graphVizualizeService.StackPanel(options, _drawer);
+            stack.Childs = new List<IComponent> { tagVisGrid, blockVisGrid };
+
+            Grid = stack;
         }
 
         private string _myText;

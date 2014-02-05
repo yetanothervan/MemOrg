@@ -8,5 +8,6 @@ namespace MemOrg.Interfaces
         IGraph GetGraph(IGraphFilter filter);
         IGrid GetGrid(IGridLayout layout);
         IGridLayout GetLayout(IGraph graph);
+        IGridLayout GetTagLayout(IGraph graph);
     }
 }

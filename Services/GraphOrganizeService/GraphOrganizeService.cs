@@ -36,5 +36,10 @@ namespace GraphOrganizeService
         {
             return new LayoutRawSquare(graph);
         }
+
+        public IGridLayout GetTagLayout(IGraph graph)
+        {
+            return new LayoutTagRawSquare(graph);
+        }
     }
 }

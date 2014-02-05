@@ -14,5 +14,6 @@ namespace MemOrg.Interfaces
         IComponent DrawTag(IGridElem gridElem);
         IComponent DrawQuoteText(string text);
         IComponent DrawQuoteBox();
+        IComponent DrawStackBox();
     }
 }

@@ -15,7 +15,8 @@ namespace EF
         protected override void Seed(MemOrgContext context)
         {
             //SeedSample.Seed(context);
-            SeedConceptualWar.Seed(context);
+            var seed = new SeedConceptualWar(context);
+            seed.Seed();
         }
     }
 }

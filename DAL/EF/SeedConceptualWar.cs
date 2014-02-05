@@ -9,17 +9,45 @@ namespace EF
 {
     public class SeedConceptualWar
     {
-        public static void Seed(MemOrgContext context)
+        private readonly MemOrgContext _context;
+
+        public SeedConceptualWar(MemOrgContext acontext)
         {
-            SeedChapter1(context);
+            _context = acontext;   
         }
 
-        private static void SeedChapter1(MemOrgContext context)
+        public void Seed()
+        {
+            SeedChapter1();
+            SeedChapter2();
+        }
+        
+        SourceTextParticle _conceptWarParticle;
+        RelationType _aboutRelationType;
+        RelationType _authorRelationType;
+        Block _conceptBlock;
+        Block _conceptWarBlock;
+        Tag _humanTag;
+        Tag _philosopherTag;
+        Tag _sciensistTag; 
+        Tag _teologTag; 
+        Tag _nationalityTag; 
+        Tag _frenchTag; 
+        Tag _literatorTag; 
+        Tag _poetmanTag;
+        Tag _kafedraTag; 
+        Tag _kafedraConceptualWarTag; 
+        Tag _bookConceptualWarTag;
+        Tag _theWordTag;
+        Tag _etcTag;
+        Tag _eotTag;
+
+        private void SeedChapter1()
         {
             #region Define particles
 
             int pOrder = -1;
-            var conceptWarParticle = new SourceTextParticle
+            _conceptWarParticle = new SourceTextParticle
             {
                 Content = @"Понятие «Концептуальная война» состоит из 2-х слагаемых: концепт и война. ",
                 Order = ++pOrder
@@ -92,24 +120,22 @@ namespace EF
 
             #region Define tags
 
-            var humanTag = CreateTag("Человек", null);
-            var philosopherTag = CreateTag("Философ", humanTag);
-            var sciensistTag = CreateTag("Ученый", humanTag);
-            var teologTag = CreateTag("Теолог", sciensistTag);
-            var nationalityTag = CreateTag("Национальность", humanTag);
-            var frenchTag = CreateTag("Француз", nationalityTag);
-            var literatorTag = CreateTag("Литератор", humanTag);
-            var poetmanTag = CreateTag("Поэт", literatorTag);
-            var etcTag = CreateTag("ЭТЦ", humanTag);
-
-            var kafedraTag = CreateTag("Кафедра", null);
-            var kafedraConceptualWarTag = CreateTag("Концептуальная война", kafedraTag);
-            kafedraConceptualWarTag.TagBlock = new Block();
-            var bookConceptualWarTag = CreateTag("«Концептуальная война»", kafedraConceptualWarTag);
-            bookConceptualWarTag.TagBlock = new Block();
-
-            var theWordTag = CreateTag("Понятие", null);
-            var eotTag = CreateTag("СВ", theWordTag);
+            _humanTag = CreateTag("Человек", null);
+            _philosopherTag = CreateTag("Философ", _humanTag);
+            _sciensistTag = CreateTag("Ученый", _humanTag);
+            _teologTag = CreateTag("Теолог", _sciensistTag);
+            _nationalityTag = CreateTag("Национальность", _humanTag);
+            _frenchTag = CreateTag("Француз", _nationalityTag);
+            _literatorTag = CreateTag("Литератор", _humanTag);
+            _poetmanTag = CreateTag("Поэт", _literatorTag);
+            _etcTag = CreateTag("ЭТЦ", _humanTag);
+            _kafedraTag = CreateTag("Кафедра", null);
+            _kafedraConceptualWarTag = CreateTag("Концептуальная война", _kafedraTag);
+            _kafedraConceptualWarTag.TagBlock = new Block();
+            _bookConceptualWarTag = CreateTag("«Концептуальная война»", _kafedraConceptualWarTag);
+            _bookConceptualWarTag.TagBlock = new Block();
+            _theWordTag = CreateTag("Понятие", null);
+            _eotTag = CreateTag("СВ", _theWordTag);
 
             #endregion
 
@@ -122,22 +148,22 @@ namespace EF
                 Caption = "Абеляр, Пьер Пале",
                 Particles =
                     new List<Particle> {new QuoteSourceParticle {SourceTextParticle = abelarParticle, Order = 0}},
-                Tags = new List<Tag> {teologTag, frenchTag, poetmanTag, philosopherTag}
+                Tags = new List<Tag> {_teologTag, _frenchTag, _poetmanTag, _philosopherTag}
             };
-
-            var conceptWarBlock = new Block
+            
+            _conceptWarBlock = new Block
             {
                 Caption = "Концептуальная война",
                 Particles =
                     new List<Particle>
                     {
-                        new QuoteSourceParticle {SourceTextParticle = conceptWarParticle, Order = 0},
+                        new QuoteSourceParticle {SourceTextParticle = _conceptWarParticle, Order = 0},
                         new QuoteSourceParticle {SourceTextParticle = conceptWarParticleAdd1, Order = 1}
                     },
-                Tags = new List<Tag> {eotTag}
+                Tags = new List<Tag> {_eotTag}
             };
 
-            var conceptBlock = new Block
+            _conceptBlock = new Block
             {
                 Caption = "Концепт",
                 Particles =
@@ -146,7 +172,7 @@ namespace EF
                         new QuoteSourceParticle {SourceTextParticle = conceptParticle, Order = 0},
                         new QuoteSourceParticle {SourceTextParticle = conceptParticleAdd1, Order = 1}
                     },
-                Tags = new List<Tag> {eotTag}
+                Tags = new List<Tag> {_eotTag}
             };
 
             var abelarAboutConceptBlock = new Block
@@ -167,7 +193,7 @@ namespace EF
                     {
                         new QuoteSourceParticle {SourceTextParticle = philosophyOfHistoryParticle, Order = 0}
                     },
-                Tags = new List<Tag> {eotTag}
+                Tags = new List<Tag> {_eotTag}
             };
 
             var utConceptWarBlock = new Block
@@ -179,7 +205,7 @@ namespace EF
             var byalyBlock = new Block
             {
                 Caption = "Бялый, Юрий",
-                Tags = new List<Tag> {etcTag}
+                Tags = new List<Tag> {_etcTag}
             };
 
             var cwChapter1 = new Block
@@ -188,7 +214,7 @@ namespace EF
                 Particles =
                     new List<Particle>
                     {
-                        conceptWarParticle,
+                        _conceptWarParticle,
                         conceptParticle,
                         abelarAboutConceptParticle,
                         conceptParticleAdd1,
@@ -197,28 +223,28 @@ namespace EF
                         abelarNameParticle,
                         abelarParticle
                     },
-                Tags = new List<Tag> {bookConceptualWarTag}
+                Tags = new List<Tag> {_bookConceptualWarTag}
             };
 
             #endregion
 
             #region Define relations
-
-            var aboutRelationType = new RelationType {Caption = "о"};
+            
+            _aboutRelationType = new RelationType {Caption = "о"};
             var abelarAboutConceptRelation = new Relation
             {
                 FirstBlock = abelarBlock,
-                SecondBlock = conceptBlock,
+                SecondBlock = _conceptBlock,
                 RelationBlock = abelarAboutConceptBlock,
-                RelationType = aboutRelationType
+                RelationType = _aboutRelationType
             };
-
-            var authorRelationType = new RelationType {Caption = "Автор"};
+            
+            _authorRelationType = new RelationType {Caption = "Автор"};
             var byalyAuthorConceptWarBookRelation = new Relation
             {
                 FirstBlock = byalyBlock,
-                SecondBlock = bookConceptualWarTag.TagBlock,
-                RelationType = authorRelationType
+                SecondBlock = _bookConceptualWarTag.TagBlock,
+                RelationType = _authorRelationType
             };
 
             #endregion
@@ -227,33 +253,32 @@ namespace EF
 
             philosofyOfHistiry.References = new List<Reference>
             {
-                new Reference {ReferencedBlock = conceptBlock}
+                new Reference {ReferencedBlock = _conceptBlock}
             };
-            conceptWarBlock.References = new List<Reference>
+            _conceptWarBlock.References = new List<Reference>
             {
                 new Reference {ReferencedBlock = utConceptWarBlock}
             };
-            CreateDoubleEndedReference(conceptWarBlock, kafedraConceptualWarTag.TagBlock);
-            CreateDoubleEndedReference(conceptWarBlock, conceptBlock);
+            CreateDoubleEndedReference(_conceptWarBlock, _kafedraConceptualWarTag.TagBlock);
+            CreateDoubleEndedReference(_conceptWarBlock, _conceptBlock);
 
             #endregion
 
-            context.Blocks.Add(abelarBlock);
-            context.Blocks.Add(conceptWarBlock);
-            context.Blocks.Add(conceptBlock);
-            context.Blocks.Add(abelarAboutConceptBlock);
-            context.Blocks.Add(philosofyOfHistiry);
-            context.Blocks.Add(utConceptWarBlock);
-            context.Blocks.Add(byalyBlock);
-            context.Blocks.Add(cwChapter1);
+            _context.Blocks.Add(abelarBlock);
+            _context.Blocks.Add(_conceptWarBlock);
+            _context.Blocks.Add(_conceptBlock);
+            _context.Blocks.Add(abelarAboutConceptBlock);
+            _context.Blocks.Add(philosofyOfHistiry);
+            _context.Blocks.Add(utConceptWarBlock);
+            _context.Blocks.Add(byalyBlock);
+            _context.Blocks.Add(cwChapter1);
 
-            context.Relations.Add(abelarAboutConceptRelation);
-            context.Relations.Add(byalyAuthorConceptWarBookRelation);
+            _context.Relations.Add(abelarAboutConceptRelation);
+            _context.Relations.Add(byalyAuthorConceptWarBookRelation);
 
-            context.SaveChanges();
+            _context.SaveChanges();
         }
-
-        private static void SeedChapter2(MemOrgContext context)
+        private void SeedChapter2()
         {
             #region Define particles
             int pOrder = -1;
@@ -419,10 +444,147 @@ namespace EF
             };
 
             #endregion
+
             #region Define tags
             #endregion
             
             #region Define blocks
+
+            var articleEndOfHistoryBlock = new Block
+            {
+                Caption = "«Конец истории?»",
+                Particles =
+                    new List<Particle> { new QuoteSourceParticle { SourceTextParticle = articleEndOfHistoryParticle, Order = 0 } },
+            };
+
+            var differenceBitweenConceptualWarAndIdeologicalWarBlock = new Block
+            {
+                Caption = "Разница между Концептуальная война и Идеологическая война",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relDifferentConceptWarIdeologicalWarParticle, Order = 0}
+                    },
+            };
+
+            var endOfHistoryBlock = new Block
+            {
+                Caption = "Конец истории",
+                Particles =
+                    new List<Particle> { new QuoteSourceParticle { SourceTextParticle = conceptEndOfHistoryParticle, Order = 0 } },
+            };
+
+            var kojevAboutHegelBlock = new Block
+            {
+                Caption = "Кожев о Гегель",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relKojevAboutGegelParticle, Order = 0}
+                    },
+            };
+
+            var gameInBiserAboutGameBlock = new Block
+            {
+                Caption = "«Игра в бисер» говорит о Игра",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relBookIgraVBiserAboutGameParticle, Order = 0}
+                    },
+            };
+
+            var fukuyamaAboutElitsBlock = new Block
+            {
+                Caption = "Фукуяма об Элиты",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relFukuyamaAboutElitsParticle, Order = 0}
+                    },
+            };
+
+            var elitsAndHistoricalFireBlock = new Block
+            {
+                Caption = "Элиты и Исторический огонь",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relElitsAndHistoricalFireParticle, Order = 0}
+                    },
+            };
+
+            var historicalFireAndEvropaBlock = new Block
+            {
+                Caption = "Исторический огонь и Европа",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relHistoricalFireAndEvropaParticle, Order = 0}
+                    },
+            };
+
+            var historicalFireAndUsaBlock = new Block
+            {
+                Caption = "Исторический огонь и США",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relHistoricalFireAndEvropaParticle, Order = 0}
+                    },
+            };
+
+            var historicalFireAndChinaBlock = new Block
+            {
+                Caption = "Исторический огонь и Китай",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relHistoricalFireAndChinaParticle, Order = 0}
+                    },
+            };
+
+            var historicalFireAndMuslimBlock = new Block
+            {
+                Caption = "Исторический огонь и Ислам",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relHistoricalFireAndMuslimParticle, Order = 0}
+                    },
+            };
+
+            var historicalFireAndLatinAmericaBlock = new Block
+            {
+                Caption = "Исторический огонь и Латинская Америка",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relHistoricalFireAndLatinAmericaParticle, Order = 0}
+                    },
+            };
+
+            var historicalFireAndRussiaBlock = new Block
+            {
+                Caption = "Исторический огонь и Россия",
+                Particles =
+                    new List<Particle>
+                    {
+                        new QuoteSourceParticle
+                        {SourceTextParticle = relHistoricalFireAndRussiaParticle, Order = 0}
+                    },
+            };
+        
             var fukuyamaBlock = new Block
             {
                 Caption = "Фукуяма, Френсис",
@@ -449,7 +611,7 @@ namespace EF
                     new List<Particle> { new QuoteSourceParticle { SourceTextParticle = gessGermanParticle, Order = 0 } }
             };
 
-            var cityUpinHillBlock = new Block
+            var cityUponHillBlocknHillBlock = new Block
             {
                 Caption = "«Град на холме»",
                 Particles =
@@ -459,27 +621,259 @@ namespace EF
             var gameBlock = new Block {Caption = "Игра"};
             var elitsBlock = new Block { Caption = "Элиты" };
             var ideologicalWarBlock = new Block { Caption = "Идеологическая война" };
-            var ideologicalWarBlock = new Block { Caption = "«Игра в бисер»" };
-            var ideologicalWarBlock = new Block { Caption = "«Исторический огонь" };
-            var ideologicalWarBlock = new Block { Caption = "Европа" };
-            var ideologicalWarBlock = new Block { Caption = "США" };
-            var ideologicalWarBlock = new Block { Caption = "Ислам" };
-            var ideologicalWarBlock = new Block { Caption = "Латинская Америка" };
-            var ideologicalWarBlock = new Block { Caption = "Россия" };
+            var gameInBiserBlock = new Block { Caption = "«Игра в бисер»" };
+            var historicalFireBlock = new Block { Caption = "«Исторический огонь" };
+            var evropaBlock = new Block { Caption = "Европа" };
+            var usaBlock = new Block { Caption = "США" };
+            var chinaBlock = new Block { Caption = "Китай" };
+            var islamBlock = new Block { Caption = "Ислам" };
+            var latinAmericaBlock = new Block { Caption = "Латинская Америка" };
+// ReSharper disable once InconsistentNaming
+            var RussiaBlock = new Block { Caption = "Россия" };
 
+            var cwChapter2 = new Block
+            {
+                Caption = "Есть ли у мира будущее?",
+                Particles = new List<Particle>
+                {
+                    articleEndOfHistoryParticle,
+                    relDifferentConceptWarIdeologicalWarParticle,
+                    conceptEndOfHistoryParticle,
+                    sourceParticle1Particle,
+                    relKojevAboutGegelParticle,
+                    relBookIgraVBiserAboutGameParticle,
+                    relFukuyamaAboutElitsParticle,
+                    relElitsAndHistoricalFireParticle,
+                    sourceParticle2Particle,
+                    relHistoricalFireAndEvropaParticle,
+                    relHistoricalFireAndUsaParticle,
+                    relHistoricalFireAndChinaParticle,
+                    relHistoricalFireAndMuslimParticle,
+                    relHistoricalFireAndLatinAmericaParticle,
+                    relHistoricalFireAndRussiaParticle,
+                    nameFukuyamaParticle,
+                    fukuyamaParticle,
+                    nameKojevAlexanderParticle,
+                    kojevAlexanderParticle,
+                    nameGessGermanParticle,
+                    gessGermanParticle,
+                    nameCityUponHillParticle,
+                    cityUponHillParticle
+                }
+            };
 
+            var utAboutEndOhistoryBlock = new Block
+            {
+                Caption = "Размышления о Конце истории",
+                Particles =
+                    new List<Particle> { utAboutEndOfHistoryParticle }
+            };
 
+            var utAboutElitsAndHistoricalFireBlock = new Block
+            {
+                Caption = "Аристократическая мечта об Историческом огне",
+                Particles =
+                    new List<Particle> { utAboutHistoricalFireAndAboutElitsParticle }
+            };
             #endregion
 
             #region Define relations
+            var differenceBitweenRelationType = new RelationType { Caption = "разница" };
+            var abelarAboutConceptRelation = new Relation
+            {
+                FirstBlock = _conceptWarBlock,
+                SecondBlock = ideologicalWarBlock,
+                RelationBlock = differenceBitweenConceptualWarAndIdeologicalWarBlock,
+                RelationType = differenceBitweenRelationType
+            };
+
+            var kojevAboutHegelRelation = new Relation
+            {
+                FirstBlock = kojevBlock,
+                SecondBlock = hegelBlock,
+                RelationBlock = kojevAboutHegelBlock,
+                RelationType = _aboutRelationType
+            };
+
+            var igraVBiserAboutIgraRelation = new Relation
+            {
+                FirstBlock = gameInBiserBlock,
+                SecondBlock = gameBlock,
+                RelationBlock = gameInBiserAboutGameBlock,
+                RelationType = _aboutRelationType
+            };
+
+            var fukuyamaAboutElitsRelation = new Relation
+            {
+                FirstBlock = fukuyamaBlock,
+                SecondBlock = elitsBlock,
+                RelationBlock = fukuyamaAboutElitsBlock,
+                RelationType = _aboutRelationType
+            };
+
+            var andRelationType = new RelationType { Caption = "и" };
+            var elitsAndHistoricalFireRelation = new Relation
+            {
+                FirstBlock = elitsBlock,
+                SecondBlock = historicalFireBlock,
+                RelationBlock = elitsAndHistoricalFireBlock,
+                RelationType = andRelationType
+            };
+
+            var historicalFireAndEvropaRelation = new Relation
+            {
+                FirstBlock = evropaBlock,
+                SecondBlock = historicalFireBlock,
+                RelationBlock = historicalFireAndEvropaBlock,
+                RelationType = andRelationType
+            };
+
+            var historicalFireAndUsaRelation = new Relation
+            {
+                FirstBlock = usaBlock,
+                SecondBlock = historicalFireBlock,
+                RelationBlock = historicalFireAndUsaBlock,
+                RelationType = andRelationType
+            };
+
+            var historicalFireAndChinaRelation = new Relation
+            {
+                FirstBlock = chinaBlock,
+                SecondBlock = historicalFireBlock,
+                RelationBlock = historicalFireAndChinaBlock,
+                RelationType = andRelationType
+            };
+
+            var historicalFireAndMuslimRelation = new Relation
+            {
+                FirstBlock = islamBlock,
+                SecondBlock = historicalFireBlock,
+                RelationBlock = historicalFireAndMuslimBlock,
+                RelationType = andRelationType
+            };
+
+            var historicalFireAndLatinRelation = new Relation
+            {
+                FirstBlock = latinAmericaBlock,
+                SecondBlock = historicalFireBlock,
+                RelationBlock = historicalFireAndLatinAmericaBlock,
+                RelationType = andRelationType
+            };
+
+            var historicalFireAndRussiaRelation = new Relation
+            {
+                FirstBlock = RussiaBlock,
+                SecondBlock = historicalFireBlock,
+                RelationBlock = historicalFireAndRussiaBlock,
+                RelationType = andRelationType
+            };
+
+            var fukuyamaAuthorEndOfHistoryRelation = new Relation
+            {
+                FirstBlock = fukuyamaBlock,
+                SecondBlock = articleEndOfHistoryBlock,
+                RelationType = _authorRelationType
+            };
+
+            var isRelationType = new RelationType { Caption = "является" };
+            var endOfHistoryIsConceptRelation = new Relation
+            {
+                FirstBlock = endOfHistoryBlock,
+                SecondBlock = _conceptBlock,
+                RelationType = isRelationType
+            };
+
+            var writtenRelationType = new RelationType { Caption = "говорится о" };
+            var articleEndOfHistoryAboutEndOfHistoryRelation = new Relation
+            {
+                FirstBlock = articleEndOfHistoryBlock,
+                SecondBlock = endOfHistoryBlock,
+                RelationType = writtenRelationType
+            };
+
+            var discipleRelationType = new RelationType { Caption = "ученик" };
+            var fukuyamaDiscipleKojevRelation = new Relation
+            {
+                FirstBlock = fukuyamaBlock,
+                SecondBlock = kojevBlock,
+                RelationType = discipleRelationType
+            };
+
+            var followerRelationType = new RelationType { Caption = "последователь" };
+            var kojevFollowerHegelRelation = new Relation
+            {
+                FirstBlock = kojevBlock,
+                SecondBlock = hegelBlock,
+                RelationType = followerRelationType
+            };
+
+            var gesseAuthorGameInBiser = new Relation
+            {
+                FirstBlock = gesseBlock,
+                SecondBlock = gameInBiserBlock,
+                RelationType = _authorRelationType
+            };
 
             #endregion
 
             #region Define references
-
+            CreateDoubleEndedReference(cityUponHillBlocknHillBlock, historicalFireAndUsaBlock);
+            CreateDoubleEndedReference(fukuyamaBlock, historicalFireAndMuslimBlock);
             #endregion
+
+            _context.Blocks.Add(articleEndOfHistoryBlock);
+            _context.Blocks.Add(differenceBitweenConceptualWarAndIdeologicalWarBlock);
+            _context.Blocks.Add(endOfHistoryBlock);
+            _context.Blocks.Add(kojevAboutHegelBlock);
+            _context.Blocks.Add(gameInBiserAboutGameBlock);
+            _context.Blocks.Add(fukuyamaAboutElitsBlock);
+            _context.Blocks.Add(elitsAndHistoricalFireBlock);
+            _context.Blocks.Add(historicalFireAndEvropaBlock);
+            _context.Blocks.Add(historicalFireAndUsaBlock);
+            _context.Blocks.Add(historicalFireAndChinaBlock);
+            _context.Blocks.Add(historicalFireAndMuslimBlock);
+            _context.Blocks.Add(historicalFireAndLatinAmericaBlock);
+            _context.Blocks.Add(historicalFireAndRussiaBlock);
+            _context.Blocks.Add(fukuyamaBlock);
+            _context.Blocks.Add(kojevBlock);
+            _context.Blocks.Add(hegelBlock);
+            _context.Blocks.Add(gesseBlock);
+            _context.Blocks.Add(cityUponHillBlocknHillBlock);
+            _context.Blocks.Add(gameBlock);
+            _context.Blocks.Add(elitsBlock);
+            _context.Blocks.Add(ideologicalWarBlock);
+            _context.Blocks.Add(gameInBiserBlock);
+            _context.Blocks.Add(historicalFireBlock);
+            _context.Blocks.Add(evropaBlock);
+            _context.Blocks.Add(usaBlock);
+            _context.Blocks.Add(chinaBlock);
+            _context.Blocks.Add(islamBlock);
+            _context.Blocks.Add(latinAmericaBlock);
+            _context.Blocks.Add(RussiaBlock);
+            _context.Blocks.Add(cwChapter2);
+            _context.Blocks.Add(utAboutEndOhistoryBlock);
+            _context.Blocks.Add(utAboutElitsAndHistoricalFireBlock);
+
+            _context.Relations.Add(abelarAboutConceptRelation);
+            _context.Relations.Add(kojevAboutHegelRelation);
+            _context.Relations.Add(igraVBiserAboutIgraRelation);
+            _context.Relations.Add(fukuyamaAboutElitsRelation);
+            _context.Relations.Add(elitsAndHistoricalFireRelation);
+            _context.Relations.Add(historicalFireAndEvropaRelation);
+            _context.Relations.Add(historicalFireAndUsaRelation);
+            _context.Relations.Add(historicalFireAndChinaRelation);
+            _context.Relations.Add(historicalFireAndMuslimRelation);
+            _context.Relations.Add(historicalFireAndLatinRelation);
+            _context.Relations.Add(historicalFireAndRussiaRelation);
+            _context.Relations.Add(fukuyamaAuthorEndOfHistoryRelation);
+            _context.Relations.Add(endOfHistoryIsConceptRelation);
+            _context.Relations.Add(articleEndOfHistoryAboutEndOfHistoryRelation);
+            _context.Relations.Add(fukuyamaDiscipleKojevRelation);
+            _context.Relations.Add(kojevFollowerHegelRelation);
+            _context.Relations.Add(gesseAuthorGameInBiser);
+            _context.SaveChanges();
         }
-        private static void SeedChapter3(MemOrgContext context)
+        private void SeedChapter3()
         {
             #region Define particles
             #endregion
@@ -492,7 +886,7 @@ namespace EF
             #region Define references
             #endregion
         }
-        private static void SeedChapter4(MemOrgContext context)
+        private void SeedChapter4()
         {
             #region Define particles
             #endregion
@@ -505,7 +899,7 @@ namespace EF
             #region Define references
             #endregion
         }
-        private static void SeedChapter5(MemOrgContext context)
+        private void SeedChapter5()
         {
             #region Define particles
             #endregion

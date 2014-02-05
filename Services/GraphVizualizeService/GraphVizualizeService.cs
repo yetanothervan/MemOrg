@@ -7,7 +7,7 @@ using MemOrg.Interfaces;
 
 namespace GraphVizualizeService
 {
-    public class GraphVizualizeService : IGraphVizulaizeService
+    public class GraphVizualizeService : IGraphVizualizeService
     {
         public IVisualizeOptions GetVisualizeOptions()
         {
@@ -18,6 +18,11 @@ namespace GraphVizualizeService
         {
             var visGrid = new VisualGrid(grid);
             return visGrid.Visualize(drawer, options);
+        }
+
+        public IComponent StackPanel(IVisualizeOptions options, IDrawer drawer)
+        {
+            return drawer.DrawStackBox();
         }
     }
 }

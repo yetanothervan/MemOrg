@@ -36,6 +36,11 @@ namespace GraphDrawService
             return new QuoteBlock(_style);
         }
 
+        public IComponent DrawStackBox()
+        {
+            return new StackBox();
+        }
+
         public IComponent DrawBlockOthers(IGridElem gridElem)
         {
             return new BlockOthers(_style, gridElem);

@@ -15,7 +15,7 @@ namespace GraphVizualizeService.ModuleDefinition
 
         public void Initialize()
         {
-            _container.RegisterType<IGraphVizulaizeService, GraphVizualizeService>();
+            _container.RegisterType<IGraphVizualizeService, GraphVizualizeService>();
         }
     }
 }

@@ -27,8 +27,7 @@ namespace GraphOrganizeService
             var elemsCount = graphService.BlockOthers.Count
                              + graphService.BlockRels.Count
                              + graphService.BlockSources.Count
-                             + graphService.BlockTags.Count
-                             + graphService.TagsNoBlock.Count;
+                             + graphService.BlockTags.Count;
 
             _sideSize = CalculateSquareSideLength(elemsCount);
             
@@ -57,11 +56,6 @@ namespace GraphOrganizeService
                     PlaceNextGridElem(new GridElemBlockUserText(block, grid), curElem++);
                 else
                     PlaceNextGridElem(new GridElemBlockOthers(block, grid), curElem++);
-            }
-            foreach (var tagNoBlock in graphService.TagsNoBlock)
-            {
-                var gridElem = new GridElemTag(tagNoBlock, grid);
-                PlaceNextGridElem(gridElem, curElem++);
             }
         }
 
