@@ -21,16 +21,16 @@ namespace GraphVizualizeService
 
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            _mySelf = drawer.DrawTree();
-            
             if (!(_tree.MyElem is IGridElemTag))
                 throw new NotImplementedException();
+
+            _mySelf = drawer.DrawTree(_tree as IGridElem);
             
             var rootComp = new VisualGridElemTag(_tree.MyElem as IGridElemTag).Visualize(drawer, options);
             _mySelf.Childs = new List<IComponent> {rootComp};
 
             if (_tree.Subtrees != null)
-                foreach (var subtree in Subtrees)
+                foreach (var subtree in _tree.Subtrees)
                 {
                     var vst = new VisualTree(subtree);
                     IComponent st = vst.Visualize(drawer, options);

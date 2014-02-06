@@ -46,7 +46,10 @@ namespace GraphDrawService.Layouts
             foreach (var child in _childs)
             {
                 result.AddRange(child.Render(curPt));
-                curPt.Offset(0.0, child.GetSize().Height + _margin);
+                if (isHorizontal)
+                    curPt.Offset(child.GetSize().Width +_margin, 0.0);
+                else
+                    curPt.Offset(0.0, child.GetSize().Height + _margin);
             }
             return result;
         }

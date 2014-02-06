@@ -52,7 +52,7 @@ namespace GraphViewer
             options.HeadersOnly = _headersOnly;
 
             var blockVisGrid = _graphVizualizeService.VisualizeGrid(_blockGrid, options, _drawer);
-            var tagVisGrid = _graphVizualizeService.VisualizeGrid(_blockGrid, options, _drawer);
+            var tagVisGrid = _graphVizualizeService.VisualizeGrid(_tagTrees, options, _drawer);
 
             var stack = _graphVizualizeService.StackPanel(options, _drawer);
             stack.Childs = new List<IComponent> { tagVisGrid, blockVisGrid };

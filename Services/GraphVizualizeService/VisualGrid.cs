@@ -36,6 +36,8 @@ namespace GraphVizualizeService
                     Childs.Add(new VisualGridElemBlockTag(gridElem as IGridElemBlockTag).Visualize(drawer, options));
                 else if (gridElem is IGridElemTag)
                     Childs.Add(new VisualGridElemTag(gridElem as IGridElemTag).Visualize(drawer, options));
+                else if (gridElem is ITree)
+                    Childs.Add(new VisualTree(gridElem as ITree).Visualize(drawer, options));
                 else
                     throw new NotImplementedException();
             }

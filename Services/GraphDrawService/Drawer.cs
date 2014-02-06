@@ -41,9 +41,9 @@ namespace GraphDrawService
             return new StackBox();
         }
 
-        public IComponent DrawTree()
+        public IComponent DrawTree(IGridElem gridElem)
         {
-            return new Tree();
+            return new Tree(_style, gridElem);
         }
 
         public IComponent DrawBlockOthers(IGridElem gridElem)
