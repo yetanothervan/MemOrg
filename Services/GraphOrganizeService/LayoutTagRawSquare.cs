@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 using DAL.Entity;
 using GraphOrganizeService.Elems;
 using MemOrg.Interfaces;
+using MemOrg.Interfaces.GridElems;
 
 namespace GraphOrganizeService
 {
-    public class LayoutTagRawSquare : IGridLayout
+    public class LayoutTagRawSquare : ITreeLayout
     {
-        private int _sideSize;
-
         private readonly IGraph _graph;
 
         public LayoutTagRawSquare(IGraph graph)
@@ -20,42 +19,30 @@ namespace GraphOrganizeService
             _graph = graph;
         }
 
-        public void DoLayout(IGrid grid)
+        private Tree CreateTree(Tag root, IGrid grid)
         {
-            var graphService = _graph.GraphService;
-
-            var elemsCount = graphService.TagsBlock.Count 
-                             + graphService.TagsNoBlock.Count;
-
-            _sideSize = CalculateSquareSideLength(elemsCount);
-            
-            int curElem = 0;
-            foreach (var tagNoBlock in graphService.TagsNoBlock)
+            var tree = new Tree(grid)
             {
-                var gridElem = new GridElemTag(tagNoBlock, grid);
-                PlaceNextGridElem(gridElem, curElem++);
-            }
-            foreach (var tagBlock in graphService.TagsBlock)
-            {
-                var gridElem = new GridElemTag(tagBlock, grid);
-                PlaceNextGridElem(gridElem, curElem++);
-            }
+                Subtrees = new List<ITree>(), 
+                MyElem = new GridElemTag(root, null)
+            };
+
+            foreach (var child in root.Childs)
+                tree.Subtrees.Add(CreateTree(child, null));
+
+            return tree;
         }
 
-        private void PlaceNextGridElem(GridElem gridElem, int gridElemIndex)
+        public IGrid CreateTreesGrid()
         {
-            int rowIndex = gridElemIndex/_sideSize;
-            int colIndex = gridElemIndex%_sideSize;
-            gridElem.PlaceOn(rowIndex, colIndex);
-        }
-
-        private static int CalculateSquareSideLength(int elemsCount)
-        {
-            var res = 0;
-// ReSharper disable once LoopVariableIsNeverChangedInsideLoop
-            while (elemsCount >= res*res)
-                ++res;
-            return res;
+            IGrid grid = new Grid();
+            var allocator = new RawSquareGridElemAllocator(_graph.GraphService.TagRoots.Count);
+            foreach (var tagRoot in _graph.GraphService.TagRoots)
+            {
+                var tree = CreateTree(tagRoot, grid);
+                allocator.PlaceNextGridElem(tree);
+            }
+            return grid;
         }
     }
 }

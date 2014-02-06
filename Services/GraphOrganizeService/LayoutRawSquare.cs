@@ -11,17 +11,17 @@ namespace GraphOrganizeService
 {
     public class LayoutRawSquare : IGridLayout
     {
-        private int _sideSize;
-
         private readonly IGraph _graph;
+        private RawSquareGridElemAllocator _allocator;
 
         public LayoutRawSquare(IGraph graph)
         {
             _graph = graph;
         }
 
-        public void DoLayout(IGrid grid)
+        public IGrid CreateGrid()
         {
+            var grid = new Grid();
             var graphService = _graph.GraphService;
 
             var elemsCount = graphService.BlockOthers.Count
@@ -29,50 +29,36 @@ namespace GraphOrganizeService
                              + graphService.BlockSources.Count
                              + graphService.BlockTags.Count;
 
-            _sideSize = CalculateSquareSideLength(elemsCount);
+            _allocator = new RawSquareGridElemAllocator(elemsCount);
             
-            int curElem = 0;
+          
             foreach (var blockTag in graphService.BlockTags)
             {
 // ReSharper disable once AccessToForEachVariableInClosure
                 var tag = graphService.TagsBlock.First(o => o.TagBlock.BlockId == blockTag.BlockId);
                 var gridElem = new GridElemBlockTag(blockTag, tag, grid);
-                PlaceNextGridElem(gridElem, curElem++);
+                _allocator.PlaceNextGridElem(gridElem);
             }
             foreach (var blockSource in graphService.BlockSources)
             {
                 var gridElem = new GridElemBlockSource(blockSource, grid);
-                PlaceNextGridElem(gridElem, curElem++);
+                _allocator.PlaceNextGridElem(gridElem);
             }
             foreach (var blockRel in graphService.BlockRels)
             {
                 var gridElem = new GridElemBlockRel(blockRel, grid);
-                PlaceNextGridElem(gridElem, curElem++);
+                _allocator.PlaceNextGridElem(gridElem);
             }
             foreach (var block in graphService.BlockOthers)
             {
                 if (block.Particles.Count == block.Particles.OfType<UserTextParticle>().Count()
                     && block.Particles.Count != 0)
-                    PlaceNextGridElem(new GridElemBlockUserText(block, grid), curElem++);
+                    _allocator.PlaceNextGridElem(new GridElemBlockUserText(block, grid));
                 else
-                    PlaceNextGridElem(new GridElemBlockOthers(block, grid), curElem++);
+                    _allocator.PlaceNextGridElem(new GridElemBlockOthers(block, grid));
             }
-        }
 
-        private void PlaceNextGridElem(GridElem gridElem, int gridElemIndex)
-        {
-            int rowIndex = gridElemIndex/_sideSize;
-            int colIndex = gridElemIndex%_sideSize;
-            gridElem.PlaceOn(rowIndex, colIndex);
-        }
-
-        private static int CalculateSquareSideLength(int elemsCount)
-        {
-            var res = 0;
-// ReSharper disable once LoopVariableIsNeverChangedInsideLoop
-            while (elemsCount >= res*res)
-                ++res;
-            return res;
+            return grid;
         }
     }
 }

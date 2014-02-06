@@ -40,5 +40,10 @@ namespace MemOrg.Interfaces
         /// Таги с телом-блоком
         /// </summary>
         List<Tag> TagsBlock { get; }
+
+        /// <summary>
+        /// Таги корни или таги без родителей
+        /// </summary>
+        List<Tag> TagRoots { get; }
     }
 }

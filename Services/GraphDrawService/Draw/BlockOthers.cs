@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.GridElems;
 
@@ -28,7 +29,7 @@ namespace GraphDrawService.Draw
                 dc.DrawRectangle(Style.OthersBlockBrush, Style.OthersBlockPen, rect);
             }
             result.Add(dv);
-            result.AddRange(DrawerFuncs.RenderStackLayout(p, Childs, Margin));
+            result.AddRange(new VerticalStackLayout(Childs, Margin).Render(p));
 
             return result;
         }

@@ -6,6 +6,7 @@ namespace MemOrg.Interfaces
     {
         IVisualizeOptions GetVisualizeOptions();
         IComponent VisualizeGrid(IGrid grid, IVisualizeOptions options, IDrawer drawer);
+        IComponent VisualizeTree(ITree tree, IVisualizeOptions options, IDrawer drawer);
         IComponent StackPanel(IVisualizeOptions options, IDrawer drawer);
     }
 }

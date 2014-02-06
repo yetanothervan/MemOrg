@@ -53,5 +53,10 @@ namespace GraphService
         {
             get { return _tagRepository.All.Where(tag => tag.TagBlock != null).ToList(); }
         }
+
+        public List<Tag> TagRoots
+        {
+            get { return _tagRepository.All.Where(tag => tag.Parent == null).ToList(); }
+        }
     }
 }

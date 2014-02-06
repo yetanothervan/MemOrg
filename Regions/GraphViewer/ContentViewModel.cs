@@ -13,7 +13,7 @@ namespace GraphViewer
         private readonly IDrawer _drawer;
 
         readonly IGrid _blockGrid;
-        readonly IGrid _tagGrid;
+        readonly IGrid _tagTrees;
 
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
             IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService)
@@ -25,20 +25,20 @@ namespace GraphViewer
             MyText = "Some of my texts";
             IGraph graph = graphOrganizeService.GetGraph(null);
             IGridLayout blockLayout = graphOrganizeService.GetLayout(graph);
-            IGridLayout tagLayout = graphOrganizeService.GetTagLayout(graph);
-            
-            _blockGrid = graphOrganizeService.GetGrid(blockLayout);
-            _tagGrid = graphOrganizeService.GetGrid(tagLayout);
+            ITreeLayout tagLayout = graphOrganizeService.GetTagLayout(graph);
+
+            _blockGrid = blockLayout.CreateGrid();
+            _tagTrees = tagLayout.CreateTreesGrid();
 
             IDrawStyle style = graphDrawService.GetStyle();
             _drawer = graphDrawService.GetDrawer(style);
             IVisualizeOptions options = graphVizualizeService.GetVisualizeOptions();
 
             var blockVisGrid = graphVizualizeService.VisualizeGrid(_blockGrid, options, _drawer);
-            var tagVisGrid = graphVizualizeService.VisualizeGrid(_tagGrid, options, _drawer);
+            var tagVisTree = graphVizualizeService.VisualizeGrid(_tagTrees, options, _drawer);
 
             var stack = graphVizualizeService.StackPanel(options, _drawer);
-            stack.Childs = new List<IComponent> {tagVisGrid, blockVisGrid};
+            stack.Childs = new List<IComponent> { tagVisTree, blockVisGrid };
 
             Grid = stack;
         }
@@ -52,7 +52,7 @@ namespace GraphViewer
             options.HeadersOnly = _headersOnly;
 
             var blockVisGrid = _graphVizualizeService.VisualizeGrid(_blockGrid, options, _drawer);
-            var tagVisGrid = _graphVizualizeService.VisualizeGrid(_tagGrid, options, _drawer);
+            var tagVisGrid = _graphVizualizeService.VisualizeGrid(_blockGrid, options, _drawer);
 
             var stack = _graphVizualizeService.StackPanel(options, _drawer);
             stack.Childs = new List<IComponent> { tagVisGrid, blockVisGrid };

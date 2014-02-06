@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +15,9 @@ namespace GraphOrganizeService
     {
         private readonly Dictionary<Pair<int, int>, IGridElem> _elems;
 
-        public Grid(IGridLayout layout)
+        public Grid()
         {
             _elems = new Dictionary<Pair<int, int>, IGridElem>();
-            layout.DoLayout(this);
         }
         
         public IEnumerator<IGridElem> GetEnumerator()

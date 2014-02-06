@@ -36,13 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.0.1\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.0.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\packages\Prism.4.1.0.0\lib\NET40\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -137,14 +130,6 @@
     <ProjectReference Include="..\BL\TmpXmlExportImport\TmpXmlExportImportService.csproj">
       <Project>{22f5b749-3332-433f-96b2-152bd59718a8}</Project>
       <Name>TmpXmlExportImportService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DAL\EF\EF.csproj">
-      <Project>{231874C3-1B52-4CB4-B50B-7474C5E8D2DC}</Project>
-      <Name>EF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DAL\Entity\Entity.csproj">
-      <Project>{335B8662-F9FD-487D-9DE7-7DBD001A41FC}</Project>
-      <Name>Entity</Name>
     </ProjectReference>
     <ProjectReference Include="..\Interfaces\MemOrg.Interfaces.csproj">
       <Project>{c7ecb5ba-4854-4842-b849-323d58e0de32}</Project>

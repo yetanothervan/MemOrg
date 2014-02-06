@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
@@ -41,14 +42,14 @@ namespace GraphDrawService.Draw
                 dc.DrawRectangle(_style.QuoteBlockBrush, _style.QuoteBlockPen, rect);
             }
             result.Add(dv);
-            result.AddRange(DrawerFuncs.RenderStackLayout(p, _childs, Margin));
+            result.AddRange(new VerticalStackLayout(Childs, Margin).Render(p));
 
             return result;
         }
 
         public Size GetSize()
         {
-            return DrawerFuncs.CalculateSizeStackLayout(_childs, Margin);
+            return new VerticalStackLayout(Childs, Margin).CalculateSize();
         }
     }
 }

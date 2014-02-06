@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,19 +23,13 @@ namespace GraphOrganizeService
             IGraph graph = new Graph(_graphService);
             return graph;
         }
-
-        public IGrid GetGrid(IGridLayout layout)
-        {
-            IGrid grid = new Grid(layout);
-            return grid;
-        }
         
         public IGridLayout GetLayout(IGraph graph)
         {
             return new LayoutRawSquare(graph);
         }
 
-        public IGridLayout GetTagLayout(IGraph graph)
+        public ITreeLayout GetTagLayout(IGraph graph)
         {
             return new LayoutTagRawSquare(graph);
         }

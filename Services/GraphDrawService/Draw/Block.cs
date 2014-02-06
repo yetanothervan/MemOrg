@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.GridElems;
 
@@ -38,7 +39,7 @@ namespace GraphDrawService.Draw
 
         public virtual Size GetSize()
         {
-            return DrawerFuncs.CalculateSizeStackLayout(_childs, Margin);
+            return new VerticalStackLayout(Childs, Margin).CalculateSize();
         }
 
         public void PlaceOn(int row, int col, List<List<IGridElem>> elems)

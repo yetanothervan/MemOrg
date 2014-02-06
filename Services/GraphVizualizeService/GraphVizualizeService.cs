@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +17,12 @@ namespace GraphVizualizeService
         {
             var visGrid = new VisualGrid(grid);
             return visGrid.Visualize(drawer, options);
+        }
+
+        public IComponent VisualizeTree(ITree tree, IVisualizeOptions options, IDrawer drawer)
+        {
+            var visTree = new VisualTree(tree);
+            return visTree.Visualize(drawer, options);
         }
 
         public IComponent StackPanel(IVisualizeOptions options, IDrawer drawer)

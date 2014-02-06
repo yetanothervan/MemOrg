@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
@@ -15,12 +16,12 @@ namespace GraphDrawService.Draw
         public List<IComponent> Childs { get; set; }
         public List<DrawingVisual> Render(Point p)
         {
-            return DrawerFuncs.RenderStackLayout(p, Childs, Margin).ToList();
+            return new VerticalStackLayout(Childs, Margin).Render(p).ToList();
         }
 
         public Size GetSize()
         {
-            return DrawerFuncs.CalculateSizeStackLayout(Childs, Margin);
+            return new VerticalStackLayout(Childs, Margin).CalculateSize();
         }
     }
 }
