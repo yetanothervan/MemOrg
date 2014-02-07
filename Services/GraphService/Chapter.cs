@@ -8,9 +8,9 @@ namespace GraphService
     {
         public Chapter()
         {
-            PagesBlocks = new List<Block>();
+            PagesBlocks = new List<IPage>();
         }
         public Block ChapterBlock { get; set; }
-        public List<Block> PagesBlocks { get; set; }
+        public List<IPage> PagesBlocks { get; set; }
     }
 }

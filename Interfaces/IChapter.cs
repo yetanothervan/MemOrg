@@ -6,6 +6,6 @@ namespace MemOrg.Interfaces
     public interface IChapter
     {
         Block ChapterBlock { get; set; }
-        List<Block> PagesBlocks { get; set; }
+        List<IPage> PagesBlocks { get; set; }
     }
 }

@@ -32,7 +32,13 @@ namespace GraphOrganizeService
                     selem.PlaceOn(pi--, ci);
                     foreach (var page in chapter.PagesBlocks)
                     {
-                        var elem = new GridElemBlockOthers(page, grid);
+
+                        GridElemBlock elem;
+                        if (page.IsBlockTag)
+                            elem = new GridElemBlockTag(page.Block, page.Tag, grid);
+                        else
+                            elem = new GridElemBlockOthers(page.Block, grid);
+                            
                         elem.PlaceOn(pi, ci);
                         --pi;
                     }

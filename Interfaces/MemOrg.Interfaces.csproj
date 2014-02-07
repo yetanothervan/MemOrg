@@ -63,6 +63,7 @@
     <Compile Include="GridElems\IGridElemBlock.cs" />
     <Compile Include="GridElems\IGridElemBlockSource.cs" />
     <Compile Include="IGridLayout.cs" />
+    <Compile Include="IPage.cs" />
     <Compile Include="ITmpXmlExportImportService.cs" />
     <Compile Include="ITree.cs" />
     <Compile Include="ITreeLayout.cs" />

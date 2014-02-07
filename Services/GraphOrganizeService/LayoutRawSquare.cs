@@ -24,24 +24,24 @@ namespace GraphOrganizeService
             var grid = new Grid();
             var graphService = _graph.GraphService;
 
-            var elemsCount = graphService.BlockOthers.Count()
-                             + graphService.BlockRels.Count()
-                             + graphService.BlockSources.Count()
-                             + graphService.BlockTags.Count();
+            var notInclude = graphService.Graph.Books
+                .Aggregate(0, (accumulate, book) 
+                    => accumulate + book.Chapters
+                    .Aggregate(0, (i, chapter) 
+                        => i + chapter.PagesBlocks.Count));
+
+            var elemsCount = graphService.BlockRels.Count() 
+                + graphService.BlockTags.Count()
+                + graphService.BlockOthers.Count()
+                - notInclude;
 
             _allocator = new RawSquareGridElemAllocator(elemsCount);
-            
           
             foreach (var blockTag in graphService.BlockTags)
             {
 // ReSharper disable once AccessToForEachVariableInClosure
                 var tag = graphService.TagsBlock.First(o => o.TagBlock.BlockId == blockTag.BlockId);
                 var gridElem = new GridElemBlockTag(blockTag, tag, grid);
-                _allocator.PlaceNextGridElem(gridElem);
-            }
-            foreach (var blockSource in graphService.BlockSources)
-            {
-                var gridElem = new GridElemBlockSource(blockSource, grid);
                 _allocator.PlaceNextGridElem(gridElem);
             }
             foreach (var blockRel in graphService.BlockRels)
@@ -51,6 +51,12 @@ namespace GraphOrganizeService
             }
             foreach (var block in graphService.BlockOthers)
             {
+                if (graphService.Graph.Books
+                    .Any(b => b.Chapters
+                        .Any(c => c.PagesBlocks
+                            .Any(p => p.Block.BlockId == block.BlockId))))
+                    continue;
+
                 if (block.Particles.Count == block.Particles.OfType<UserTextParticle>().Count()
                     && block.Particles.Count != 0)
                     _allocator.PlaceNextGridElem(new GridElemBlockUserText(block, grid));

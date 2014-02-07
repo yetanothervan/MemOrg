@@ -77,9 +77,17 @@ namespace GraphService
                         {
                             var chapter =
                                 book.Chapters.FirstOrDefault(c => c.ChapterBlock.BlockId == p.SourceTextParticle.Block.BlockId);
-                            if (chapter != null && !chapter.PagesBlocks.Contains(block))
+                            if (chapter != null && chapter.PagesBlocks.All(page => page.Block != block))
                             {
-                                chapter.PagesBlocks.Add(block);
+                                Tag tag = 
+                                    _graphService.TagsBlock.FirstOrDefault(t => t.TagBlock.BlockId == block.BlockId);
+
+                                chapter.PagesBlocks.Add(new Page
+                                {
+                                    Block = block, 
+                                    IsBlockTag = tag != null,
+                                    Tag = tag
+                                });
                                 break;
                             }
                         }

@@ -132,7 +132,7 @@ namespace EF
             _poetmanTag = CreateTag("Поэт", _literatorTag);
             _etcTag = CreateTag("ЭТЦ", _humanTag);
             _kafedraTag = CreateTag("Кафедра", null);
-            _kafedraConceptualWarTag = CreateTag("Концептуальная война", _kafedraTag);
+            _kafedraConceptualWarTag = CreateTag("Кафедра Концептуальная война", _kafedraTag);
             _kafedraConceptualWarTag.TagBlock = new Block();
             _bookConceptualWarTag = CreateTag("«Концептуальная война»", _kafedraConceptualWarTag);
             _bookConceptualWarTag.TagBlock = new Block();
