@@ -24,10 +24,10 @@ namespace GraphOrganizeService
             var grid = new Grid();
             var graphService = _graph.GraphService;
 
-            var elemsCount = graphService.BlockOthers.Count
-                             + graphService.BlockRels.Count
-                             + graphService.BlockSources.Count
-                             + graphService.BlockTags.Count;
+            var elemsCount = graphService.BlockOthers.Count()
+                             + graphService.BlockRels.Count()
+                             + graphService.BlockSources.Count()
+                             + graphService.BlockTags.Count();
 
             _allocator = new RawSquareGridElemAllocator(elemsCount);
             

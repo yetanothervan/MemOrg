@@ -20,7 +20,7 @@ namespace EF
         {
             get
             {
-                return _context.Tags;
+                return _context.Tags.AsNoTracking();
             }
         }
     }

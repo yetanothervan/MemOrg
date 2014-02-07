@@ -20,7 +20,7 @@ namespace EF
         {
             get
             {
-                return _context.Blocks;
+                return _context.Blocks.AsNoTracking();
             }
         }
 
@@ -39,7 +39,7 @@ left join (Particles t1 inner join SourceTextParticle t2 on t1.ParticleId = t2.P
 where TagId is null and RelationId is null and t1.ParticleId is null";*/
                
                 var res =
-                    _context.Blocks
+                    _context.Blocks.AsNoTracking()
 
                     .GroupJoin(_context.Tags, block => block, tag => tag.TagBlock,
                         (block, tg) => new { block, tg })
@@ -67,17 +67,17 @@ where TagId is null and RelationId is null and t1.ParticleId is null";*/
 
         public IQueryable<Block> BlockSources
         {
-            get { return _context.Blocks.Where(b => b.Particles.Any(p => p is SourceTextParticle)); }
+            get { return _context.Blocks.AsNoTracking().Where(b => b.Particles.Any(p => p is SourceTextParticle)); }
         }
 
         public IQueryable<Block> BlockTags
         {
-            get { return _context.Tags.Where(tag => tag.TagBlock != null).Select(t => t.TagBlock); }
+            get { return _context.Tags.AsNoTracking().Where(tag => tag.TagBlock != null).Select(t => t.TagBlock); }
         }
 
         public IQueryable<Block> BlockRels
         {
-            get { return _context.Relations.Where(rel => rel.RelationBlock != null).Select(r => r.RelationBlock); }
+            get { return _context.Relations.AsNoTracking().Where(rel => rel.RelationBlock != null).Select(r => r.RelationBlock); }
         }
     }
 }

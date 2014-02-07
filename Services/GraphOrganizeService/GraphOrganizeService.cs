@@ -20,13 +20,17 @@ namespace GraphOrganizeService
 
         public IGraph GetGraph(IGraphFilter filter)
         {
-            IGraph graph = new Graph(_graphService);
-            return graph;
+            return _graphService.Graph;
         }
-        
-        public IGridLayout GetLayout(IGraph graph)
+
+        public IGridLayout GetFullLayout(IGraph graph)
         {
             return new LayoutRawSquare(graph);
+        }
+
+        public IGridLayout GetLayout(IGraph graph)
+        {
+            return new LayoutCamomile(graph);
         }
 
         public ITreeLayout GetTagLayout(IGraph graph)

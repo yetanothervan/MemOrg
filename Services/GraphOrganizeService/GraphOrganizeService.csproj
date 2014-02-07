@@ -47,13 +47,13 @@
     <Compile Include="Elems\GridElemBlockTag.cs" />
     <Compile Include="Elems\GridElemBlockRel.cs" />
     <Compile Include="Elems\GridElemBlockSource.cs" />
-    <Compile Include="Graph.cs" />
     <Compile Include="GraphOrganizeService.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Elems\GridElem.cs" />
     <Compile Include="Elems\GridElemBlock.cs" />
     <Compile Include="Elems\GridElemTag.cs" />
     <Compile Include="GridEnumerator.cs" />
+    <Compile Include="LayoutFlower.cs" />
     <Compile Include="LayoutRawSquare.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

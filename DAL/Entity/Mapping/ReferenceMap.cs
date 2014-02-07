@@ -7,6 +7,7 @@ namespace DAL.Entity.Mapping
         public ReferenceMap()
         {
             this.HasRequired(t => t.Block).WithMany();
+            this.HasRequired(t => t.ReferencedBlock).WithMany().WillCascadeOnDelete(false);
         }
     }
 }

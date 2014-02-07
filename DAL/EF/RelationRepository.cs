@@ -15,7 +15,7 @@ namespace EF
             get
             {
                 if (_context == null) _context = new MemOrgContext();
-                return _context.Relations;
+                return _context.Relations.AsNoTracking();
             }
         }
     }

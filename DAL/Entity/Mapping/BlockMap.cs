@@ -16,7 +16,6 @@ namespace DAL.Entity.Mapping
                 });
 
             this.HasMany(t => t.Particles).WithRequired(d => d.Block);
-
             this.HasMany(t => t.References).WithRequired(d => d.Block);
         }
     }

@@ -36,7 +36,7 @@ namespace GraphOrganizeService
         public IGrid CreateTreesGrid()
         {
             IGrid grid = new Grid();
-            var allocator = new RawSquareGridElemAllocator(_graph.GraphService.TagRoots.Count);
+            var allocator = new RawSquareGridElemAllocator(_graph.GraphService.TagRoots.Count());
             foreach (var tagRoot in _graph.GraphService.TagRoots)
             {
                 var tree = CreateTree(tagRoot, grid);

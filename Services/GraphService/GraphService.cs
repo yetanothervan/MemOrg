@@ -19,44 +19,50 @@ namespace GraphService
             _relationRepository = relationRepository;
         }
 
-        public List<Block> BlockTags
+        public IQueryable<Block> BlockTags
         {
-            get { return _blockRepository.BlockTags.ToList(); }
+            get { return _blockRepository.BlockTags; }
         }
 
-        public List<Block> BlockSources
+        public IQueryable<Block> BlockSources
         {
-            get { return _blockRepository.BlockSources.ToList(); }
+            get { return _blockRepository.BlockSources; }
         }
 
-        public List<Block> BlockRels
+        public IQueryable<Block> BlockRels
         {
-            get { return _blockRepository.BlockRels.ToList(); }
+            get { return _blockRepository.BlockRels; }
         }
 
-        public List<Block> BlockOthers
+        public IQueryable<Block> BlockOthers
         {
-            get { return _blockRepository.BlockOthers.ToList(); }
+            get { return _blockRepository.BlockOthers; }
         }
 
-        public List<Block> BlockAll
+        public IQueryable<Block> BlockAll
         {
-            get { return _blockRepository.All.ToList(); }
+            get { return _blockRepository.All; }
         }
 
-        public List<Tag> TagsNoBlock
+        public IQueryable<Tag> TagsNoBlock
         {
-            get { return _tagRepository.All.Where(tag => tag.TagBlock == null).ToList(); }
+            get { return _tagRepository.All.Where(tag => tag.TagBlock == null); }
         }
 
-        public List<Tag> TagsBlock
+        public IQueryable<Tag> TagsBlock
         {
-            get { return _tagRepository.All.Where(tag => tag.TagBlock != null).ToList(); }
+            get { return _tagRepository.All.Where(tag => tag.TagBlock != null); }
         }
 
-        public List<Tag> TagRoots
+        public IQueryable<Tag> TagRoots
         {
-            get { return _tagRepository.All.Where(tag => tag.Parent == null).ToList(); }
+            get { return _tagRepository.All.Where(tag => tag.Parent == null); }
+        }
+
+        private IGraph _graph;
+        public IGraph Graph
+        {
+            get { return _graph ?? (_graph = new Graph(this)); }
         }
     }
 }

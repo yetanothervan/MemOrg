@@ -47,6 +47,8 @@
     <Compile Include="GridElems\IGridElemBlockTag.cs" />
     <Compile Include="GridElems\IGridElemBlockUserText.cs" />
     <Compile Include="GridElems\IGridElemTag.cs" />
+    <Compile Include="IBook.cs" />
+    <Compile Include="IChapter.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="IDrawer.cs" />
     <Compile Include="IDrawStyle.cs" />

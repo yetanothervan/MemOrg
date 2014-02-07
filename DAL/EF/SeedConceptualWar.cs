@@ -42,6 +42,8 @@ namespace EF
         Tag _etcTag;
         Tag _eotTag;
 
+        private const string Cwname = "Conceptual war";
+
         private void SeedChapter1()
         {
             #region Define particles
@@ -271,6 +273,9 @@ namespace EF
             _context.Blocks.Add(philosofyOfHistiry);
             _context.Blocks.Add(utConceptWarBlock);
             _context.Blocks.Add(byalyBlock);
+
+            cwChapter1.ParamName = Cwname;
+            cwChapter1.ParamValue = 1;
             _context.Blocks.Add(cwChapter1);
 
             _context.Relations.Add(abelarAboutConceptRelation);
@@ -850,6 +855,10 @@ namespace EF
             _context.Blocks.Add(islamBlock);
             _context.Blocks.Add(latinAmericaBlock);
             _context.Blocks.Add(RussiaBlock);
+
+            cwChapter2.ParamName = Cwname;
+            cwChapter2.ParamValue = 2;
+            
             _context.Blocks.Add(cwChapter2);
             _context.Blocks.Add(utAboutEndOhistoryBlock);
             _context.Blocks.Add(utAboutElitsAndHistoricalFireBlock);
