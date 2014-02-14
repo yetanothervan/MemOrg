@@ -6,6 +6,11 @@ namespace MemOrg.Interfaces
     {
         Block Block { get; set; }
         Tag Tag { get; set; }
-        bool IsBlockTag { get; set; }
+        Relation Relation { get; set; }
+        bool IsBlockTag { get; }
+        bool IsBlockRel { get; }
+        BlockQuoteParticleSources MySources { get; set; }
+        BlockQuoteParticleSources RelFirstSources { get; set; }
+        BlockQuoteParticleSources RelSecondSources { get; set; }
     }
 }

@@ -8,9 +8,10 @@ using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    class TagBox : Block
+    class BlockRoundedRectangle : Block
     {
-        public TagBox(IDrawStyle style, IGridElem gridElem) : base(style, gridElem)
+        public BlockRoundedRectangle(Brush brush, Pen pen, IGridElem gridElem)
+            : base(brush, pen, gridElem)
         {
         }
 
@@ -22,7 +23,7 @@ namespace GraphDrawService.Draw
             using (var dc = dv.RenderOpen())
             {
                 var rect = new Rect(p, GetSize());
-                dc.DrawRectangle(Style.TagBrush, Style.TagPen, rect);
+                dc.DrawRoundedRectangle(Brush, Pen, rect, 10.0, 10.0);
             }
             result.Add(dv);
             result.AddRange(new VerticalStackLayout(Childs, Margin).Render(p));

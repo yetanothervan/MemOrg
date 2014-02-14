@@ -46,16 +46,19 @@ namespace GraphDrawService
             p = CreateGridElemBrushNPen(Color.FromRgb(255, 255, 255), Color.FromRgb(0, 0, 0));
             OthersBlockBrush = p.First;
             OthersBlockPen = p.Second;
+
+            p = CreateGridElemBrushNPen(Color.FromRgb(245, 245, 245), Color.FromRgb(127, 127, 127), 1.0);
+            OthersBlockNoParticlesBrush = p.First;
+            OthersBlockNoParticlesPen = p.Second;
         }
 
-        Pair<Brush, Pen> CreateGridElemBrushNPen(Color brushColor, Color penColor)
+        Pair<Brush, Pen> CreateGridElemBrushNPen(Color brushColor, Color penColor, double penSize = 2.0)
         {
             Brush brush = new SolidColorBrush(brushColor);
             brush.Freeze();
             var quoteBlockPenBrush = new SolidColorBrush(penColor);
             quoteBlockPenBrush.Freeze();
-            const double quoteBlockPenSize = 2.0;
-            var pen = new Pen(quoteBlockPenBrush, quoteBlockPenSize);
+            var pen = new Pen(quoteBlockPenBrush, penSize);
             pen.Freeze();
             return new Pair<Brush, Pen>(brush, pen);
         }
@@ -72,6 +75,8 @@ namespace GraphDrawService
         public Pen QuoteBlockPen { get; set; }
         public Brush OthersBlockBrush { get; set; }
         public Pen OthersBlockPen { get; set; }
+        public Brush OthersBlockNoParticlesBrush { get; set; }
+        public Pen OthersBlockNoParticlesPen { get; set; }
         public Brush SourceBlockBrush { get; set; }
         public Pen SourceBlockPen { get; set; }
         public Brush TagBlockBrush { get; set; }

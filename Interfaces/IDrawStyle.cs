@@ -36,5 +36,8 @@ namespace MemOrg.Interfaces
 
         Brush OthersBlockBrush { get; set; }
         Pen OthersBlockPen { get; set; }
+
+        Brush OthersBlockNoParticlesBrush { get; set; }
+        Pen OthersBlockNoParticlesPen { get; set; }
     }
 }

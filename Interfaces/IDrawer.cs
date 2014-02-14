@@ -7,6 +7,7 @@ namespace MemOrg.Interfaces
         IComponent DrawGrid();
         IComponent DrawCaption(string text);
         IComponent DrawBlockOthers(IGridElem gridElem);
+        IComponent DrawBlockOthersNoParticles(IGridElem gridElem);
         IComponent DrawBlockSource(IGridElem gridElem);
         IComponent DrawBlockRelation(IGridElem gridElem);
         IComponent DrawBlockTag(IGridElem gridElem);

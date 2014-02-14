@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DAL.Entity;
 using MemOrg.Interfaces;
 
 namespace GraphService
@@ -14,14 +15,14 @@ namespace GraphService
         {
             get { return CaptionInternal; }
         }
-
+        
         public string CaptionInternal { get; set; }
 
-        public IEnumerable<IChapter> Chapters
+        public IList<IChapter> Chapters
         {
             get { return ChaptersInternal; }
         }
 
-        public List<IChapter> ChaptersInternal { get; set; }
+        public IList<IChapter> ChaptersInternal { get; set; }
     }
 }

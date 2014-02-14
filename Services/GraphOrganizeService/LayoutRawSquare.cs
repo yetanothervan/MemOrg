@@ -24,16 +24,10 @@ namespace GraphOrganizeService
             var grid = new Grid();
             var graphService = _graph.GraphService;
 
-            var notInclude = graphService.Graph.Books
-                .Aggregate(0, (accumulate, book) 
-                    => accumulate + book.Chapters
-                    .Aggregate(0, (i, chapter) 
-                        => i + chapter.PagesBlocks.Count));
-
-            var elemsCount = graphService.BlockRels.Count() 
-                + graphService.BlockTags.Count()
-                + graphService.BlockOthers.Count()
-                - notInclude;
+            var elemsCount = graphService.BlockOthers.Count()
+                             + graphService.BlockRels.Count()
+                             + graphService.BlockTags.Count();
+                
 
             _allocator = new RawSquareGridElemAllocator(elemsCount);
           
@@ -51,12 +45,6 @@ namespace GraphOrganizeService
             }
             foreach (var block in graphService.BlockOthers)
             {
-                if (graphService.Graph.Books
-                    .Any(b => b.Chapters
-                        .Any(c => c.PagesBlocks
-                            .Any(p => p.Block.BlockId == block.BlockId))))
-                    continue;
-
                 if (block.Particles.Count == block.Particles.OfType<UserTextParticle>().Count()
                     && block.Particles.Count != 0)
                     _allocator.PlaceNextGridElem(new GridElemBlockUserText(block, grid));

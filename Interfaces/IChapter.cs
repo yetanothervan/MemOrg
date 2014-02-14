@@ -7,5 +7,7 @@ namespace MemOrg.Interfaces
     {
         Block ChapterBlock { get; set; }
         List<IPage> PagesBlocks { get; set; }
+        IChapter NextChapter { get; set; }
+        IChapter PrevChapter { get; set; }
     }
 }

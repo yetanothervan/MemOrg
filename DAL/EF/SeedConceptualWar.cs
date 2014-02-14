@@ -627,7 +627,7 @@ namespace EF
             var elitsBlock = new Block { Caption = "Элиты" };
             var ideologicalWarBlock = new Block { Caption = "Идеологическая война" };
             var gameInBiserBlock = new Block { Caption = "«Игра в бисер»" };
-            var historicalFireBlock = new Block { Caption = "«Исторический огонь" };
+            var historicalFireBlock = new Block { Caption = "«Исторический огонь»" };
             var evropaBlock = new Block { Caption = "Европа" };
             var usaBlock = new Block { Caption = "США" };
             var chinaBlock = new Block { Caption = "Китай" };

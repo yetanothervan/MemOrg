@@ -48,6 +48,16 @@ namespace MemOrg.Interfaces
         IQueryable<Tag> TagRoots { get; }
 
         /// <summary>
+        /// Реляции с блоком
+        /// </summary>
+        IQueryable<Relation> RelationsBlock { get; }
+
+        /// <summary>
+        /// Реляции без блока
+        /// </summary>
+        IQueryable<Relation> RelationsNoBlock { get; }
+
+        /// <summary>
         /// Собственно, граф
         /// </summary>
         IGraph Graph { get; }

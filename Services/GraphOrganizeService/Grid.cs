@@ -43,8 +43,8 @@ namespace GraphOrganizeService
         private void CalculateSize()
         {
             _cachedSize = new Pair<int, int>
-                (_elems.Keys.Max(o => o.First),
-                    _elems.Keys.Max(o => o.Second)
+                (_elems.Keys.Max(o => o.First) - _elems.Keys.Min(o => o.First),
+                    _elems.Keys.Max(o => o.Second) - _elems.Keys.Min(o => o.Second)
                 );
         }
 

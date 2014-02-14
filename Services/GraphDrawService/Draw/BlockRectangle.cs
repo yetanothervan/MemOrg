@@ -11,13 +11,13 @@ using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    class BlockSource : Block
+    class BlockRectangle : Block
     {
-        public BlockSource(IDrawStyle style, IGridElem gridElem)
-            : base(style, gridElem)
+        public BlockRectangle(Brush brush, Pen pen, IGridElem gridElem)
+            : base(brush, pen, gridElem)
         {
         }
-        
+
         public override List<DrawingVisual> Render(Point p)
         {
             var result = new List<DrawingVisual>();
@@ -26,12 +26,12 @@ namespace GraphDrawService.Draw
             using (var dc = dv.RenderOpen())
             {
                 var rect = new Rect(p, GetSize());
-                dc.DrawRectangle(Style.SourceBlockBrush, Style.SourceBlockPen, rect);
+                dc.DrawRectangle(Brush, Pen, rect);
             }
             result.Add(dv);
             result.AddRange(new VerticalStackLayout(Childs, Margin).Render(p));
+
             return result;
         }
-        
     }
 }

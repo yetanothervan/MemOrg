@@ -41,6 +41,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockQuoteParticleSources.cs" />
     <Compile Include="GlobalCommands.cs" />
     <Compile Include="GridElems\IGridElemBlockOthers.cs" />
     <Compile Include="GridElems\IGridElemBlockRel.cs" />

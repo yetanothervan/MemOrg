@@ -17,7 +17,10 @@ namespace GraphVizualizeService.VisualElems
 
         public override IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            var res = drawer.DrawBlockOthers(_ge);
+            var res = _ge.Block.Particles.Count > 0 
+                ? drawer.DrawBlockOthers(_ge)
+                : drawer.DrawBlockOthersNoParticles(_ge);
+
             var caption = drawer.DrawCaption(_ge.Block.Caption);
             res.Childs.Add(caption);
             if (options.HeadersOnly) return res;

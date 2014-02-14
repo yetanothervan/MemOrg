@@ -59,6 +59,16 @@ namespace GraphService
             get { return _tagRepository.All.Where(tag => tag.Parent == null); }
         }
 
+        public IQueryable<Relation> RelationsBlock
+        {
+            get { return _relationRepository.All.Where(rel => rel.RelationBlock != null); }
+        }
+
+        public IQueryable<Relation> RelationsNoBlock
+        {
+            get { return _relationRepository.All.Where(rel => rel.RelationBlock == null); }
+        }
+
         private IGraph _graph;
         public IGraph Graph
         {

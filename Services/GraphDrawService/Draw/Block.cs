@@ -13,14 +13,17 @@ namespace GraphDrawService.Draw
 {
     abstract class Block : IComponent, IGridElem
     {
-        protected readonly IDrawStyle Style;
         private readonly IGridElem _gridElem;
+        protected readonly Brush Brush;
+        protected readonly Pen Pen;
+
         protected const double Margin = 5.0;
 
-        protected Block(IDrawStyle style, IGridElem gridElem)
+        protected Block(Brush brush, Pen pen, IGridElem gridElem)
         {
-            Style = style;
             _gridElem = gridElem;
+            Brush = brush;
+            Pen = pen;
         }
 
         private List<IComponent> _childs;

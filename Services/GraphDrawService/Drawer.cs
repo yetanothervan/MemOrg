@@ -48,32 +48,37 @@ namespace GraphDrawService
 
         public IComponent DrawBlockOthers(IGridElem gridElem)
         {
-            return new BlockOthers(_style, gridElem);
+            return new BlockRectangle(_style.OthersBlockBrush, _style.OthersBlockPen, gridElem);
+        }
+
+        public IComponent DrawBlockOthersNoParticles(IGridElem gridElem)
+        {
+            return new BlockRectangle(_style.OthersBlockNoParticlesBrush, _style.OthersBlockNoParticlesPen, gridElem);
         }
 
         public IComponent DrawBlockSource(IGridElem gridElem)
         {
-            return new BlockSource(_style, gridElem);
+            return new BlockRectangle(_style.SourceBlockBrush, _style.SourceBlockPen, gridElem);
         }
 
         public IComponent DrawBlockRelation(IGridElem gridElem)
         {
-            return new BlockRelation(_style, gridElem);
+            return new BlockRectangle(_style.RelationBlockBrush, _style.RelationBlockPen, gridElem);
         }
 
         public IComponent DrawBlockTag(IGridElem gridElem)
         {
-            return new BlockTag(_style, gridElem);
+            return new BlockRoundedRectangle(_style.TagBlockBrush, _style.TagBlockPen, gridElem);
         }
 
         public IComponent DrawBlockUserText(IGridElem gridElem)
         {
-            return new BlockUserText(_style, gridElem);
+            return new BlockRectangle(_style.UserTextBlockBrush, _style.UserTextBlockPen, gridElem);
         }
 
         public IComponent DrawTag(IGridElem gridElem)
         {
-            return new TagBox(_style, gridElem);
+            return new BlockRectangle(_style.TagBlockBrush, _style.TagBlockPen, gridElem);
         }
     }
 }

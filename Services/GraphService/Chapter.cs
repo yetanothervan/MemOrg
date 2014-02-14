@@ -12,5 +12,7 @@ namespace GraphService
         }
         public Block ChapterBlock { get; set; }
         public List<IPage> PagesBlocks { get; set; }
+        public IChapter NextChapter { get; set; }
+        public IChapter PrevChapter { get; set; }
     }
 }

@@ -53,7 +53,7 @@
     <Compile Include="Elems\GridElemBlock.cs" />
     <Compile Include="Elems\GridElemTag.cs" />
     <Compile Include="GridEnumerator.cs" />
-    <Compile Include="LayoutFlower.cs" />
+    <Compile Include="LayoutCamomile.cs" />
     <Compile Include="LayoutRawSquare.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
