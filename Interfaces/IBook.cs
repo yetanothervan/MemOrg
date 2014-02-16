@@ -7,5 +7,6 @@ namespace MemOrg.Interfaces
     {
         string Caption { get; }
         IList<IChapter> Chapters { get; }
+        IPage GetPageByBlock(int blockId);
     }
 }

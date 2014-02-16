@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,36 +28,85 @@ namespace GraphOrganizeService
                 int chapCount = 0;
                 foreach (var chapter in book.Chapters)
                 {
-                    var layout = new ChapterLayout {ChapterBlock = chapter.ChapterBlock};
+                    //let's fill rows
+                    var rows = new List<ChapterLayoutRow>();
+                    
+                    //and pour out pagesSet
+                    //var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
+                    
+                    //while (pagesSet.Count > 0)
+                    //{
+                    //    var page = pagesSet.FirstOrDefault();
+                    //    if (page == null) continue;
 
-                    var pagesRelsSet = new HashSet<IPage>(chapter.PagesBlocks.Where(p => p.IsBlockRel));
-                    layout.FirstColumn.AddRange(pagesRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1}));
+                    //    rows.Add(ExtractRow(pagesSet, page));
+                    //}
 
-                    var pagesNoRelsSet = new HashSet<IPage>(chapter.PagesBlocks
+                    var pagesRelsSet = chapter.PagesBlocks.Where(p => p.IsBlockRel).ToList();
+
+                    var pagesNoRelsSet = chapter.PagesBlocks
                         .Where(p => !p.IsBlockRel && pagesRelsSet
                             .All(p2 => p2.Relation.FirstBlock.BlockId != p.Block.BlockId
-                                       && p2.Relation.SecondBlock.BlockId != p.Block.BlockId)));
-                    layout.SecondColumn.AddRange(
-                        pagesNoRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1}));
+                                       && p2.Relation.SecondBlock.BlockId != p.Block.BlockId)).ToList();
 
-                    var pagesOneRelsSet = new HashSet<IPage>(chapter.PagesBlocks.Where(p =>
-                        pagesRelsSet
-                            .Count(p2 => p2.Relation.FirstBlock.BlockId == p.Block.BlockId
-                                         || p2.Relation.SecondBlock.BlockId == p.Block.BlockId) == 1));
-                    layout.ThirdColumn.AddRange(
-                        pagesOneRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1}));
+                    var pagesOneRelsSet = chapter.PagesBlocks.Where(p =>
+                      pagesRelsSet
+                          .Count(p2 => p2.Relation.FirstBlock.BlockId == p.Block.BlockId
+                              || p2.Relation.SecondBlock.BlockId == p.Block.BlockId) == 1).ToList();
 
-                    var pagesMultiRelsSet = new HashSet<IPage>(chapter.PagesBlocks.Where(p =>
-                        !(pagesRelsSet.Contains(p) || pagesNoRelsSet.Contains(p) || pagesOneRelsSet.Contains(p))));
-                    layout.FourthColumn.AddRange(
-                        pagesMultiRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 2}));
-                    
+                    var pagesMultiRelsSet = chapter.PagesBlocks.Where(p =>
+                        !(pagesRelsSet.Contains(p) || pagesNoRelsSet.Contains(p) || pagesOneRelsSet.Contains(p))).ToList();
+
+                    var layout = new ChapterLayout
+                    {
+                        ChapterBlock = chapter.ChapterBlock,
+                        FirstColumn = new List<ChapterLayoutElem>(
+                            pagesRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1})),
+                        SecondColumn = new List<ChapterLayoutElem>(
+                            pagesNoRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1})),
+                        ThirdColumn = new List<ChapterLayoutElem>(
+                            pagesOneRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1})),
+                        FourthColumn = new List<ChapterLayoutElem>(
+                            pagesMultiRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 2}))
+                    };
+
                     DoChapterLayout(layout, grid, chapCount++);
                 }
-
             }
-
             return grid;
+        }
+
+        //private ChapterLayoutRow ExtractRow(HashSet<IPage> @from, IPage what)
+        //{
+        //    if (!what.IsBlockRel)
+        //        return YeildChapterLayoutRow(@from,
+        //            ExtractRowForBlock(@from, what));
+            
+            
+        //    return null;
+        //}
+
+        //private IEnumerable<IPage> ExtractRowForBlock(HashSet<IPage> @from, IPage blockPage)
+        //{
+        //    var res = new List<IPage> {blockPage};
+        //    if (blockPage.RelatedBy.Count == 0) return res;
+
+        //    foreach (var rel in blockPage.RelatedBy)
+        //    {
+        //        //res.AddRange(ExtractRowForRel(@from, ));
+        //    }
+
+
+
+
+        //}
+
+
+        private ChapterLayoutRow YeildChapterLayoutRow(HashSet<IPage> @from, IEnumerable<IPage> whatList)
+        {
+            var enumerable = whatList as IList<IPage> ?? whatList.ToList();
+            @from.RemoveWhere(enumerable.Contains);
+            return new ChapterLayoutRow { Pages = enumerable.ToList() };
         }
 
         private void DoChapterLayout(ChapterLayout layout, Grid grid, int chapCount)
@@ -100,24 +150,21 @@ namespace GraphOrganizeService
 
     public class ChapterLayout
     {
-        public readonly List<ChapterLayoutElem> FirstColumn;
-        public readonly List<ChapterLayoutElem> SecondColumn;
-        public readonly List<ChapterLayoutElem> ThirdColumn;
-        public readonly List<ChapterLayoutElem> FourthColumn;
+        public List<ChapterLayoutElem> FirstColumn;
+        public List<ChapterLayoutElem> SecondColumn;
+        public List<ChapterLayoutElem> ThirdColumn;
+        public List<ChapterLayoutElem> FourthColumn;
         public Block ChapterBlock;
-
-        public ChapterLayout()
-        {
-            FirstColumn = new List<ChapterLayoutElem>();
-            SecondColumn = new List<ChapterLayoutElem>();
-            ThirdColumn = new List<ChapterLayoutElem>();
-            FourthColumn = new List<ChapterLayoutElem>();
-        }
     }
 
     public class ChapterLayoutElem
     {
         public IPage Page;
         public int RowSpan;
+    }
+
+    public class ChapterLayoutRow
+    {
+        public List<IPage> Pages;
     }
 }

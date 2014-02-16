@@ -37,12 +37,17 @@ namespace GraphService
 
             //feel with chapters
             foreach (var book in books.Cast<Book>())
+            {
                 book.ChaptersInternal =
                     Enumerable.Cast<IChapter>(
                         _graphService.BlockSources
                             .Where(b => b.ParamName == book.CaptionInternal)
                             .OrderBy(b => b.ParamName)
-                            .Select(c => new Chapter { ChapterBlock = c })).ToList();
+                            .Select(c => new Chapter {ChapterBlock = c})).ToList();
+                
+                foreach (var chapter in book.ChaptersInternal.Cast<Chapter>())
+                    chapter.MyBookInternal = book;
+            }
 
             //enumerate chapters
             foreach (var book in books)
@@ -54,66 +59,85 @@ namespace GraphService
                         book.Chapters[i].NextChapter = book.Chapters[i + 1];
                 }
 
-            //feel chapters with pages
+            //feel chapters with page-blocks
             foreach (var book in books.Cast<Book>())
                 foreach (var chapter in book.Chapters.Cast<Chapter>())
-                {
-                    var pageBlocks = _graphService.BlockAll
-                        .Where(block => block.Particles
-                            .Any(p => p is QuoteSourceParticle
-                                      && (p as QuoteSourceParticle).SourceTextParticle.Block.BlockId
-                                      == chapter.ChapterBlock.BlockId)).ToList();
+                    FillChapterWithPageBlocks(chapter);
 
-                    foreach (var pageBlock in pageBlocks)
-                    {
-                        var page = new Page
-                        {
-                            Block = pageBlock,
-                            Tag = _graphService.TagsBlock
-                                .FirstOrDefault(t => t.TagBlock.BlockId == pageBlock.BlockId),
-                            Relation = _graphService.RelationsBlock
-                                .FirstOrDefault(r => r.RelationBlock.BlockId == pageBlock.BlockId),
-                            MySources = DeterminePageQuatasSources(pageBlock, chapter, book),
-                        };
-
-                        if (page.IsBlockRel)
-                        {
-                            
-                            page.RelFirstSources = DeterminePageQuatasSources(page.Relation.FirstBlock, chapter, book);
-                            if (page.RelFirstSources == BlockQuoteParticleSources.NoSources
-                                && chapter.PagesBlocks.All(b => b.Block.BlockId != page.Relation.FirstBlock.BlockId))
-                            {
-                                var firstPage = new Page
-                                {
-                                    Block = page.Relation.FirstBlock,
-                                    MySources = BlockQuoteParticleSources.NoSources
-                                };
-                                chapter.PagesBlocks.Add(firstPage);
-                                page.RelFirstSources = BlockQuoteParticleSources.MyChapterOnly;
-                            }
-                            
-                            page.RelSecondSources = DeterminePageQuatasSources(page.Relation.SecondBlock, chapter, book);
-                            if (page.RelSecondSources == BlockQuoteParticleSources.NoSources
-                                    && chapter.PagesBlocks.All(b => b.Block.BlockId != page.Relation.SecondBlock.BlockId))
-                            {
-                                var secondPage = new Page
-                                {
-                                    Block = page.Relation.SecondBlock,
-                                    MySources = BlockQuoteParticleSources.NoSources
-                                };
-                                chapter.PagesBlocks.Add(secondPage);
-                                page.RelSecondSources = BlockQuoteParticleSources.MyChapterOnly;
-                            }
-                        }
-
-                        chapter.PagesBlocks.Add(page);
-                    }
-                }
+            //tune page-rels
+            foreach (var book in books.Cast<Book>())
+                foreach (var chapter in book.Chapters)
+                    TunePageRels(chapter);
 
             return books;
         }
+        
+        private void FillChapterWithPageBlocks(Chapter chapter)
+        {
+            //all blocks with chapter's block as source
+            var chaptersBlocks = _graphService.BlockAll
+                .Where(block => block.Particles
+                    .Any(p => p is QuoteSourceParticle
+                              && (p as QuoteSourceParticle).SourceTextParticle.Block.BlockId
+                              == chapter.ChapterBlock.BlockId)).ToList();
 
-        private BlockQuoteParticleSources DeterminePageQuatasSources(Block pageBlock, Chapter chapter, Book book)
+            foreach (var block in chaptersBlocks)
+            {
+                var sources = DetermineBlockQuatasSources(block, chapter);
+
+                if (sources == BlockQuoteParticleSources.OtherBook)
+                    continue;
+
+                if (sources != BlockQuoteParticleSources.MyChapterOnly 
+                    && chapter.MyBook.GetPageByBlock(block.BlockId) != null) continue;
+
+                chapter.PagesBlocks.Add(new Page
+                {
+                    MyChapterInternal = chapter,
+                    Block = block,
+                    Tag = _graphService.TagsBlock
+                        .FirstOrDefault(t => t.TagBlock.BlockId == block.BlockId),
+                    Relation = _graphService.RelationsBlock
+                        .FirstOrDefault(r => r.RelationBlock.BlockId == block.BlockId),
+                    MySources = sources
+                });
+            }
+        }
+
+        private void TunePageRels(IChapter chapter)
+        {
+            foreach (var page in chapter.PagesBlocks.Where(p => p.IsBlockRel).ToList())
+            {
+                var firstPage = chapter.MyBook.GetPageByBlock(page.Relation.FirstBlock.BlockId);
+                if (firstPage == null)
+                {
+                    firstPage = new Page
+                    {
+                        Block = page.Relation.FirstBlock,
+                        MySources = BlockQuoteParticleSources.NoSources
+                    };
+                    chapter.PagesBlocks.Add(firstPage);
+                }
+                
+                var secondPage = chapter.MyBook.GetPageByBlock(page.Relation.SecondBlock.BlockId);
+                if (secondPage == null)
+                {
+                    secondPage = new Page
+                    {
+                        Block = page.Relation.SecondBlock,
+                        MySources = BlockQuoteParticleSources.NoSources
+                    };
+                    chapter.PagesBlocks.Add(secondPage);
+                }
+
+                page.RelationFirst = firstPage;
+                page.RelationSecond = secondPage;
+                firstPage.RelatedBy.Add(page);
+                secondPage.RelatedBy.Add(page);
+            }
+        }
+
+        private BlockQuoteParticleSources DetermineBlockQuatasSources(Block pageBlock, Chapter chapter)
         {
             if (pageBlock.Particles.Count == 0) return BlockQuoteParticleSources.NoSources;
             
@@ -134,7 +158,7 @@ namespace GraphService
 
                 if ((mySources == BlockQuoteParticleSources.MyChapterOnly
                      || mySources == BlockQuoteParticleSources.NeightborChapter)
-                    && IsQuoteInBook(book, qp))
+                    && IsQuoteInBook(chapter.MyBook, qp))
                 {
                     mySources = BlockQuoteParticleSources.MyBook;
                     continue;
@@ -146,7 +170,7 @@ namespace GraphService
             return mySources;
         }
 
-        private bool IsQuoteInBook(Book book, QuoteSourceParticle qp)
+        private bool IsQuoteInBook(IBook book, QuoteSourceParticle qp)
         {
             return book.Chapters.Any(c => c.ChapterBlock.BlockId == qp.SourceTextParticle.Block.BlockId);
         }

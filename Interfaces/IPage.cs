@@ -1,4 +1,6 @@
-﻿using DAL.Entity;
+﻿using System.Collections;
+using System.Collections.Generic;
+using DAL.Entity;
 
 namespace MemOrg.Interfaces
 {
@@ -9,8 +11,11 @@ namespace MemOrg.Interfaces
         Relation Relation { get; set; }
         bool IsBlockTag { get; }
         bool IsBlockRel { get; }
+        
         BlockQuoteParticleSources MySources { get; set; }
-        BlockQuoteParticleSources RelFirstSources { get; set; }
-        BlockQuoteParticleSources RelSecondSources { get; set; }
+        IPage RelationFirst { get; set; }
+        IPage RelationSecond { get; set; }
+        IChapter MyChapter { get; }
+        IList<IPage> RelatedBy { get; }
     }
 }

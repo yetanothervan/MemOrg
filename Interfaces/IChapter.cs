@@ -9,5 +9,6 @@ namespace MemOrg.Interfaces
         List<IPage> PagesBlocks { get; set; }
         IChapter NextChapter { get; set; }
         IChapter PrevChapter { get; set; }
+        IBook MyBook { get; }
     }
 }
