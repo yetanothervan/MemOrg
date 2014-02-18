@@ -32,15 +32,17 @@ namespace GraphOrganizeService
                     var rows = new List<ChapterLayoutRow>();
                     
                     //and pour out pagesSet
-                    //var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
+                    var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
                     
-                    //while (pagesSet.Count > 0)
-                    //{
-                    //    var page = pagesSet.FirstOrDefault();
-                    //    if (page == null) continue;
+                    while (pagesSet.Count > 0)
+                    {
+                        var page = pagesSet.FirstOrDefault(r => !r.IsBlockRel);
+                        if (page == null) throw new ArgumentException();
 
-                    //    rows.Add(ExtractRow(pagesSet, page));
-                    //}
+                        rows.Add(
+                            YeildChapterLayoutRow(pagesSet,
+                                ExtractRowForBlockInChapter(pagesSet, chapter.ChapterBlock.BlockId, page, null)));
+                    }
 
                     var pagesRelsSet = chapter.PagesBlocks.Where(p => p.IsBlockRel).ToList();
 
@@ -76,30 +78,30 @@ namespace GraphOrganizeService
             return grid;
         }
 
-        //private ChapterLayoutRow ExtractRow(HashSet<IPage> @from, IPage what)
-        //{
-        //    if (!what.IsBlockRel)
-        //        return YeildChapterLayoutRow(@from,
-        //            ExtractRowForBlock(@from, what));
+        
+        private IEnumerable<IPage> ExtractRowForBlockInChapter(HashSet<IPage> @from, int chapterId, IPage blockPage, List<IPage> res)
+        {
+            if (res == null)
+                res = new List<IPage> { blockPage };
+            else
+                if (!res.Contains(blockPage)) res.Add(blockPage);
             
-            
-        //    return null;
-        //}
+            if (blockPage.RelatedBy.Count == 0) return res;
 
-        //private IEnumerable<IPage> ExtractRowForBlock(HashSet<IPage> @from, IPage blockPage)
-        //{
-        //    var res = new List<IPage> {blockPage};
-        //    if (blockPage.RelatedBy.Count == 0) return res;
+            var toAdd = blockPage.RelatedBy.Where(r => !res.Contains(r)
+                && r.MyChapter.ChapterBlock.BlockId == chapterId).ToList();
+            res.AddRange(toAdd);
 
-        //    foreach (var rel in blockPage.RelatedBy)
-        //    {
-        //        //res.AddRange(ExtractRowForRel(@from, ));
-        //    }
+            foreach (var rel in toAdd)
+            {
+                var next = rel.RelationFirst.Block.BlockId == blockPage.Block.BlockId
+                    ? rel.RelationSecond
+                    : rel.RelationFirst;
+                ExtractRowForBlockInChapter(@from, chapterId, next, res);
+            }
 
-
-
-
-        //}
+            return res;
+        }
 
 
         private ChapterLayoutRow YeildChapterLayoutRow(HashSet<IPage> @from, IEnumerable<IPage> whatList)

@@ -34,5 +34,10 @@ namespace GraphService
 
         public IList<IPage> RelatedBy { get; private set; }
         public IChapter MyChapterInternal { get; set; }
+
+        public override string ToString()
+        {
+            return Block != null ? Block.Caption : base.ToString();
+        }
     }
 }
