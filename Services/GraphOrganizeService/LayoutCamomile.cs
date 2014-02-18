@@ -43,34 +43,10 @@ namespace GraphOrganizeService
                             YeildChapterLayoutRow(pagesSet,
                                 ExtractRowForBlockInChapter(pagesSet, chapter.ChapterBlock.BlockId, page, null)));
                     }
-
-                    var pagesRelsSet = chapter.PagesBlocks.Where(p => p.IsBlockRel).ToList();
-
-                    var pagesNoRelsSet = chapter.PagesBlocks
-                        .Where(p => !p.IsBlockRel && pagesRelsSet
-                            .All(p2 => p2.Relation.FirstBlock.BlockId != p.Block.BlockId
-                                       && p2.Relation.SecondBlock.BlockId != p.Block.BlockId)).ToList();
-
-                    var pagesOneRelsSet = chapter.PagesBlocks.Where(p =>
-                      pagesRelsSet
-                          .Count(p2 => p2.Relation.FirstBlock.BlockId == p.Block.BlockId
-                              || p2.Relation.SecondBlock.BlockId == p.Block.BlockId) == 1).ToList();
-
-                    var pagesMultiRelsSet = chapter.PagesBlocks.Where(p =>
-                        !(pagesRelsSet.Contains(p) || pagesNoRelsSet.Contains(p) || pagesOneRelsSet.Contains(p))).ToList();
-
-                    var layout = new ChapterLayout
-                    {
-                        ChapterBlock = chapter.ChapterBlock,
-                        FirstColumn = new List<ChapterLayoutElem>(
-                            pagesRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1})),
-                        SecondColumn = new List<ChapterLayoutElem>(
-                            pagesNoRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1})),
-                        ThirdColumn = new List<ChapterLayoutElem>(
-                            pagesOneRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 1})),
-                        FourthColumn = new List<ChapterLayoutElem>(
-                            pagesMultiRelsSet.Select(p => new ChapterLayoutElem {Page = p, RowSpan = 2}))
-                    };
+                    
+                    rows.ForEach(ApplyLayout);
+                    
+                    var layout = new ChapterLayout {Rows = rows, ChapterBlock = chapter.ChapterBlock};
 
                     DoChapterLayout(layout, grid, chapCount++);
                 }
@@ -78,7 +54,34 @@ namespace GraphOrganizeService
             return grid;
         }
 
-        
+        private void ApplyLayout(ChapterLayoutRow chapterLayoutRow)
+        {
+            if (chapterLayoutRow.Pages == null || chapterLayoutRow.Pages.Count == 0) return;
+
+            if (chapterLayoutRow.Pages.Count == 1)
+            {
+                chapterLayoutRow.ThirdColumn.Add(
+                    new ChapterLayoutElem {Page = chapterLayoutRow.Pages[0], RowSpan = 1});
+                return;
+            }
+
+            if (chapterLayoutRow.Pages.Count == 3)
+            {
+                var rel = chapterLayoutRow.Pages.FirstOrDefault(r => r.IsBlockRel);
+                if (rel != null)
+                {
+                    chapterLayoutRow.ThirdColumn.Add(
+                        new ChapterLayoutElem {Page = rel, RowSpan = 1});
+                    chapterLayoutRow.SecondColumn.Add(
+                        new ChapterLayoutElem {Page = rel.RelationFirst, RowSpan = 1});
+                    chapterLayoutRow.FourthColumn.Add(
+                        new ChapterLayoutElem { Page = rel.RelationSecond, RowSpan = 1 });
+                }
+                return;
+            }
+        }
+
+
         private IEnumerable<IPage> ExtractRowForBlockInChapter(HashSet<IPage> @from, int chapterId, IPage blockPage, List<IPage> res)
         {
             if (res == null)
@@ -117,21 +120,27 @@ namespace GraphOrganizeService
             var selem = new GridElemBlockSource(layout.ChapterBlock, grid);
             selem.PlaceOn(0, chapCount * 4 + 2);
 
-            int c = 0;
-            foreach (var elem in layout.FirstColumn)
-                PlaceElemInGrid(elem, grid, c -= elem.RowSpan, chapCount*4);
+            int whole = 0;
+            foreach (var chapterLayoutRow in layout.Rows)
+            {
+                int c = 0;
+                foreach (var elem in chapterLayoutRow.FirstColumn)
+                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - whole, chapCount*4);
 
-            c = 0;
-            foreach (var elem in layout.SecondColumn)
-                PlaceElemInGrid(elem, grid, c -= elem.RowSpan, chapCount*4 + 1);
+                c = 0;
+                foreach (var elem in chapterLayoutRow.SecondColumn)
+                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - whole, chapCount*4 + 1);
 
-            c = 0;
-            foreach (var elem in layout.ThirdColumn)
-                PlaceElemInGrid(elem, grid, c -= elem.RowSpan, chapCount*4 + 2);
+                c = 0;
+                foreach (var elem in chapterLayoutRow.ThirdColumn)
+                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - whole, chapCount*4 + 2);
 
-            c = 0;
-            foreach (var elem in layout.FourthColumn)
-                PlaceElemInGrid(elem, grid, c -= elem.RowSpan, chapCount*4 + 3);
+                c = 0;
+                foreach (var elem in chapterLayoutRow.FourthColumn)
+                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - whole, chapCount*4 + 3);
+
+                whole -= chapterLayoutRow.Height;
+            }
         }
 
         private void PlaceElemInGrid(ChapterLayoutElem page, Grid grid, int row, int col)
@@ -152,11 +161,8 @@ namespace GraphOrganizeService
 
     public class ChapterLayout
     {
-        public List<ChapterLayoutElem> FirstColumn;
-        public List<ChapterLayoutElem> SecondColumn;
-        public List<ChapterLayoutElem> ThirdColumn;
-        public List<ChapterLayoutElem> FourthColumn;
         public Block ChapterBlock;
+        public List<ChapterLayoutRow> Rows;
     }
 
     public class ChapterLayoutElem
@@ -167,6 +173,34 @@ namespace GraphOrganizeService
 
     public class ChapterLayoutRow
     {
+        public ChapterLayoutRow()
+        {
+            Inner = false;
+            FirstColumn = new List<ChapterLayoutElem>();
+            SecondColumn = new List<ChapterLayoutElem>();
+            ThirdColumn = new List<ChapterLayoutElem>();
+            FourthColumn = new List<ChapterLayoutElem>();
+        }
+
+        public int Height {
+            get
+            {
+                return new List<int>
+                {
+                    FirstColumn.Sum(r => r.RowSpan),
+                    SecondColumn.Sum(r => r.RowSpan),
+                    ThirdColumn.Sum(r => r.RowSpan),
+                    FourthColumn.Sum(r => r.RowSpan)
+                }.Max();
+            }
+        }
+
+        public List<ChapterLayoutElem> FirstColumn;
+        public List<ChapterLayoutElem> SecondColumn;
+        public List<ChapterLayoutElem> ThirdColumn;
+        public List<ChapterLayoutElem> FourthColumn;
+
         public List<IPage> Pages;
+        public bool Inner;
     }
 }
