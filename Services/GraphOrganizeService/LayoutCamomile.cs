@@ -8,6 +8,7 @@ using DAL.Entity;
 using GraphOrganizeService.Elems;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.GridElems;
+using MoreLinq;
 
 namespace GraphOrganizeService
 {
@@ -72,6 +73,29 @@ namespace GraphOrganizeService
             {
                 var trip = new ChapterLayoutRowTriplet(row);
                 trip.DoLayout();
+                return;
+            }
+
+            //complicated case
+            var rels = new HashSet<IPage>();
+
+            var pages = row.Pages.Where(p => !p.IsBlockRel).OrderByDescending(r => r.RelatedBy.Count).ToList();
+            foreach (var page in pages)
+            {
+                var relsInPage = page.RelatedBy.Where(r => r.MyChapter == row.MyChapter).Except(rels).ToList();
+                
+                if (relsInPage.Any())
+                {
+                    row.SecondColumn.Add(new ChapterLayoutElem { Page = page, RowSpan = relsInPage.Count });
+
+                    foreach (var p in relsInPage)
+                    {
+                        row.ThirdColumn.Add(new ChapterLayoutElem { Page = p, RowSpan = 1 });
+                        var oppose = p.RelationFirst.Block.BlockId != page.Block.BlockId ? p.RelationFirst : p.RelationSecond;
+                        row.FourthColumn.Add(new ChapterLayoutElem { Page = oppose, RowSpan = 1 });
+                        rels.Add(p);
+                    }
+                }
             }
         }
 
@@ -115,30 +139,37 @@ namespace GraphOrganizeService
             selem.PlaceOn(0, chapCount * 4 + 2);
 
             int whole = 0;
-            int wholeUnder = 1;
             foreach (var chapterLayoutRow in layout.Rows)
             {
-                int delta = chapterLayoutRow.Inner ? wholeUnder : whole;
-                int c = 0;
+                int c = whole;
                 foreach (var elem in chapterLayoutRow.FirstColumn)
-                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - delta, chapCount*4);
+                {
+                    c -= elem.RowSpan;
+                    PlaceElemInGrid(elem, grid, c, chapCount*4);
+                }
 
-                c = 0;
+                c = whole;
                 foreach (var elem in chapterLayoutRow.SecondColumn)
-                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - delta, chapCount*4 + 1);
+                {
+                    c -= elem.RowSpan;
+                    PlaceElemInGrid(elem, grid, c, chapCount*4 + 1);
+                }
 
-                c = 0;
+                c = whole;
                 foreach (var elem in chapterLayoutRow.ThirdColumn)
-                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - delta, chapCount*4 + 2);
+                {
+                    c -= elem.RowSpan;
+                    PlaceElemInGrid(elem, grid, c, chapCount*4 + 2);
+                }
 
-                c = 0;
+                c = whole;
                 foreach (var elem in chapterLayoutRow.FourthColumn)
-                    PlaceElemInGrid(elem, grid, c -= elem.RowSpan - delta, chapCount*4 + 3);
+                {
+                    c -= elem.RowSpan;
+                    PlaceElemInGrid(elem, grid, c, chapCount*4 + 3);
+                }
 
-                if (chapterLayoutRow.Inner)
-                    wholeUnder += chapterLayoutRow.Height;
-                else
-                    whole -= chapterLayoutRow.Height;
+                whole -= chapterLayoutRow.Height;
             }
         }
 
