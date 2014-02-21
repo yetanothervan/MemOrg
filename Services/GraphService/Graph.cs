@@ -69,9 +69,47 @@ namespace GraphService
                 foreach (var chapter in book.Chapters)
                     TunePageRels(chapter);
 
+            //add references
+            foreach (var book in books.Cast<Book>())
+                foreach (var chapter in book.Chapters)
+                    ProvideWithReferences(chapter);
+
             return books;
         }
-        
+
+        private void ProvideWithReferences(IChapter chapter)
+        {
+            var blocks = chapter.PagesBlocks.Select(c => c.Block.BlockId).ToList();
+            var relnoblocksOfChapter = _graphService.RelationsNoBlock.Where(r => blocks.Contains(r.FirstBlock.BlockId)
+                                                                                 ||
+                                                                                 blocks.Contains(r.SecondBlock.BlockId))
+                .ToList();
+
+            foreach (var rel in relnoblocksOfChapter)
+            {
+                var first = chapter.PagesBlocks.FirstOrDefault(p => p.Block.BlockId == rel.FirstBlock.BlockId);
+                var second = chapter.PagesBlocks.FirstOrDefault(p => p.Block.BlockId == rel.SecondBlock.BlockId);
+                if (first == null)
+                    first = new Page {Block = rel.FirstBlock};
+                if (second == null)
+                    second = new Page {Block = rel.SecondBlock};
+                first.ReferencedBy.Add(second);
+                second.ReferencedBy.Add(first);
+            }
+
+            foreach (var page in chapter.PagesBlocks.Where(p => p.Block.References.Any()).ToList())
+            {
+                foreach (var reference in page.Block.References)
+                {
+                    var referencedBlock =
+                        chapter.PagesBlocks.FirstOrDefault(p =>
+                            p.Block.BlockId == reference.ReferencedBlock.BlockId)
+                        ?? new Page {Block = reference.ReferencedBlock};
+                    page.ReferencedBy.Add(referencedBlock);
+                }
+            }
+        }
+
         private void FillChapterWithPageBlocks(Chapter chapter)
         {
             //all blocks with chapter's block as source

@@ -9,6 +9,7 @@ namespace GraphService
         public Page()
         {
             RelatedBy = new List<IPage>();
+            ReferencedBy = new List<IPage>();
         }
         public Block Block { get; set; }
         public Tag Tag { get; set; }
@@ -32,6 +33,7 @@ namespace GraphService
             get { return MyChapterInternal; }
         }
 
+        public IList<IPage> ReferencedBy { get; private set; }
         public IList<IPage> RelatedBy { get; private set; }
         public IChapter MyChapterInternal { get; set; }
 

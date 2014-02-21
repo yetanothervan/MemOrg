@@ -133,9 +133,9 @@ namespace EF
             _etcTag = CreateTag("ЭТЦ", _humanTag);
             _kafedraTag = CreateTag("Кафедра", null);
             _kafedraConceptualWarTag = CreateTag("Кафедра Концептуальная война", _kafedraTag);
-            _kafedraConceptualWarTag.TagBlock = new Block();
+            _kafedraConceptualWarTag.TagBlock = new Block {Caption = _kafedraConceptualWarTag.Caption};
             _bookConceptualWarTag = CreateTag("«Концептуальная война»", _kafedraConceptualWarTag);
-            _bookConceptualWarTag.TagBlock = new Block();
+            _bookConceptualWarTag.TagBlock = new Block {Caption = _bookConceptualWarTag.Caption};
             _theWordTag = CreateTag("Понятие", null);
             _eotTag = CreateTag("СВ", _theWordTag);
 
@@ -822,6 +822,14 @@ namespace EF
             #endregion
 
             #region Define references
+            elitsAndHistoricalFireBlock.References = new List<Reference>
+            {
+                new Reference {ReferencedBlock = utAboutElitsAndHistoricalFireBlock}
+            };
+            endOfHistoryBlock.References = new List<Reference>
+            {
+                new Reference {ReferencedBlock = utAboutEndOhistoryBlock}
+            };
             CreateDoubleEndedReference(cityUponHillBlocknHillBlock, historicalFireAndUsaBlock);
             CreateDoubleEndedReference(fukuyamaBlock, historicalFireAndMuslimBlock);
             #endregion

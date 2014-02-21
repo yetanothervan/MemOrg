@@ -47,6 +47,7 @@ namespace GraphOrganizeService
 
                     rows.ForEach(r => r.MyChapter = chapter);
                     rows.ForEach(ApplyLayout);
+                    rows.ForEach(ProvideReferences);
                     
                     var layout = new ChapterLayout {Rows = rows, ChapterBlock = chapter.ChapterBlock};
 
@@ -54,6 +55,24 @@ namespace GraphOrganizeService
                 }
             }
             return grid;
+        }
+
+        private void ProvideReferences(ChapterLayoutRow row)
+        {
+            CheckColumn(row.FirstColumn, row);
+            CheckColumn(row.SecondColumn, row);
+            CheckColumn(row.ThirdColumn, row);
+            CheckColumn(row.FourthColumn, row);
+        }
+
+        private void CheckColumn(List<ChapterLayoutElem> column, ChapterLayoutRow row)
+        {
+            var toAdd = new List<ChapterLayoutElem>();
+            foreach (var elem in column.Where(c => c.Page.ReferencedBy.Any()))
+                foreach (var page in elem.Page.ReferencedBy)
+                    if (!row.MyChapter.PagesBlocks.Contains(page))
+                        toAdd.Add(new ChapterLayoutElem { Page = page, RowSpan = 1 });
+            column.AddRange(toAdd);
         }
 
         private void ApplyLayout(ChapterLayoutRow row)
