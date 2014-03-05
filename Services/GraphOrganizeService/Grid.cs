@@ -14,10 +14,12 @@ namespace GraphOrganizeService
     public class Grid : IGrid
     {
         private readonly Dictionary<Pair<int, int>, IGridElem> _elems;
-
+        private readonly List<GridLink> _links;
+        
         public Grid()
         {
             _elems = new Dictionary<Pair<int, int>, IGridElem>();
+            _links = new List<GridLink>();
         }
         
         public IEnumerator<IGridElem> GetEnumerator()
@@ -36,6 +38,17 @@ namespace GraphOrganizeService
             if (_elems.ContainsKey(p))
                 throw new ArgumentOutOfRangeException();
             _elems[p] = elem;
+            _cachedSize = null;
+        }
+
+        public void AddLink(int fromRow, int fromCol, NESW cpb, int toRow, int toCol, NESW cpe)
+        {
+            var link = new GridLink
+            {
+                Begin = new GridLinkPoint {Col = fromCol, ConnectionPoint = cpb, Row = fromRow},
+                End = new GridLinkPoint {Col = toCol, ConnectionPoint = cpe, Row = toRow}
+            };
+            _links.Add(link);
         }
 
         private Pair<int,int> _cachedSize;
@@ -68,5 +81,23 @@ namespace GraphOrganizeService
                 return _cachedSize.Second;
             }
         }
+    }
+
+    public class GridLink
+    {
+        public GridLinkPoint Begin;
+        public GridLinkPoint End;
+    }
+
+    public struct GridLinkPoint
+    {
+        public NESW ConnectionPoint;
+        public int Row;
+        public int Col;
+    }
+
+    public enum NESW
+    {
+        North, East, South, West
     }
 }

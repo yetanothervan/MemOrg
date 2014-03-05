@@ -34,6 +34,7 @@ namespace GraphService
         }
 
         public IList<IPage> ReferencedBy { get; private set; }
+        public object Parent { get; set; }
         public IList<IPage> RelatedBy { get; private set; }
         public IChapter MyChapterInternal { get; set; }
 

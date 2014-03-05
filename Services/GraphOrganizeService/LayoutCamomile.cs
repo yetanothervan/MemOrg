@@ -24,6 +24,7 @@ namespace GraphOrganizeService
         public IGrid CreateGrid()
         {
             var grid = new Grid();
+            //page organize
             foreach (var book in _graph.Books)
             {
                 int chapCount = 0;
@@ -54,6 +55,23 @@ namespace GraphOrganizeService
                     DoChapterLayout(layout, grid, chapCount++);
                 }
             }
+            //make links
+            foreach (var book in _graph.Books)
+                foreach (var chapter in book.Chapters)
+                {
+                    var rels = chapter.PagesBlocks.Where(p => p.IsBlockRel);
+                    foreach (var rel in rels)
+                    {
+                        var first = (ChapterLayoutElem) rel.RelationFirst.Parent;
+                        var second = (ChapterLayoutElem) rel.RelationSecond.Parent;
+                        var myself = (ChapterLayoutElem) rel.Parent;
+                        grid.AddLink(first.Row, first.Col, NESW.East, 
+                            myself.Row, myself.Col, NESW.West);
+                        grid.AddLink(second.Row, second.Col, NESW.West,
+                            myself.Row, myself.Col, NESW.East);
+                    }
+                }
+            
             return grid;
         }
 
@@ -202,6 +220,9 @@ namespace GraphOrganizeService
             else
                 elem = new GridElemBlockOthers(page.Page.Block, grid);
             elem.PlaceOn(row, col);
+            page.Placed = true;
+            page.Row = row;
+            page.Col = col;
         }
     }
 
@@ -214,8 +235,28 @@ namespace GraphOrganizeService
 
     public class ChapterLayoutElem
     {
-        public IPage Page;
+        public ChapterLayoutElem()
+        {
+            Placed = false;
+            Row = 0;
+            Col = 0;
+        }
+        public IPage Page
+        {
+            get { return _page; }
+            set
+            {
+                _page = value;
+                _page.Parent = this;
+            }
+        }
+
         public int RowSpan;
+        private IPage _page;
+
+        public bool Placed;
+        public int Row;
+        public int Col;
     }
 
     public class ChapterLayoutRow

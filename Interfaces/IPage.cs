@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DAL.Entity;
 
@@ -18,5 +19,7 @@ namespace MemOrg.Interfaces
         IChapter MyChapter { get; }
         IList<IPage> RelatedBy { get; }
         IList<IPage> ReferencedBy { get; }
+
+        Object Parent { get; set; }
     }
 }
