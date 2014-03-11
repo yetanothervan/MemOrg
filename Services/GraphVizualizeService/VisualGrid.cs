@@ -41,6 +41,10 @@ namespace GraphVizualizeService
                 else
                     throw new NotImplementedException();
             }
+            foreach (var gridLink in Links)
+            {
+                Childs.Add(new VisualGridLink(gridLink).Visualize(drawer, options));
+            }
             return _mySelf;
         }
 
@@ -59,6 +63,11 @@ namespace GraphVizualizeService
         public void PlaceElem(int row, int col, IGridElem elem)
         {
             throw new NotImplementedException();
+        }
+
+        public List<GridLink> Links
+        {
+            get { return _grid.Links; }
         }
 
         private IComponent _mySelf;

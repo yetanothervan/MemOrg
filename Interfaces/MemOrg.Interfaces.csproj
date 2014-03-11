@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BlockQuoteParticleSources.cs" />
     <Compile Include="GlobalCommands.cs" />
+    <Compile Include="GridElems\GridLink.cs" />
     <Compile Include="GridElems\IGridElemBlockOthers.cs" />
     <Compile Include="GridElems\IGridElemBlockRel.cs" />
     <Compile Include="GridElems\IGridElemBlockTag.cs" />

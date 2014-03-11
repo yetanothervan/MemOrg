@@ -41,6 +41,11 @@ namespace GraphOrganizeService
             _cachedSize = null;
         }
 
+        public List<GridLink> Links
+        {
+            get { return _links; }
+        }
+
         public void AddLink(int fromRow, int fromCol, NESW cpb, int toRow, int toCol, NESW cpe)
         {
             var link = new GridLink
@@ -81,23 +86,5 @@ namespace GraphOrganizeService
                 return _cachedSize.Second;
             }
         }
-    }
-
-    public class GridLink
-    {
-        public GridLinkPoint Begin;
-        public GridLinkPoint End;
-    }
-
-    public struct GridLinkPoint
-    {
-        public NESW ConnectionPoint;
-        public int Row;
-        public int Col;
-    }
-
-    public enum NESW
-    {
-        North, East, South, West
     }
 }

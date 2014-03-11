@@ -17,5 +17,6 @@ namespace MemOrg.Interfaces
         IComponent DrawQuoteBox();
         IComponent DrawStackBox();
         IComponent DrawTree(IGridElem gridElem);
+        IComponent DrawLink(GridLink gridLink);
     }
 }

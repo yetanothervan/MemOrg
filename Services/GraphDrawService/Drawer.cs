@@ -46,6 +46,11 @@ namespace GraphDrawService
             return new Tree(_style, gridElem);
         }
 
+        public IComponent DrawLink(GridLink gridLink)
+        {
+            return new Link(gridLink, _style.SourceBlockPen);
+        }
+
         public IComponent DrawBlockOthers(IGridElem gridElem)
         {
             return new BlockRectangle(_style.OthersBlockBrush, _style.OthersBlockPen, gridElem);

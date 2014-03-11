@@ -10,7 +10,7 @@ using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    public class Grid : IComponent
+    public class Grid : Component
     {
         private const double Margin = 5.0;
 
@@ -20,19 +20,8 @@ namespace GraphDrawService.Draw
         {
             _style = style;
         }
-
-        private List<IComponent> _childs;
-        public List<IComponent> Childs
-        {
-            get
-            {
-                if (_childs == null) Childs = new List<IComponent>(0);
-                return _childs;
-            }
-            set { _childs = value; }
-        }
         
-        public List<DrawingVisual> Render(Point p)
+        public override List<DrawingVisual> Render(Point p)
         {
             var result = new List<DrawingVisual>();
 
@@ -44,25 +33,38 @@ namespace GraphDrawService.Draw
             }
             result.Add(dv);
 
-            foreach (var child in _childs)
+            foreach (var child in Childs)
             {
-                var gridElem = child as IGridElem;
-                if (gridElem == null) continue;
+                int colInd, rowInd;
+                if (child is IGridLink)
+                {
+                    colInd = (child as IGridLink).Begin.Col;
+                    rowInd = (child as IGridLink).Begin.Row;
+                }
+                else
+                {
+                    var gridElem = child as IGridElem;
+                    if (gridElem == null) continue;
+                    colInd = gridElem.ColIndex;
+                    rowInd = gridElem.RowIndex;
+                }
 
-                var x = _colWidths.Where(o => o.Key < gridElem.ColIndex).Sum(o => o.Value)
-                           + (_colWidths.Count(o => o.Key < gridElem.ColIndex) + 1)*Margin;
+
+                var x = _colWidths.Where(o => o.Key < colInd).Sum(o => o.Value)
+                           + (_colWidths.Count(o => o.Key < colInd) + 1)*Margin;
                 
-                var y = _rowHeights.Where(o => o.Key < gridElem.RowIndex).Sum(o => o.Value)
-                           + (_rowHeights.Count(o => o.Key < gridElem.RowIndex) + 1) * Margin;
+                var y = _rowHeights.Where(o => o.Key < rowInd).Sum(o => o.Value)
+                           + (_rowHeights.Count(o => o.Key < rowInd) + 1) * Margin;
 
                 var pC = new Point(x + p.X, y + p.Y);
+                
                 result.AddRange(child.Render(pC));
             }
 
             return result;
         }
 
-        public Size GetSize()
+        public override Size GetSize()
         {
             if (_colWidths == null)
                 CalculateGrid();

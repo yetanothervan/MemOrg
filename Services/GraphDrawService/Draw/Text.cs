@@ -10,7 +10,7 @@ using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
 {
-    class Text : IComponent
+    class Text : Component
     {
         private readonly FormattedText _text;
 
@@ -22,18 +22,7 @@ namespace GraphDrawService.Draw
             _text.MaxTextHeight = style.MaxTextBlockHeight;
         }
 
-        private List<IComponent> _childs;
-        public List<IComponent> Childs
-        {
-            get
-            {
-                if (_childs == null) Childs = new List<IComponent>(0);
-                return _childs;
-            }
-            set { _childs = value; }
-        }
-
-        public List<DrawingVisual> Render(Point p)
+        public override List<DrawingVisual> Render(Point p)
         {
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
@@ -43,7 +32,7 @@ namespace GraphDrawService.Draw
             return new List<DrawingVisual> {dv};
         }
 
-        public Size GetSize()
+        public override Size GetSize()
         {
             return new Size(_text.Width, _text.Height);
         }

@@ -47,6 +47,8 @@
     <Compile Include="Draw\BlockRoundedRectangle.cs" />
     <Compile Include="Drawer.cs" />
     <Compile Include="Draw\BlockRectangle.cs" />
+    <Compile Include="Draw\Component.cs" />
+    <Compile Include="Draw\Link.cs" />
     <Compile Include="Layouts\VerticalStackLayout.cs" />
     <Compile Include="Draw\Block.cs" />
     <Compile Include="Draw\Caption.cs" />

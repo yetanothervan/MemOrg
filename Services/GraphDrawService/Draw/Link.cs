@@ -7,38 +7,39 @@ using System.Windows;
 using System.Windows.Media;
 using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
+using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    public class QuoteBlock : Component
+    class Link : Component, IGridLink
     {
-        private readonly IDrawStyle _style;
-        private const double Margin = 5.0;
-        
-        public QuoteBlock(IDrawStyle style)
+        private readonly GridLink _gridLink;
+        private readonly Pen _pen;
+
+        public Link(GridLink gridLink, Pen pen)
         {
-            _style = style;
+            _gridLink = gridLink;
+            _pen = pen;
         }
 
         public override List<DrawingVisual> Render(Point p)
         {
             var result = new List<DrawingVisual>();
-            
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
-                var rect = new Rect(p, GetSize());
-                dc.DrawRectangle(_style.QuoteBlockBrush, _style.QuoteBlockPen, rect);
+                dc.DrawLine(_pen, new Point(p.X, p.Y + 10), new Point(p.X + 20, p.Y + 10));
             }
             result.Add(dv);
-            result.AddRange(new VerticalStackLayout(Childs, Margin).Render(p));
-
             return result;
         }
-
+        
         public override Size GetSize()
         {
-            return new VerticalStackLayout(Childs, Margin).CalculateSize();
+            return new Size(30.0, 20.0);
         }
+
+        public GridLinkPoint Begin { get { return _gridLink.Begin; } }
+        public GridLinkPoint End { get { return _gridLink.End; } }
     }
 }

@@ -11,7 +11,7 @@ using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    abstract class Block : IComponent, IGridElem
+    abstract class Block : Component, IGridElem
     {
         private readonly IGridElem _gridElem;
         protected readonly Brush Brush;
@@ -25,22 +25,10 @@ namespace GraphDrawService.Draw
             Brush = brush;
             Pen = pen;
         }
+        
+        public abstract override List<DrawingVisual> Render(Point p);
 
-        private List<IComponent> _childs;
-
-        public List<IComponent> Childs
-        {
-            get
-            {
-                if (_childs == null) Childs = new List<IComponent>(0);
-                return _childs;
-            }
-            set { _childs = value; }
-        }
-
-        public abstract List<DrawingVisual> Render(Point p);
-
-        public virtual Size GetSize()
+        public override Size GetSize()
         {
             return new VerticalStackLayout(Childs, Margin).CalculateSize();
         }
