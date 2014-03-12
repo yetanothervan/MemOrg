@@ -47,5 +47,10 @@ namespace GraphDrawService.Draw
         {
             get { return _gridElem.ColIndex; }
         }
+
+        public IComponent Component {
+            get { return this; }
+            set { } 
+        }
     }
 }

@@ -28,7 +28,8 @@ namespace GraphDrawService.Draw
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
-                dc.DrawLine(_pen, new Point(p.X, p.Y + 10), new Point(p.X + 20, p.Y + 10));
+                dc.DrawLine(_pen, new Point(p.X, p.Y + RenderHeight / 2), 
+                    new Point(p.X + RenderWidth, p.Y + RenderHeight / 2));
             }
             result.Add(dv);
             return result;
@@ -36,7 +37,9 @@ namespace GraphDrawService.Draw
         
         public override Size GetSize()
         {
-            return new Size(30.0, 20.0);
+            //var height = (RenderHeight >= 0) ? RenderHeight : 20.0;
+            //var width = (RenderWidth >= 0) ? RenderWidth : 20.0;
+            return new Size(30, 20);
         }
 
         public GridLinkPoint Begin { get { return _gridLink.Begin; } }

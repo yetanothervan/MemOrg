@@ -77,26 +77,48 @@ namespace GraphDrawService.Draw
 
         private Dictionary<int, double> _colWidths; 
         private Dictionary<int, double> _rowHeights;
+        private Dictionary<int, double> _colSpacesWidths;
+        private Dictionary<int, double> _rowSpacesHeights;
         
         void CalculateGrid()
         {
             _colWidths = new Dictionary<int, double>();
             _rowHeights = new Dictionary<int, double>();
+            _colSpacesWidths = new Dictionary<int, double>();
+            _rowSpacesHeights = new Dictionary<int, double>();
 
             foreach (var child in Childs)
             {
                 var gridElem = child as IGridElem;
-                if (gridElem == null) continue;
-                
-                var elemSize = child.GetSize();
+                if (gridElem != null)
+                {
+                    var elemSize = child.GetSize();
 
-                if (!_colWidths.ContainsKey(gridElem.ColIndex) 
-                    || _colWidths[gridElem.ColIndex] < elemSize.Width)
-                    _colWidths[gridElem.ColIndex] = elemSize.Width;
+                    if (!_colWidths.ContainsKey(gridElem.ColIndex)
+                        || _colWidths[gridElem.ColIndex] < elemSize.Width)
+                        _colWidths[gridElem.ColIndex] = elemSize.Width;
+
+                    if (!_rowHeights.ContainsKey(gridElem.RowIndex)
+                        || _rowHeights[gridElem.RowIndex] < elemSize.Height)
+                        _rowHeights[gridElem.RowIndex] = elemSize.Height;
+                    continue;
+                }
                 
-                if (!_rowHeights.ContainsKey(gridElem.RowIndex)
-                    || _rowHeights[gridElem.RowIndex] < elemSize.Height)
-                    _rowHeights[gridElem.RowIndex] = elemSize.Height;
+                var gridLink = child as IGridLink;
+                if (gridLink != null)
+                {
+                    var elemSize = child.GetSize();
+                    var col = Math.Max(gridLink.Begin.Col, gridLink.End.Col);
+                    var row = Math.Max(gridLink.Begin.Row, gridLink.End.Row);
+
+                    if (!_colWidths.ContainsKey(col)
+                        || _colWidths[col] < elemSize.Width)
+                        _colWidths[col] = elemSize.Width;
+
+                    if (!_rowHeights.ContainsKey(row)
+                        || _rowHeights[row] < elemSize.Height)
+                        _rowHeights[row] = elemSize.Height;
+                }
             }
         }
     }

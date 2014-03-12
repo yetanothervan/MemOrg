@@ -9,11 +9,11 @@ using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    public class Tree : IComponent, IGridElem
+    public class Tree : Component, IGridElem
     {
         private const double Margin = 10.0;
         private const double RootLineHeight = 10;
-        public List<IComponent> Childs { get; set; }
+        
         private readonly IDrawStyle _style;
         private readonly IGridElem _myGridElem;
 
@@ -23,7 +23,7 @@ namespace GraphDrawService.Draw
             _myGridElem = myGridElem;
         }
 
-        public List<DrawingVisual> Render(Point p)
+        public override List<DrawingVisual> Render(Point p)
         {
             var res = new List<DrawingVisual>();
             if (Childs != null && Childs.Count > 0)
@@ -73,7 +73,7 @@ namespace GraphDrawService.Draw
             return res;
         }
 
-        public Size GetSize()
+        public override Size GetSize()
         {
             double height = 0;
             double width = 0;
@@ -100,5 +100,7 @@ namespace GraphDrawService.Draw
         {
             get { return _myGridElem.ColIndex; }
         }
+
+        public IComponent Component { get; set; }
     }
 }

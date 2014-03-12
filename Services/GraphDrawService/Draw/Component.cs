@@ -11,6 +11,14 @@ namespace GraphDrawService.Draw
 {
     public abstract class Component : IComponent
     {
+        protected Component()
+        {
+            RenderHeight = -1;
+            RenderWidth = -1;
+            HorizontalAligment = HorizontalAligment.Left;
+            VerticalAligment = VerticalAligment.Top;
+        }
+
         private List<IComponent> _childs;
         public List<IComponent> Childs
         {
@@ -24,5 +32,9 @@ namespace GraphDrawService.Draw
 
         public abstract List<DrawingVisual> Render(Point p);
         public abstract Size GetSize();
+        public double RenderWidth { get; set; }
+        public double RenderHeight { get; set; }
+        public HorizontalAligment HorizontalAligment { get; set; }
+        public VerticalAligment VerticalAligment { get; set; }
     }
 }

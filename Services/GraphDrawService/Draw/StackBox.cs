@@ -10,16 +10,16 @@ using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
 {
-    public class StackBox : IComponent
+    public class StackBox : Component
     {
         private const double Margin = 10.0;
-        public List<IComponent> Childs { get; set; }
-        public List<DrawingVisual> Render(Point p)
+        
+        public override List<DrawingVisual> Render(Point p)
         {
             return new VerticalStackLayout(Childs, Margin).Render(p).ToList();
         }
 
-        public Size GetSize()
+        public override Size GetSize()
         {
             return new VerticalStackLayout(Childs, Margin).CalculateSize();
         }

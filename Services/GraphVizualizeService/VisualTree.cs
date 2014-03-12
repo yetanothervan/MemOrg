@@ -56,6 +56,11 @@ namespace GraphVizualizeService
             return _mySelf.GetSize();
         }
 
+        public double RenderWidth { get; set; }
+        public double RenderHeight { get; set; }
+        public HorizontalAligment HorizontalAligment { get; set; }
+        public VerticalAligment VerticalAligment { get; set; }
+
         public IGridElem MyElem { get; set; }
         public ICollection<ITree> Subtrees { get; set; }
     }

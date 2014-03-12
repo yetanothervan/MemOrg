@@ -31,5 +31,7 @@ namespace GraphOrganizeService.Elems
         {
             get { return _colIndex; }
         }
+
+        public IComponent Component { get; set; }
     }
 }

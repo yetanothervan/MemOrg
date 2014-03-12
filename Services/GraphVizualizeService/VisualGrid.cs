@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using GraphOrganizeService.VisualElems;
@@ -24,25 +25,34 @@ namespace GraphVizualizeService
             _mySelf = drawer.DrawGrid();
             foreach (var gridElem in _grid)
             {
+                IComponent component;
                 if (gridElem is IGridElemBlockOthers)
-                    Childs.Add(new VisualGridElemBlock(gridElem as IGridElemBlockOthers).Visualize(drawer, options));
+                    component = new VisualGridElemBlock(gridElem as IGridElemBlockOthers).Visualize(drawer, options);
                 else if (gridElem is IGridElemBlockUserText)
-                    Childs.Add(new VisualGridElemBlockUserText(gridElem as IGridElemBlockUserText).Visualize(drawer, options));
+                    component = new VisualGridElemBlockUserText(gridElem as IGridElemBlockUserText).Visualize(drawer, options);
                 else if (gridElem is IGridElemBlockRel)
-                    Childs.Add(new VisualGridElemBlockRel(gridElem as IGridElemBlockRel).Visualize(drawer, options));
+                   component = new VisualGridElemBlockRel(gridElem as IGridElemBlockRel).Visualize(drawer, options);
                 else if (gridElem is IGridElemBlockSource)
-                    Childs.Add(new VisualGridElemBlockSource(gridElem as IGridElemBlockSource).Visualize(drawer, options));
+                    component = new VisualGridElemBlockSource(gridElem as IGridElemBlockSource).Visualize(drawer, options);
                 else if (gridElem is IGridElemBlockTag)
-                    Childs.Add(new VisualGridElemBlockTag(gridElem as IGridElemBlockTag).Visualize(drawer, options));
+                    component = new VisualGridElemBlockTag(gridElem as IGridElemBlockTag).Visualize(drawer, options);
                 else if (gridElem is IGridElemTag)
-                    Childs.Add(new VisualGridElemTag(gridElem as IGridElemTag).Visualize(drawer, options));
+                    component = new VisualGridElemTag(gridElem as IGridElemTag).Visualize(drawer, options);
                 else if (gridElem is ITree)
-                    Childs.Add(new VisualTree(gridElem as ITree).Visualize(drawer, options));
+                    component = new VisualTree(gridElem as ITree).Visualize(drawer, options);
                 else
                     throw new NotImplementedException();
+                gridElem.Component = component;
+                Childs.Add(component);
             }
             foreach (var gridLink in Links)
             {
+// ReSharper disable once NotAccessedVariable
+                var begin = gridLink.Begin;
+// ReSharper disable once NotAccessedVariable
+                var end = gridLink.End;
+                begin.GridElem = _grid.First(e => e.ColIndex == gridLink.Begin.Col && e.RowIndex == gridLink.Begin.Row).Component;
+                end.GridElem = _grid.First(e => e.ColIndex == gridLink.End.Col && e.RowIndex == gridLink.End.Row).Component;
                 Childs.Add(new VisualGridLink(gridLink).Visualize(drawer, options));
             }
             return _mySelf;
@@ -86,5 +96,10 @@ namespace GraphVizualizeService
         {
             return _mySelf != null ? _mySelf.GetSize() : new Size();
         }
+
+        public double RenderWidth { get; set; }
+        public double RenderHeight { get; set; }
+        public HorizontalAligment HorizontalAligment { get; set; }
+        public VerticalAligment VerticalAligment { get; set; }
     }
 }

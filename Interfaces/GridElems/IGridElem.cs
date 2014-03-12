@@ -4,5 +4,6 @@
     {
         int RowIndex { get; }
         int ColIndex { get; }
+        IComponent Component { get; set; }
     }
 }

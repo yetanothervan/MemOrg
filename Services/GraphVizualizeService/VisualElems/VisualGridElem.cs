@@ -21,7 +21,9 @@ namespace GraphVizualizeService.VisualElems
         {
             get { return _ge.ColIndex; }
         }
-        
+
+        public IComponent Component { get; set; }
+
         public abstract IComponent Visualize(IDrawer drawer, IVisualizeOptions options);
     }
 }

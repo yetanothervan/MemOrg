@@ -23,6 +23,7 @@ namespace MemOrg.Interfaces.GridElems
         public NESW ConnectionPoint;
         public int Row;
         public int Col;
+        public IComponent GridElem;
     }
 
     public enum NESW
