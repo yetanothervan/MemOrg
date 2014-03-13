@@ -4,14 +4,13 @@ using System.Windows;
 using System.Windows.Media;
 using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
     class BlockRoundedRectangle : Block
     {
-        public BlockRoundedRectangle(Brush brush, Pen pen, IGridElem gridElem)
-            : base(brush, pen, gridElem)
+        public BlockRoundedRectangle(Brush brush, Pen pen)
+            : base(brush, pen)
         {
         }
 

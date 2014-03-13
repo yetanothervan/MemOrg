@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
 using Microsoft.Practices.Unity.Utility;
 
 

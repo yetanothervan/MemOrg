@@ -1,9 +1,11 @@
-﻿namespace MemOrg.Interfaces.GridElems
+﻿using System;
+
+namespace MemOrg.Interfaces
 {
     public interface IGridElem
     {
         int RowIndex { get; }
         int ColIndex { get; }
-        IComponent Component { get; set; }
+        Object Content { get; set; }
     }
 }

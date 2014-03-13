@@ -43,12 +43,13 @@
   <ItemGroup>
     <Compile Include="BlockQuoteParticleSources.cs" />
     <Compile Include="GlobalCommands.cs" />
-    <Compile Include="GridElems\GridLink.cs" />
-    <Compile Include="GridElems\IGridElemBlockOthers.cs" />
-    <Compile Include="GridElems\IGridElemBlockRel.cs" />
-    <Compile Include="GridElems\IGridElemBlockTag.cs" />
-    <Compile Include="GridElems\IGridElemBlockUserText.cs" />
-    <Compile Include="GridElems\IGridElemTag.cs" />
+    <Compile Include="GridElem.cs" />
+    <Compile Include="OrgUnits\GridLink.cs" />
+    <Compile Include="OrgUnits\IOrgBlockOthers.cs" />
+    <Compile Include="OrgUnits\IOrgBlockRel.cs" />
+    <Compile Include="OrgUnits\IOrgBlockTag.cs" />
+    <Compile Include="OrgUnits\IOrgBlockUserText.cs" />
+    <Compile Include="OrgUnits\IOrgTag.cs" />
     <Compile Include="IBook.cs" />
     <Compile Include="IChapter.cs" />
     <Compile Include="IComponent.cs" />
@@ -61,9 +62,8 @@
     <Compile Include="IGraphService.cs" />
     <Compile Include="IGraphVizualizeService.cs" />
     <Compile Include="IGrid.cs" />
-    <Compile Include="GridElems\IGridElem.cs" />
-    <Compile Include="GridElems\IGridElemBlock.cs" />
-    <Compile Include="GridElems\IGridElemBlockSource.cs" />
+    <Compile Include="IGridElem.cs" />
+    <Compile Include="OrgUnits\IOrgBlockSource.cs" />
     <Compile Include="IGridLayout.cs" />
     <Compile Include="IPage.cs" />
     <Compile Include="ITmpXmlExportImportService.cs" />
@@ -71,6 +71,7 @@
     <Compile Include="ITreeLayout.cs" />
     <Compile Include="IVisual.cs" />
     <Compile Include="IVisualizeOptions.cs" />
+    <Compile Include="OrgUnits\IOrgBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="ViewModelBase.cs" />

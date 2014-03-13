@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace MemOrg.Interfaces
 {

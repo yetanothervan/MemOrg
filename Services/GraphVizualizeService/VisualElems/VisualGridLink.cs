@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphVizualizeService.VisualElems
 {

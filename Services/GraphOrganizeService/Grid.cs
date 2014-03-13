@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 using Microsoft.Practices.Unity.Utility;
 
 namespace GraphOrganizeService

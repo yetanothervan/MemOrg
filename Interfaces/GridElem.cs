@@ -1,16 +1,13 @@
-﻿using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
-
-namespace GraphOrganizeService.Elems
+﻿namespace MemOrg.Interfaces
 {
-    public abstract class GridElem : IGridElem
+    public class GridElem : IGridElem
     {
         private int _rowIndex = -1;
         private int _colIndex = -1;
 
         private readonly IGrid _myGrid;
 
-        protected GridElem(IGrid myGrid)
+        public GridElem(IGrid myGrid)
         {
             this._myGrid = myGrid;
         }
@@ -32,6 +29,6 @@ namespace GraphOrganizeService.Elems
             get { return _colIndex; }
         }
 
-        public IComponent Component { get; set; }
+        public object Content { get; set; }
     }
 }

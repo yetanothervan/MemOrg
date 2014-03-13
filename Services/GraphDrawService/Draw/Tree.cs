@@ -5,22 +5,19 @@ using System.Windows;
 using System.Windows.Media;
 using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    public class Tree : Component, IGridElem
+    public class Tree : Component
     {
         private const double Margin = 10.0;
         private const double RootLineHeight = 10;
         
         private readonly IDrawStyle _style;
-        private readonly IGridElem _myGridElem;
-
-        public Tree(IDrawStyle style, IGridElem myGridElem)
+        
+        public Tree(IDrawStyle style)
         {
             _style = style;
-            _myGridElem = myGridElem;
         }
 
         public override List<DrawingVisual> Render(Point p)
@@ -90,17 +87,5 @@ namespace GraphDrawService.Draw
 
             return new Size(width, height);
         }
-
-        public int RowIndex
-        {
-            get { return _myGridElem.RowIndex; }
-        }
-
-        public int ColIndex
-        {
-            get { return _myGridElem.ColIndex; }
-        }
-
-        public IComponent Component { get; set; }
     }
 }

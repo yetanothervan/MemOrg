@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using GraphOrganizeService.VisualElems;
 using GraphVizualizeService.VisualElems;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphVizualizeService
 {
@@ -25,37 +24,47 @@ namespace GraphVizualizeService
             _mySelf = drawer.DrawGrid();
             foreach (var gridElem in _grid)
             {
-                IComponent component;
-                if (gridElem is IGridElemBlockOthers)
-                    component = new VisualGridElemBlock(gridElem as IGridElemBlockOthers).Visualize(drawer, options);
-                else if (gridElem is IGridElemBlockUserText)
-                    component = new VisualGridElemBlockUserText(gridElem as IGridElemBlockUserText).Visualize(drawer, options);
-                else if (gridElem is IGridElemBlockRel)
-                   component = new VisualGridElemBlockRel(gridElem as IGridElemBlockRel).Visualize(drawer, options);
-                else if (gridElem is IGridElemBlockSource)
-                    component = new VisualGridElemBlockSource(gridElem as IGridElemBlockSource).Visualize(drawer, options);
-                else if (gridElem is IGridElemBlockTag)
-                    component = new VisualGridElemBlockTag(gridElem as IGridElemBlockTag).Visualize(drawer, options);
-                else if (gridElem is IGridElemTag)
-                    component = new VisualGridElemTag(gridElem as IGridElemTag).Visualize(drawer, options);
-                else if (gridElem is ITree)
-                    component = new VisualTree(gridElem as ITree).Visualize(drawer, options);
-                else
-                    throw new NotImplementedException();
-                gridElem.Component = component;
+                var component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
+            //    gridElem.Component = component;
                 Childs.Add(component);
             }
             foreach (var gridLink in Links)
             {
 // ReSharper disable once NotAccessedVariable
-                var begin = gridLink.Begin;
+            //    var begin = gridLink.Begin;
 // ReSharper disable once NotAccessedVariable
-                var end = gridLink.End;
-                begin.GridElem = _grid.First(e => e.ColIndex == gridLink.Begin.Col && e.RowIndex == gridLink.Begin.Row).Component;
-                end.GridElem = _grid.First(e => e.ColIndex == gridLink.End.Col && e.RowIndex == gridLink.End.Row).Component;
-                Childs.Add(new VisualGridLink(gridLink).Visualize(drawer, options));
+            //    var end = gridLink.End;
+            //    begin.GridElem = _grid.First(e => e.ColIndex == gridLink.Begin.Col && e.RowIndex == gridLink.Begin.Row).Component;
+            //    end.GridElem = _grid.First(e => e.ColIndex == gridLink.End.Col && e.RowIndex == gridLink.End.Row).Component;
+            //    Childs.Add(new VisualGridLink(gridLink).Visualize(drawer, options));
             }
             return _mySelf;
+        }
+
+        private IComponent CreateLinkedBoxWithBlock(IGridElem elem, IDrawer drawer, IVisualizeOptions options)
+        {
+            var result = drawer.DrawGrid();
+
+            var gc = elem.Content;
+
+            if (gc is IOrgBlockOthers)
+                result = new VisualGridElemBlock(gc as IOrgBlockOthers).Visualize(drawer, options);
+            else if (gc is IOrgBlockUserText)
+                result = new VisualGridElemBlockUserText(gc as IOrgBlockUserText).Visualize(drawer, options);
+            else if (gc is IOrgBlockRel)
+                result = new VisualGridElemBlockRel(gc as IOrgBlockRel).Visualize(drawer, options);
+            else if (gc is IOrgBlockSource)
+                result = new VisualGridElemBlockSource(gc as IOrgBlockSource).Visualize(drawer, options);
+            else if (gc is IOrgBlockTag)
+                result = new VisualGridElemBlockTag(gc as IOrgBlockTag).Visualize(drawer, options);
+            else if (gc is IOrgTag)
+                result = new VisualGridElemTag(gc as IOrgTag).Visualize(drawer, options);
+            else if (gc is ITree)
+                result = new VisualTree(gc as ITree).Visualize(drawer, options);
+            else
+                throw new NotImplementedException();
+            
+            return result;
         }
 
         public IEnumerator<IGridElem> GetEnumerator()

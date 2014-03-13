@@ -1,32 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
 using DAL.Entity;
-using GraphVizualizeService;
-using GraphVizualizeService.VisualElems;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
-namespace GraphOrganizeService.VisualElems
+namespace GraphVizualizeService.VisualElems
 {
-    public class VisualGridElemBlockTag : VisualGridElem
+    public class VisualGridElemBlockTag 
     {
-        private readonly IGridElemBlockTag _ge;
-        public VisualGridElemBlockTag(IGridElemBlockTag ge) : base(ge)
+        private readonly IOrgBlockTag _org;
+        public VisualGridElemBlockTag(IOrgBlockTag org)
         {
-            _ge = ge;
+            _org = org;
         }
 
-        public override IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
+        public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            var res = drawer.DrawBlockTag(_ge);
-            var caption = drawer.DrawCaption(_ge.Tag.Caption);
+            var res = drawer.DrawBlockTag();
+            var caption = drawer.DrawCaption(_org.Tag.Caption);
             res.Childs.Add(caption);
             if (options.HeadersOnly) return res;
 
-            foreach (var part in _ge.Block.Particles.OrderBy(o => o.Order))
+            foreach (var part in _org.Block.Particles.OrderBy(o => o.Order))
             {
                 if (part is UserTextParticle)
                     res.Childs.Add(VisualFuncs.UserText(part as UserTextParticle, drawer));

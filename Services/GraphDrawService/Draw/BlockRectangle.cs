@@ -7,14 +7,13 @@ using System.Windows;
 using System.Windows.Media;
 using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
     class BlockRectangle : Block
     {
-        public BlockRectangle(Brush brush, Pen pen, IGridElem gridElem)
-            : base(brush, pen, gridElem)
+        public BlockRectangle(Brush brush, Pen pen)
+            : base(brush, pen)
         {
         }
 

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace MemOrg.Interfaces
 {
     public interface ITree
     {
-        IGridElem MyElem { get; set; }
+        IOrgTag MyElem { get; set; }
         ICollection<ITree> Subtrees { get; set; }
     }
 }

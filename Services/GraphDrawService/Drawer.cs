@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GraphDrawService.Draw;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphDrawService
 {
@@ -41,9 +41,9 @@ namespace GraphDrawService
             return new StackBox();
         }
 
-        public IComponent DrawTree(IGridElem gridElem)
+        public IComponent DrawTree()
         {
-            return new Tree(_style, gridElem);
+            return new Tree(_style);
         }
 
         public IComponent DrawLink(GridLink gridLink)
@@ -51,39 +51,39 @@ namespace GraphDrawService
             return new Link(gridLink, _style.SourceBlockPen);
         }
 
-        public IComponent DrawBlockOthers(IGridElem gridElem)
+        public IComponent DrawBlockOthers()
         {
-            return new BlockRectangle(_style.OthersBlockBrush, _style.OthersBlockPen, gridElem);
+            return new BlockRectangle(_style.OthersBlockBrush, _style.OthersBlockPen);
         }
 
-        public IComponent DrawBlockOthersNoParticles(IGridElem gridElem)
+        public IComponent DrawBlockOthersNoParticles()
         {
-            return new BlockRectangle(_style.OthersBlockNoParticlesBrush, _style.OthersBlockNoParticlesPen, gridElem);
+            return new BlockRectangle(_style.OthersBlockNoParticlesBrush, _style.OthersBlockNoParticlesPen);
         }
 
-        public IComponent DrawBlockSource(IGridElem gridElem)
+        public IComponent DrawBlockSource()
         {
-            return new BlockRectangle(_style.SourceBlockBrush, _style.SourceBlockPen, gridElem);
+            return new BlockRectangle(_style.SourceBlockBrush, _style.SourceBlockPen);
         }
 
-        public IComponent DrawBlockRelation(IGridElem gridElem)
+        public IComponent DrawBlockRelation()
         {
-            return new BlockRectangle(_style.RelationBlockBrush, _style.RelationBlockPen, gridElem);
+            return new BlockRectangle(_style.RelationBlockBrush, _style.RelationBlockPen);
         }
 
-        public IComponent DrawBlockTag(IGridElem gridElem)
+        public IComponent DrawBlockTag()
         {
-            return new BlockRoundedRectangle(_style.TagBlockBrush, _style.TagBlockPen, gridElem);
+            return new BlockRoundedRectangle(_style.TagBlockBrush, _style.TagBlockPen);
         }
 
-        public IComponent DrawBlockUserText(IGridElem gridElem)
+        public IComponent DrawBlockUserText()
         {
-            return new BlockRectangle(_style.UserTextBlockBrush, _style.UserTextBlockPen, gridElem);
+            return new BlockRectangle(_style.UserTextBlockBrush, _style.UserTextBlockPen);
         }
 
-        public IComponent DrawTag(IGridElem gridElem)
+        public IComponent DrawTag()
         {
-            return new BlockRectangle(_style.TagBlockBrush, _style.TagBlockPen, gridElem);
+            return new BlockRectangle(_style.TagBlockBrush, _style.TagBlockPen);
         }
     }
 }

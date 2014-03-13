@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using GraphOrganizeService.VisualElems;
 using GraphVizualizeService.VisualElems;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphVizualizeService
 {
@@ -21,12 +20,9 @@ namespace GraphVizualizeService
 
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            if (!(_tree.MyElem is IGridElemTag))
-                throw new NotImplementedException();
-
-            _mySelf = drawer.DrawTree(_tree as IGridElem);
+            _mySelf = drawer.DrawTree();
             
-            var rootComp = new VisualGridElemTag(_tree.MyElem as IGridElemTag).Visualize(drawer, options);
+            var rootComp = new VisualGridElemTag(_tree.MyElem).Visualize(drawer, options);
             _mySelf.Childs = new List<IComponent> {rootComp};
 
             if (_tree.Subtrees != null)
@@ -61,7 +57,7 @@ namespace GraphVizualizeService
         public HorizontalAligment HorizontalAligment { get; set; }
         public VerticalAligment VerticalAligment { get; set; }
 
-        public IGridElem MyElem { get; set; }
+        public IOrgTag MyElem { get; set; }
         public ICollection<ITree> Subtrees { get; set; }
     }
 }

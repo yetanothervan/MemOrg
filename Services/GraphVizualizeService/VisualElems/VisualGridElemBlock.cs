@@ -2,30 +2,30 @@
 using System.Linq;
 using DAL.Entity;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphVizualizeService.VisualElems
 {
-    public class VisualGridElemBlock : VisualGridElem
+    public class VisualGridElemBlock : IVisual
     {
-        private readonly IGridElemBlockOthers _ge;
+        private readonly IOrgBlockOthers _org;
 
-        public VisualGridElemBlock(IGridElemBlockOthers ge) : base(ge)
+        public VisualGridElemBlock(IOrgBlockOthers org)
         {
-            _ge = ge;
+            _org = org;
         }
 
-        public override IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
+        public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            var res = _ge.Block.Particles.Count > 0 
-                ? drawer.DrawBlockOthers(_ge)
-                : drawer.DrawBlockOthersNoParticles(_ge);
+            var res = _org.Block.Particles.Count > 0
+                ? drawer.DrawBlockOthers()
+                : drawer.DrawBlockOthersNoParticles();
 
-            var caption = drawer.DrawCaption(_ge.Block.Caption);
+            var caption = drawer.DrawCaption(_org.Block.Caption);
             res.Childs.Add(caption);
             if (options.HeadersOnly) return res;
 
-            foreach (var part in _ge.Block.Particles.OrderBy(o => o.Order))
+            foreach (var part in _org.Block.Particles.OrderBy(o => o.Order))
             {
                 if (part is UserTextParticle)
                     res.Childs.Add(VisualFuncs.UserText(part as UserTextParticle, drawer));

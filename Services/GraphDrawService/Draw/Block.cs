@@ -7,21 +7,18 @@ using System.Windows;
 using System.Windows.Media;
 using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
 
 namespace GraphDrawService.Draw
 {
-    abstract class Block : Component, IGridElem
+    abstract class Block : Component
     {
-        private readonly IGridElem _gridElem;
         protected readonly Brush Brush;
         protected readonly Pen Pen;
 
         protected const double Margin = 5.0;
 
-        protected Block(Brush brush, Pen pen, IGridElem gridElem)
+        protected Block(Brush brush, Pen pen)
         {
-            _gridElem = gridElem;
             Brush = brush;
             Pen = pen;
         }
@@ -31,26 +28,6 @@ namespace GraphDrawService.Draw
         public override Size GetSize()
         {
             return new VerticalStackLayout(Childs, Margin).CalculateSize();
-        }
-
-        public void PlaceOn(int row, int col, List<List<IGridElem>> elems)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int RowIndex
-        {
-            get { return _gridElem.RowIndex; }
-        }
-
-        public int ColIndex
-        {
-            get { return _gridElem.ColIndex; }
-        }
-
-        public IComponent Component {
-            get { return this; }
-            set { } 
         }
     }
 }

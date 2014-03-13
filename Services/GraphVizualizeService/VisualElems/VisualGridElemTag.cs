@@ -1,25 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media;
-using DAL.Entity;
-using GraphVizualizeService.VisualElems;
-using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+﻿using MemOrg.Interfaces;
+using MemOrg.Interfaces.OrgUnits;
 
-namespace GraphOrganizeService.VisualElems
+namespace GraphVizualizeService.VisualElems
 {
-    public class VisualGridElemTag : VisualGridElem
+    public class VisualGridElemTag
     {
-        private readonly IGridElemTag _ge;
-        public VisualGridElemTag(IGridElemTag ge) : base(ge)
+        private readonly IOrgTag _org;
+        public VisualGridElemTag(IOrgTag org)
         {
-            _ge = ge;
+            _org = org;
         }
 
-        public override IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
+        public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            var res = drawer.DrawTag(_ge);
-            var caption = drawer.DrawCaption(_ge.Tag.Caption);
+            var res = drawer.DrawTag();
+            var caption = drawer.DrawCaption(_org.Tag.Caption);
             res.Childs.Add(caption);
             return res;
         }

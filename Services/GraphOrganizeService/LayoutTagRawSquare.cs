@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
-using GraphOrganizeService.Elems;
+using GraphOrganizeService.OrgUnits;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
 
 namespace GraphOrganizeService
 {
@@ -19,16 +18,16 @@ namespace GraphOrganizeService
             _graph = graph;
         }
 
-        private Tree CreateTree(Tag root, IGrid grid)
+        private Tree CreateTree(Tag root)
         {
-            var tree = new Tree(grid)
+            var tree = new Tree()
             {
                 Subtrees = new List<ITree>(), 
-                MyElem = new GridElemTag(root, null)
+                MyElem = new OrgTag(root) 
             };
 
             foreach (var child in root.Childs)
-                tree.Subtrees.Add(CreateTree(child, null));
+                tree.Subtrees.Add(CreateTree(child));
 
             return tree;
         }
@@ -39,8 +38,10 @@ namespace GraphOrganizeService
             var allocator = new RawSquareGridElemAllocator(_graph.GraphService.TagRoots.Count());
             foreach (var tagRoot in _graph.GraphService.TagRoots)
             {
-                var tree = CreateTree(tagRoot, grid);
-                allocator.PlaceNextGridElem(tree);
+                var ge = new GridElem(grid);
+                var tree = CreateTree(tagRoot);
+                ge.Content = tree;
+                allocator.PlaceNextGridElem(ge);
             }
             return grid;
         }

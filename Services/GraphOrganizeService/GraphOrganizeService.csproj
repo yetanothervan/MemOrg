@@ -47,23 +47,22 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Elems\GridElemBlockUserText.cs" />
-    <Compile Include="Elems\GridElemBlockOthers.cs" />
-    <Compile Include="Elems\GridElemBlockTag.cs" />
-    <Compile Include="Elems\GridElemBlockRel.cs" />
-    <Compile Include="Elems\GridElemBlockSource.cs" />
+    <Compile Include="OrgUnits\OrgBlockUserText.cs" />
+    <Compile Include="OrgUnits\OrgBlockOthers.cs" />
+    <Compile Include="OrgUnits\OrgBlockTag.cs" />
+    <Compile Include="OrgUnits\OrgBlockRel.cs" />
+    <Compile Include="OrgUnits\OrgBlockSource.cs" />
     <Compile Include="GraphOrganizeService.cs" />
     <Compile Include="Grid.cs" />
-    <Compile Include="Elems\GridElem.cs" />
-    <Compile Include="Elems\GridElemBlock.cs" />
-    <Compile Include="Elems\GridElemTag.cs" />
+    <Compile Include="OrgUnits\OrgBlock.cs" />
+    <Compile Include="OrgUnits\OrgTag.cs" />
     <Compile Include="GridEnumerator.cs" />
     <Compile Include="LayoutCamomile.cs" />
     <Compile Include="LayoutRawSquare.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawSquareGridElemAllocator.cs" />
-    <Compile Include="Elems\Tree.cs" />
+    <Compile Include="OrgUnits\Tree.cs" />
     <Compile Include="zSnapGraphToGrid.cs" />
     <Compile Include="LayoutTagRawSquare.cs" />
   </ItemGroup>

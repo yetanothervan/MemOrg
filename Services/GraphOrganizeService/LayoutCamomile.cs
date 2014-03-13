@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
-using GraphOrganizeService.Elems;
+using GraphOrganizeService.OrgUnits;
 using MemOrg.Interfaces;
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 using MoreLinq;
 
 namespace GraphOrganizeService
@@ -172,8 +172,8 @@ namespace GraphOrganizeService
         private void DoChapterLayout(ChapterLayout layout, Grid grid, int chapCount)
         {
             //source elem
-            var selem = new GridElemBlockSource(layout.ChapterBlock, grid);
-            selem.PlaceOn(0, chapCount * 4 + 2);
+            var ge = new GridElem(grid) {Content = new OrgBlockSource(layout.ChapterBlock)};
+            ge.PlaceOn(0, chapCount * 4 + 2);
 
             int whole = 0;
             foreach (var chapterLayoutRow in layout.Rows)
@@ -212,14 +212,14 @@ namespace GraphOrganizeService
 
         private void PlaceElemInGrid(ChapterLayoutElem page, Grid grid, int row, int col)
         {
-            GridElemBlock elem;
+            var ge = new GridElem(grid);
             if (page.Page.IsBlockTag)
-                elem = new GridElemBlockTag(page.Page.Block, page.Page.Tag, grid);
+                ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag);
             else if (page.Page.IsBlockRel)
-                elem = new GridElemBlockRel(page.Page.Block, grid);
+                ge.Content = new OrgBlockRel(page.Page.Block);
             else
-                elem = new GridElemBlockOthers(page.Page.Block, grid);
-            elem.PlaceOn(row, col);
+                ge.Content = new OrgBlockOthers(page.Page.Block);
+            ge.PlaceOn(row, col);
             page.Placed = true;
             page.Row = row;
             page.Col = col;

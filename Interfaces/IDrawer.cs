@@ -1,4 +1,4 @@
-using MemOrg.Interfaces.GridElems;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace MemOrg.Interfaces
 {
@@ -6,17 +6,17 @@ namespace MemOrg.Interfaces
     {
         IComponent DrawGrid();
         IComponent DrawCaption(string text);
-        IComponent DrawBlockOthers(IGridElem gridElem);
-        IComponent DrawBlockOthersNoParticles(IGridElem gridElem);
-        IComponent DrawBlockSource(IGridElem gridElem);
-        IComponent DrawBlockRelation(IGridElem gridElem);
-        IComponent DrawBlockTag(IGridElem gridElem);
-        IComponent DrawBlockUserText(IGridElem gridElem);
-        IComponent DrawTag(IGridElem gridElem);
+        IComponent DrawBlockOthers();
+        IComponent DrawBlockOthersNoParticles();
+        IComponent DrawBlockSource();
+        IComponent DrawBlockRelation();
+        IComponent DrawBlockTag();
+        IComponent DrawBlockUserText();
+        IComponent DrawTag();
         IComponent DrawQuoteText(string text);
         IComponent DrawQuoteBox();
         IComponent DrawStackBox();
-        IComponent DrawTree(IGridElem gridElem);
+        IComponent DrawTree();
         IComponent DrawLink(GridLink gridLink);
     }
 }
