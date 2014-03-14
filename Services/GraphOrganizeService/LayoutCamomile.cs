@@ -53,24 +53,43 @@ namespace GraphOrganizeService
                     var layout = new ChapterLayout {Rows = rows, ChapterBlock = chapter.ChapterBlock};
 
                     DoChapterLayout(layout, grid, chapCount++);
+                    
+                    foreach (var row in rows)
+                    {
+                        if (row.FirstSecond)
+                        {
+                            grid.AddLink(row.FirstColumn[0].Row, row.FirstColumn[0].Col, NESW.East,
+                                row.SecondColumn[0].Row, row.SecondColumn[0].Col, NESW.West);
+                        }
+                        if (row.SecondThird)
+                        {
+                            grid.AddLink(row.SecondColumn[0].Row, row.SecondColumn[0].Col, NESW.East,
+                                row.ThirdColumn[0].Row, row.ThirdColumn[0].Col, NESW.West);
+                        }
+                        if (row.ThirdFourth)
+                        {
+                            grid.AddLink(row.ThirdColumn[0].Row, row.ThirdColumn[0].Col, NESW.East,
+                                row.FourthColumn[0].Row, row.FourthColumn[0].Col, NESW.West);
+                        }
+                    }
                 }
             }
             //make links
-            foreach (var book in _graph.Books)
-                foreach (var chapter in book.Chapters)
-                {
-                    var rels = chapter.PagesBlocks.Where(p => p.IsBlockRel);
-                    foreach (var rel in rels)
-                    {
-                        var first = (ChapterLayoutElem) rel.RelationFirst.Parent;
-                        var second = (ChapterLayoutElem) rel.RelationSecond.Parent;
-                        var myself = (ChapterLayoutElem) rel.Parent;
-                        grid.AddLink(first.Row, first.Col, NESW.East, 
-                            myself.Row, myself.Col, NESW.West);
-                        grid.AddLink(second.Row, second.Col, NESW.West,
-                            myself.Row, myself.Col, NESW.East);
-                    }
-                }
+            //foreach (var book in _graph.Books)
+            //    foreach (var chapter in book.Chapters)
+            //    {
+            //        var rels = chapter.PagesBlocks.Where(p => p.IsBlockRel);
+            //        foreach (var rel in rels)
+            //        {
+            //            var first = (ChapterLayoutElem) rel.RelationFirst.Parent;
+            //            var second = (ChapterLayoutElem) rel.RelationSecond.Parent;
+            //            var myself = (ChapterLayoutElem) rel.Parent;
+            //            grid.AddLink(first.Row, first.Col, NESW.East, 
+            //                myself.Row, myself.Col, NESW.West);
+            //            grid.AddLink(second.Row, second.Col, NESW.West,
+            //                myself.Row, myself.Col, NESW.East);
+            //        }
+            //    }
             
             return grid;
         }
@@ -268,7 +287,15 @@ namespace GraphOrganizeService
             SecondColumn = new List<ChapterLayoutElem>();
             ThirdColumn = new List<ChapterLayoutElem>();
             FourthColumn = new List<ChapterLayoutElem>();
+            
+            FirstSecond = false;
+            SecondThird = false;
+            ThirdFourth = false;
         }
+
+        public bool FirstSecond;
+        public bool SecondThird;
+        public bool ThirdFourth;
 
         public int Height {
             get
@@ -352,7 +379,7 @@ namespace GraphOrganizeService
                 && block.MyChapter.MyBook == _row.MyChapter.MyBook) return true;
             return false;
         }
-
+        
         public void DoLayout()
         {
             if (BlockInChapter != null)
@@ -363,6 +390,8 @@ namespace GraphOrganizeService
                     _row.SecondColumn.Add(new ChapterLayoutElem {Page = BlockInChapter, RowSpan = 1});
                     _row.ThirdColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
                     _row.FourthColumn.Add(new ChapterLayoutElem {Page = other, RowSpan = 1});
+                    _row.SecondThird = true;
+                    _row.ThirdFourth = true;
                     return;
                 }
 
@@ -387,6 +416,9 @@ namespace GraphOrganizeService
 
                 _row.FirstColumn.Add(new ChapterLayoutElem {Page = other, RowSpan = 1});
                 _row.SecondColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
+                _row.FirstSecond = true;
+                _row.SecondThird = true;
+                
                 return;
             }
 
