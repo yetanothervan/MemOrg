@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using GraphDrawService.Draw;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.OrgUnits;
+using Grid = GraphDrawService.Draw.Grid;
+using GridElem = GraphDrawService.Draw.GridElem;
 
 namespace GraphDrawService
 {
@@ -21,9 +23,19 @@ namespace GraphDrawService
             return new Grid(_style);
         }
 
+        public IComponent DrawGridElem(int row, int col)
+        {
+            return new GridElem(row, col);
+        }
+
         public IComponent DrawCaption(string text)
         {
             return new Caption(text, _style);
+        }
+
+        public IComponent DrawBacking()
+        {
+            return new Backing(_style);
         }
 
         public IComponent DrawQuoteText(string text)
@@ -46,9 +58,9 @@ namespace GraphDrawService
             return new Tree(_style);
         }
 
-        public IComponent DrawLink(GridLink gridLink)
+        public IComponent DrawLink()
         {
-            return new Link(gridLink, _style.SourceBlockPen);
+            return new Link(_style.SourceBlockPen);
         }
 
         public IComponent DrawBlockOthers()

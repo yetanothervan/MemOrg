@@ -19,7 +19,7 @@ namespace GraphVizualizeService.VisualElems
 
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            return drawer.DrawLink(_link);
+            return drawer.DrawLink();
         }
     }
 }

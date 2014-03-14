@@ -4,6 +4,6 @@ namespace MemOrg.Interfaces
 {
     public interface IGridLayout
     {
-        IGrid CreateGrid();
+        IOrgGrid CreateGrid();
     }
 }

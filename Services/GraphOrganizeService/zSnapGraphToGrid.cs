@@ -23,11 +23,11 @@
 //    /// </summary>
 //    public static class SnapGraphToGrid
 //    {
-//        public static Grid SnapGraph(VisualGraph ngGraph)
+//        public static OrgGrid SnapGraph(VisualGraph ngGraph)
 //        {
 //            var ringLayout = new GraphRingLayout(ngGraph);
             
-//            return new Grid();
+//            return new OrgGrid();
 //        }
 //    }
 

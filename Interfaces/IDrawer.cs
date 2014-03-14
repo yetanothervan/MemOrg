@@ -5,7 +5,9 @@ namespace MemOrg.Interfaces
     public interface IDrawer
     {
         IComponent DrawGrid();
+        IComponent DrawGridElem(int row, int col);
         IComponent DrawCaption(string text);
+        IComponent DrawBacking();
         IComponent DrawBlockOthers();
         IComponent DrawBlockOthersNoParticles();
         IComponent DrawBlockSource();
@@ -17,6 +19,6 @@ namespace MemOrg.Interfaces
         IComponent DrawQuoteBox();
         IComponent DrawStackBox();
         IComponent DrawTree();
-        IComponent DrawLink(GridLink gridLink);
+        IComponent DrawLink();
     }
 }

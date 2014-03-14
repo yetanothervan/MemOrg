@@ -2,11 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using MemOrg.Interfaces;
 using Microsoft.Practices.Unity.Utility;
 
-
-namespace GraphOrganizeService
+namespace MemOrg.Interfaces
 {
     public class GridEnumerator<T> : IEnumerator<T> where T : IGridElem
     {

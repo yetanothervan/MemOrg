@@ -2,6 +2,6 @@
 {
     public interface ITreeLayout
     {
-        IGrid CreateTreesGrid();
+        IOrgGrid CreateTreesGrid();
     }
 }

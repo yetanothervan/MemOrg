@@ -12,9 +12,9 @@ namespace GraphVizualizeService
 {
     public class VisualGrid : IVisual, IGrid, IComponent
     {
-        private readonly IGrid _grid;
+        private readonly IOrgGrid _grid;
 
-        public VisualGrid(IGrid grid)
+        public VisualGrid(IOrgGrid grid)
         {
             _grid = grid;
         }
@@ -25,25 +25,19 @@ namespace GraphVizualizeService
             foreach (var gridElem in _grid)
             {
                 var component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
-            //    gridElem.Component = component;
-                Childs.Add(component);
+                var ge = drawer.DrawGridElem(gridElem.RowIndex, gridElem.ColIndex);
+                ge.Childs.Add(component);
+                Childs.Add(ge);
             }
-            foreach (var gridLink in Links)
-            {
-// ReSharper disable once NotAccessedVariable
-            //    var begin = gridLink.Begin;
-// ReSharper disable once NotAccessedVariable
-            //    var end = gridLink.End;
-            //    begin.GridElem = _grid.First(e => e.ColIndex == gridLink.Begin.Col && e.RowIndex == gridLink.Begin.Row).Component;
-            //    end.GridElem = _grid.First(e => e.ColIndex == gridLink.End.Col && e.RowIndex == gridLink.End.Row).Component;
-            //    Childs.Add(new VisualGridLink(gridLink).Visualize(drawer, options));
-            }
-            return _mySelf;
+
+            var back = drawer.DrawBacking();
+            back.Childs.Add(_mySelf);
+            return back;
         }
 
         private IComponent CreateLinkedBoxWithBlock(IGridElem elem, IDrawer drawer, IVisualizeOptions options)
         {
-            var result = drawer.DrawGrid();
+            IComponent result;
 
             var gc = elem.Content;
 
@@ -64,7 +58,35 @@ namespace GraphVizualizeService
             else
                 throw new NotImplementedException();
             
-            return result;
+            var linkBegPoints = _grid.Links.Where(l => l.Begin.Col == elem.ColIndex && l.Begin.Row == elem.RowIndex).ToList();
+            var linkEndPoints = _grid.Links.Where(l => l.End.Col == elem.ColIndex && l.End.Row == elem.RowIndex).ToList();
+            bool up = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.North)
+                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.North);
+            bool left = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.West)
+                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.West);
+            bool right = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.East)
+                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.East);
+            bool down = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.South)
+                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.South);
+
+            var grid = drawer.DrawGrid();
+            var gridcenter = drawer.DrawGridElem(1, 1);
+            gridcenter.Childs.Add(result);
+            grid.Childs.Add(gridcenter);
+
+            if (left) AddBoxLink(drawer, grid, 1, 0);
+            if (right) AddBoxLink(drawer, grid, 1, 2);
+            if (up) AddBoxLink(drawer, grid, 0, 1);
+            if (down) AddBoxLink(drawer, grid, 2, 0);
+
+            return grid;
+        }
+
+        private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col)
+        {
+            var gridElem = drawer.DrawGridElem(row, col);
+            gridElem.Childs.Add(drawer.DrawLink());
+            grid.Childs.Add(gridElem);
         }
 
         public IEnumerator<IGridElem> GetEnumerator()
@@ -83,12 +105,7 @@ namespace GraphVizualizeService
         {
             throw new NotImplementedException();
         }
-
-        public List<GridLink> Links
-        {
-            get { return _grid.Links; }
-        }
-
+        
         private IComponent _mySelf;
         public List<IComponent> Childs
         {

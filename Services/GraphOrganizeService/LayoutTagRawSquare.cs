@@ -32,9 +32,9 @@ namespace GraphOrganizeService
             return tree;
         }
 
-        public IGrid CreateTreesGrid()
+        public IOrgGrid CreateTreesGrid()
         {
-            IGrid grid = new Grid();
+            IOrgGrid grid = new OrgGrid();
             var allocator = new RawSquareGridElemAllocator(_graph.GraphService.TagRoots.Count());
             foreach (var tagRoot in _graph.GraphService.TagRoots)
             {

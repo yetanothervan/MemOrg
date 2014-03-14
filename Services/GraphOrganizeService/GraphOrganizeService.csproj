@@ -53,10 +53,9 @@
     <Compile Include="OrgUnits\OrgBlockRel.cs" />
     <Compile Include="OrgUnits\OrgBlockSource.cs" />
     <Compile Include="GraphOrganizeService.cs" />
-    <Compile Include="Grid.cs" />
+    <Compile Include="OrgGrid.cs" />
     <Compile Include="OrgUnits\OrgBlock.cs" />
     <Compile Include="OrgUnits\OrgTag.cs" />
-    <Compile Include="GridEnumerator.cs" />
     <Compile Include="LayoutCamomile.cs" />
     <Compile Include="LayoutRawSquare.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />

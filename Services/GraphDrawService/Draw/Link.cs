@@ -11,14 +11,12 @@ using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphDrawService.Draw
 {
-    class Link : Component, IGridLink
+    class Link : Component 
     {
-        private readonly GridLink _gridLink;
         private readonly Pen _pen;
 
-        public Link(GridLink gridLink, Pen pen)
+        public Link(Pen pen)
         {
-            _gridLink = gridLink;
             _pen = pen;
         }
 
@@ -28,8 +26,8 @@ namespace GraphDrawService.Draw
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
-                dc.DrawLine(_pen, new Point(p.X, p.Y + RenderHeight / 2), 
-                    new Point(p.X + RenderWidth, p.Y + RenderHeight / 2));
+                dc.DrawLine(_pen, new Point(p.X, p.Y + 20),
+                    new Point(p.X + 10, p.Y + 20));
             }
             result.Add(dv);
             return result;
@@ -39,10 +37,7 @@ namespace GraphDrawService.Draw
         {
             //var height = (RenderHeight >= 0) ? RenderHeight : 20.0;
             //var width = (RenderWidth >= 0) ? RenderWidth : 20.0;
-            return new Size(30, 20);
+            return new Size(10, 20);
         }
-
-        public GridLinkPoint Begin { get { return _gridLink.Begin; } }
-        public GridLinkPoint End { get { return _gridLink.End; } }
     }
 }

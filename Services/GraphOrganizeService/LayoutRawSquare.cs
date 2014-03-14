@@ -19,9 +19,9 @@ namespace GraphOrganizeService
             _graph = graph;
         }
 
-        public IGrid CreateGrid()
+        public IOrgGrid CreateGrid()
         {
-            var grid = new Grid();
+            var grid = new OrgGrid();
             var graphService = _graph.GraphService;
 
             var elemsCount = graphService.BlockOthers.Count()

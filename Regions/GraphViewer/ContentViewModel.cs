@@ -13,9 +13,9 @@ namespace GraphViewer
         private readonly IDrawer _drawer;
         private IVisualizeOptions _options;
 
-        readonly IGrid _rawGrid;
-        readonly IGrid _camoGrid;
-        readonly IGrid _tagTrees;
+        readonly IOrgGrid _rawGrid;
+        readonly IOrgGrid _camoGrid;
+        readonly IOrgGrid _tagTrees;
 
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
             IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService)

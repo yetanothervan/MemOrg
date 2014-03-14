@@ -13,7 +13,7 @@ namespace GraphVizualizeService
             return new VisualizeOptions();
         }
         
-        public IComponent VisualizeGrid(IGrid grid, IVisualizeOptions options, IDrawer drawer)
+        public IComponent VisualizeGrid(IOrgGrid grid, IVisualizeOptions options, IDrawer drawer)
         {
             var visGrid = new VisualGrid(grid);
             return visGrid.Visualize(drawer, options);

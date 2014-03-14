@@ -21,9 +21,9 @@ namespace GraphOrganizeService
             _graph = graph;
         }
         
-        public IGrid CreateGrid()
+        public IOrgGrid CreateGrid()
         {
-            var grid = new Grid();
+            var grid = new OrgGrid();
             //page organize
             foreach (var book in _graph.Books)
             {
@@ -169,10 +169,10 @@ namespace GraphOrganizeService
             return new ChapterLayoutRow { Pages = enumerable.ToList() };
         }
 
-        private void DoChapterLayout(ChapterLayout layout, Grid grid, int chapCount)
+        private void DoChapterLayout(ChapterLayout layout, OrgGrid orgGrid, int chapCount)
         {
             //source elem
-            var ge = new GridElem(grid) {Content = new OrgBlockSource(layout.ChapterBlock)};
+            var ge = new GridElem(orgGrid) {Content = new OrgBlockSource(layout.ChapterBlock)};
             ge.PlaceOn(0, chapCount * 4 + 2);
 
             int whole = 0;
@@ -182,37 +182,37 @@ namespace GraphOrganizeService
                 foreach (var elem in chapterLayoutRow.FirstColumn)
                 {
                     c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, grid, c, chapCount*4);
+                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4);
                 }
 
                 c = whole;
                 foreach (var elem in chapterLayoutRow.SecondColumn)
                 {
                     c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, grid, c, chapCount*4 + 1);
+                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4 + 1);
                 }
 
                 c = whole;
                 foreach (var elem in chapterLayoutRow.ThirdColumn)
                 {
                     c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, grid, c, chapCount*4 + 2);
+                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4 + 2);
                 }
 
                 c = whole;
                 foreach (var elem in chapterLayoutRow.FourthColumn)
                 {
                     c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, grid, c, chapCount*4 + 3);
+                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4 + 3);
                 }
 
                 whole -= chapterLayoutRow.Height;
             }
         }
 
-        private void PlaceElemInGrid(ChapterLayoutElem page, Grid grid, int row, int col)
+        private void PlaceElemInGrid(ChapterLayoutElem page, OrgGrid orgGrid, int row, int col)
         {
-            var ge = new GridElem(grid);
+            var ge = new GridElem(orgGrid);
             if (page.Page.IsBlockTag)
                 ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag);
             else if (page.Page.IsBlockRel)
