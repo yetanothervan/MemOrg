@@ -30,7 +30,7 @@ namespace GraphOrganizeService
 
         public IGridLayout GetLayout(IGraph graph)
         {
-            return new LayoutCamomile(graph);
+            return new LayoutCamomile.LayoutCamomile(graph);
         }
 
         public ITreeLayout GetTagLayout(IGraph graph)

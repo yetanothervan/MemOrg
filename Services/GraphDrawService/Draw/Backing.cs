@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using DevExpress.XtraPrinting.Native;
 using MemOrg.Interfaces;
 
 namespace GraphDrawService.Draw
