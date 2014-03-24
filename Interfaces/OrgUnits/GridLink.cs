@@ -1,27 +1,28 @@
 ﻿namespace MemOrg.Interfaces.OrgUnits
 {
-    public class GridLink : IGridLink
-    {
-        public GridLinkPoint Begin { get; set; }
-        public GridLinkPoint End { get; set; }
-    }
-
-    public interface IGridLink
-    {
-        GridLinkPoint Begin { get; }
-        GridLinkPoint End { get; }
-    }
-
-    public struct GridLinkPoint
-    {
-        public NESW ConnectionPoint;
-        public int Row;
-        public int Col;
-        public IComponent GridElem;
-    }
-
     public enum NESW
     {
         North, East, South, West
+    }
+
+    public class GridLinkPart
+    {
+        public GridLinkPartType Type;
+        public GridLinkPartDirection Direction;
+    }
+
+    public enum GridLinkPartDirection
+    {
+        NorthSouth,
+        NorthWest,
+        NorthEast,
+        WestEast
+    }
+
+    public enum GridLinkPartType
+    {
+        Source,
+        Relation,
+        Reference
     }
 }

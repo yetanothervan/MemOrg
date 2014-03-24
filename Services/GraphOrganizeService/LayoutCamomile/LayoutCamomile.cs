@@ -22,7 +22,7 @@ namespace GraphOrganizeService.LayoutCamomile
             //page organize
             foreach (var book in _graph.Books)
             {
-                int chapCount = 0;
+                int left = 0;
                 foreach (var chapter in book.Chapters)
                 {
                     //let's fill rows
@@ -43,61 +43,26 @@ namespace GraphOrganizeService.LayoutCamomile
 
                     rows.ForEach(r => r.MyChapter = chapter);
                     rows.ForEach(ApplyLayout);
-                    rows.ForEach(ProvideReferences);
+                    //rows.ForEach(ProvideReferences);
                     
                     var layout = new ChapterLayout {Rows = rows, ChapterBlock = chapter.ChapterBlock};
-
-                    DoChapterLayout(layout, grid, chapCount++);
                     
-                    foreach (var row in rows)
-                    {
-                        if (row.FirstSecond)
-                        {
-                            grid.AddLink(row.FirstColumn[0].Row, row.FirstColumn[0].Col, NESW.East,
-                                row.SecondColumn[0].Row, row.SecondColumn[0].Col, NESW.West);
-                        }
-                        if (row.SecondThird)
-                        {
-                            grid.AddLink(row.SecondColumn[0].Row, row.SecondColumn[0].Col, NESW.East,
-                                row.ThirdColumn[0].Row, row.ThirdColumn[0].Col, NESW.West);
-                        }
-                        if (row.ThirdFourth)
-                        {
-                            grid.AddLink(row.ThirdColumn[0].Row, row.ThirdColumn[0].Col, NESW.East,
-                                row.FourthColumn[0].Row, row.FourthColumn[0].Col, NESW.West);
-                        }
-                    }
+                    int chapterColumnLeft = left - rows.Min(r => r.GridInfo.MinCol);
+                    
+                    DoChapterLayout(layout, grid, chapterColumnLeft);
+
+                    int chapterLayoutWidth =
+                        rows.Max(r => r.GridInfo.MaxCol) -
+                        rows.Min(r => r.GridInfo.MinCol);
+
+                    left += chapterLayoutWidth;
                 }
             }
-            //make links
-            //foreach (var book in _graph.Books)
-            //    foreach (var chapter in book.Chapters)
-            //    {
-            //        var rels = chapter.PagesBlocks.Where(p => p.IsBlockRel);
-            //        foreach (var rel in rels)
-            //        {
-            //            var first = (ChapterLayoutElem) rel.RelationFirst.Parent;
-            //            var second = (ChapterLayoutElem) rel.RelationSecond.Parent;
-            //            var myself = (ChapterLayoutElem) rel.Parent;
-            //            grid.AddLink(first.Row, first.Col, NESW.East, 
-            //                myself.Row, myself.Col, NESW.West);
-            //            grid.AddLink(second.Row, second.Col, NESW.West,
-            //                myself.Row, myself.Col, NESW.East);
-            //        }
-            //    }
             
             return grid;
         }
-
-        private void ProvideReferences(ChapterLayoutRow row)
-        {
-            CheckColumn(row.FirstColumn, row);
-            CheckColumn(row.SecondColumn, row);
-            CheckColumn(row.ThirdColumn, row);
-            CheckColumn(row.FourthColumn, row);
-        }
-
-        private void CheckColumn(List<ChapterLayoutElem> column, ChapterLayoutRow row)
+        
+        /*private void CheckColumn(List<ChapterLayoutElem> column, ChapterLayoutRow row)
         {
             var toAdd = new List<ChapterLayoutElem>();
             foreach (var elem in column.Where(c => c.Page.ReferencedBy.Any()))
@@ -105,7 +70,7 @@ namespace GraphOrganizeService.LayoutCamomile
                     if (!row.MyChapter.PagesBlocks.Contains(page))
                         toAdd.Add(new ChapterLayoutElem { Page = page, RowSpan = 1 });
             column.AddRange(toAdd);
-        }
+        }*/
 
         private void ApplyLayout(ChapterLayoutRow row)
         {
@@ -113,8 +78,7 @@ namespace GraphOrganizeService.LayoutCamomile
 
             if (row.Pages.Count == 1)
             {
-                row.ThirdColumn.Add(
-                    new ChapterLayoutElem {Page = row.Pages[0], RowSpan = 1});
+                PlaceLayoutElem(row, new ChapterLayoutElem {Page = row.Pages[0]}, 0, 0);
                 if (row.Pages[0].MySources == BlockQuoteParticleSources.MyBook)
                     row.Inner = true;
                 return;
@@ -131,23 +95,46 @@ namespace GraphOrganizeService.LayoutCamomile
             var rels = new HashSet<IPage>();
 
             var pages = row.Pages.Where(p => !p.IsBlockRel).OrderByDescending(r => r.RelatedBy.Count).ToList();
+            int height = 0;
             foreach (var page in pages)
             {
                 var relsInPage = page.RelatedBy.Where(r => r.MyChapter == row.MyChapter).Except(rels).ToList();
                 
                 if (relsInPage.Any())
                 {
-                    row.SecondColumn.Add(new ChapterLayoutElem { Page = page, RowSpan = relsInPage.Count });
-
+                    PlaceLayoutElem(row, new ChapterLayoutElem { Page = page }, height, -2);
                     foreach (var p in relsInPage)
                     {
-                        row.ThirdColumn.Add(new ChapterLayoutElem { Page = p, RowSpan = 1 });
-                        var oppose = p.RelationFirst.Block.BlockId != page.Block.BlockId ? p.RelationFirst : p.RelationSecond;
-                        row.FourthColumn.Add(new ChapterLayoutElem { Page = oppose, RowSpan = 1 });
+                        PlaceLayoutElem(row,
+                            height == 0
+                                ? NewGridLink()
+                                : NewGridLink(GridLinkPartDirection.NorthEast),
+                            height, -1);
+                        PlaceLayoutElem(row, new ChapterLayoutElem { Page = p }, height, 0);
+                        var oppose = p.RelationFirst.Block.BlockId != page.Block.BlockId 
+                            ? p.RelationFirst : p.RelationSecond;
+                        PlaceLayoutElem(row, NewGridLink(), height, 1);
+                        PlaceLayoutElem(row, new ChapterLayoutElem { Page = oppose }, height, 2);
                         rels.Add(p);
+                        height++;
                     }
                 }
             }
+        }
+
+        private void PlaceLayoutElem(ChapterLayoutRow elemsRow, ChapterLayoutElem content, int row, int col)
+        {
+            var gridElem = new GridElem(elemsRow) { Content = content };
+            gridElem.PlaceOn(row, col);
+        }
+
+        private static ChapterLayoutElem NewGridLink(GridLinkPartDirection direction = GridLinkPartDirection.WestEast)
+        {
+            return new ChapterLayoutElem
+            {
+                GridLinkPart =
+                    new GridLinkPart {Direction = direction, Type = GridLinkPartType.Relation}
+            };
         }
 
 
@@ -183,51 +170,32 @@ namespace GraphOrganizeService.LayoutCamomile
             return new ChapterLayoutRow { Pages = enumerable.ToList() };
         }
 
-        private void DoChapterLayout(ChapterLayout layout, OrgGrid orgGrid, int chapCount)
+        private void DoChapterLayout(ChapterLayout layout, OrgGrid orgGrid, int chapterColumnLeft)
         {
             //source elem
             var ge = new GridElem(orgGrid) {Content = new OrgBlockSource(layout.ChapterBlock)};
-            ge.PlaceOn(0, chapCount * 4 + 2);
+            ge.PlaceOn(0, chapterColumnLeft);
 
             int whole = 0;
             foreach (var chapterLayoutRow in layout.Rows)
             {
-                int c = whole;
-                foreach (var elem in chapterLayoutRow.FirstColumn)
+                whole -= (chapterLayoutRow.RowCount + 1);
+                foreach (var elem in chapterLayoutRow)
                 {
-                    c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4);
+                    var cle = elem.Content as ChapterLayoutElem;
+                    if (cle != null)
+                        PlaceElemInGrid(cle, orgGrid, elem.RowIndex + whole, chapterColumnLeft + elem.ColIndex);
                 }
-
-                c = whole;
-                foreach (var elem in chapterLayoutRow.SecondColumn)
-                {
-                    c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4 + 1);
-                }
-
-                c = whole;
-                foreach (var elem in chapterLayoutRow.ThirdColumn)
-                {
-                    c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4 + 2);
-                }
-
-                c = whole;
-                foreach (var elem in chapterLayoutRow.FourthColumn)
-                {
-                    c -= elem.RowSpan;
-                    PlaceElemInGrid(elem, orgGrid, c, chapCount*4 + 3);
-                }
-
-                whole -= chapterLayoutRow.Height;
             }
         }
 
         private void PlaceElemInGrid(ChapterLayoutElem page, OrgGrid orgGrid, int row, int col)
         {
             var ge = new GridElem(orgGrid);
-            if (page.Page.IsBlockTag)
+
+            if (page.IsGridLinkPart)
+                ge.Content = page.GridLinkPart;
+            else if (page.Page.IsBlockTag)
                 ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag);
             else if (page.Page.IsBlockRel)
                 ge.Content = new OrgBlockRel(page.Page.Block);

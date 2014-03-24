@@ -24,7 +24,11 @@ namespace GraphVizualizeService
             _mySelf = drawer.DrawGrid();
             foreach (var gridElem in _grid)
             {
-                var component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
+                IComponent component;
+                if (gridElem.Content is GridLinkPart)
+                    component = drawer.DrawCaption("===");
+                else 
+                    component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
                 var ge = drawer.DrawGridElem(gridElem.RowIndex, gridElem.ColIndex);
                 ge.Childs.Add(component);
                 Childs.Add(ge);
@@ -34,7 +38,7 @@ namespace GraphVizualizeService
             back.Childs.Add(_mySelf);
             return back;
         }
-
+        
         private IComponent CreateLinkedBoxWithBlock(IGridElem elem, IDrawer drawer, IVisualizeOptions options)
         {
             IComponent result;
@@ -57,27 +61,25 @@ namespace GraphVizualizeService
                 result = new VisualTree(gc as ITree).Visualize(drawer, options);
             else
                 throw new NotImplementedException();
-            
-            var linkBegPoints = _grid.Links.Where(l => l.Begin.Col == elem.ColIndex && l.Begin.Row == elem.RowIndex).ToList();
-            var linkEndPoints = _grid.Links.Where(l => l.End.Col == elem.ColIndex && l.End.Row == elem.RowIndex).ToList();
-            bool up = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.North)
-                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.North);
-            bool left = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.West)
-                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.West);
-            bool right = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.East)
-                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.East);
-            bool down = linkBegPoints.Any(l => l.Begin.ConnectionPoint == NESW.South)
-                      || linkEndPoints.Any(l => l.End.ConnectionPoint == NESW.South);
 
             var grid = drawer.DrawGrid();
             var gridcenter = drawer.DrawGridElem(1, 1);
             gridcenter.Childs.Add(result);
             grid.Childs.Add(gridcenter);
+            
+            var orgBlock = gc as IOrgBlock;
+            if (orgBlock != null)
+            {
+                bool up = orgBlock.ConnectionPoints.Any(p => p == NESW.North);
+                bool left = orgBlock.ConnectionPoints.Any(p => p == NESW.West);
+                bool right = orgBlock.ConnectionPoints.Any(p => p == NESW.East);
+                bool down = orgBlock.ConnectionPoints.Any(p => p == NESW.South);
 
-            if (left) AddBoxLink(drawer, grid, 1, 0);
-            if (right) AddBoxLink(drawer, grid, 1, 2);
-            if (up) AddBoxLink(drawer, grid, 0, 1);
-            if (down) AddBoxLink(drawer, grid, 2, 0);
+                if (left) AddBoxLink(drawer, grid, 1, 0);
+                if (right) AddBoxLink(drawer, grid, 1, 2);
+                if (up) AddBoxLink(drawer, grid, 0, 1);
+                if (down) AddBoxLink(drawer, grid, 2, 0);
+            }
 
             return grid;
         }
@@ -85,7 +87,7 @@ namespace GraphVizualizeService
         private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col)
         {
             var gridElem = drawer.DrawGridElem(row, col);
-            gridElem.Childs.Add(drawer.DrawLink());
+            gridElem.Childs.Add(drawer.DrawCaption("==="));
             grid.Childs.Add(gridElem);
         }
 

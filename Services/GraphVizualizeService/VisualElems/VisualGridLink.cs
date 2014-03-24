@@ -10,11 +10,11 @@ namespace GraphVizualizeService.VisualElems
 {
     public class VisualGridLink : IVisual
     {
-        private readonly GridLink _link;
+        private readonly NESW _direction;
 
-        public VisualGridLink(GridLink link)
+        public VisualGridLink(NESW direction)
         {
-            _link = link;
+            _direction = direction;
         }
 
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)

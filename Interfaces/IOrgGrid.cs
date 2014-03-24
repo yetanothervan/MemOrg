@@ -9,6 +9,5 @@ namespace MemOrg.Interfaces
 {
     public interface IOrgGrid : IGrid
     {
-        List<GridLink> Links { get; }
     }
 }

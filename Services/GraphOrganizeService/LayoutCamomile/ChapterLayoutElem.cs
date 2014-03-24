@@ -1,4 +1,5 @@
 using MemOrg.Interfaces;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphOrganizeService.LayoutCamomile
 {
@@ -9,6 +10,7 @@ namespace GraphOrganizeService.LayoutCamomile
             Placed = false;
             Row = 0;
             Col = 0;
+            GridLinkPart = null;
         }
         public IPage Page
         {
@@ -20,7 +22,9 @@ namespace GraphOrganizeService.LayoutCamomile
             }
         }
 
-        public int RowSpan;
+        public GridLinkPart GridLinkPart;
+        public bool IsGridLinkPart { get { return GridLinkPart != null; }}
+        
         private IPage _page;
 
         public bool Placed;

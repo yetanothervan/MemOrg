@@ -1,4 +1,5 @@
-﻿using DAL.Entity;
+﻿using System.Collections.Generic;
+using DAL.Entity;
 using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphOrganizeService.OrgUnits
@@ -10,11 +11,14 @@ namespace GraphOrganizeService.OrgUnits
         protected OrgBlock(Block block)
         {
             _block = block;
+            ConnectionPoints = new List<NESW>();
         }
 
         public Block Block
         {
             get { return _block; }
         }
+
+        public IEnumerable<NESW> ConnectionPoints { get; private set; }
     }
 }

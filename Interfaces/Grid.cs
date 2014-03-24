@@ -34,38 +34,54 @@ namespace MemOrg.Interfaces
             if (_elems.ContainsKey(p))
                 throw new ArgumentOutOfRangeException();
             _elems[p] = elem;
-            _cachedSize = null;
+            _gridInfo = null;
+        }
+
+
+        private GridInfo _gridInfo;
+
+        public GridInfo GridInfo
+        {
+            get { return _gridInfo ?? (_gridInfo = CalculateSize()); }
+        }
+
+        private GridInfo CalculateSize()
+        {
+            var gridInfo = new GridInfo
+            {
+                MaxRow = _elems.Keys.Max(o => o.First),
+                MinRow = _elems.Keys.Min(o => o.First),
+                MaxCol = _elems.Keys.Max(o => o.Second),
+                MinCol = _elems.Keys.Min(o => o.Second)
+            };
+            return gridInfo;
         }
         
-        private Pair<int,int> _cachedSize;
-
-        private void CalculateSize()
-        {
-            _cachedSize = new Pair<int, int>
-                (_elems.Keys.Max(o => o.First) - _elems.Keys.Min(o => o.First),
-                    _elems.Keys.Max(o => o.Second) - _elems.Keys.Min(o => o.Second)
-                );
-        }
-
         public int RowCount {
             get
             {
-                if (_cachedSize == null)
-                    CalculateSize();
-// ReSharper disable once PossibleNullReferenceException
-                return _cachedSize.First;
-            } 
+                if (_gridInfo == null)
+                    _gridInfo = CalculateSize();
+                return _gridInfo.MaxRow - _gridInfo.MinRow;
+            }
         }
 
         public int RowLength
         {
             get
             {
-                if (_cachedSize == null)
-                    CalculateSize();
-// ReSharper disable once PossibleNullReferenceException
-                return _cachedSize.Second;
+                if (_gridInfo == null)
+                    _gridInfo = CalculateSize();
+                return _gridInfo.MaxCol - _gridInfo.MinCol;
             }
         }
+    }
+
+    public class GridInfo
+    {
+        public int MaxCol { get; internal set; }
+        public int MinCol { get; internal set; }
+        public int MaxRow { get; internal set; }
+        public int MinRow { get; internal set; }
     }
 }

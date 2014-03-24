@@ -1,5 +1,6 @@
 using System.Linq;
 using MemOrg.Interfaces;
+using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphOrganizeService.LayoutCamomile
 {
@@ -11,12 +12,12 @@ namespace GraphOrganizeService.LayoutCamomile
             _row = row;
         }
 
-        public IPage Rel
+        private IPage Rel
         {
             get { return _row.Pages.First(r => r.IsBlockRel); }
         }
 
-        public IPage BlockInChapter
+        private IPage BlockInChapter
         {
             get
             {
@@ -27,7 +28,7 @@ namespace GraphOrganizeService.LayoutCamomile
             }
         }
 
-        public IPage Other(IPage block)
+        private IPage Other(IPage block)
         {
             if (block == null) return null;
             return _row.Pages
@@ -35,7 +36,7 @@ namespace GraphOrganizeService.LayoutCamomile
                                      && b.Block.BlockId != block.Block.BlockId);
         }
 
-        public bool IsInChapter(IPage block)
+        private bool IsInChapter(IPage block)
         {
             if (block == null || block.MyChapter == null ||
                 block.MyChapter != _row.MyChapter) return false;
@@ -56,13 +57,13 @@ namespace GraphOrganizeService.LayoutCamomile
             return false;
         }
 
-        public bool IsInBook(IPage block)
+        private bool IsInBook(IPage block)
         {
             if (block != null && block.MyChapter != null 
                 && block.MyChapter.MyBook == _row.MyChapter.MyBook) return true;
             return false;
         }
-        
+
         public void DoLayout()
         {
             if (BlockInChapter != null)
@@ -70,48 +71,73 @@ namespace GraphOrganizeService.LayoutCamomile
                 var other = Other(BlockInChapter);
                 if (IsInChapter(other))
                 {
-                    _row.SecondColumn.Add(new ChapterLayoutElem {Page = BlockInChapter, RowSpan = 1});
-                    _row.ThirdColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
-                    _row.FourthColumn.Add(new ChapterLayoutElem {Page = other, RowSpan = 1});
-                    _row.SecondThird = true;
-                    _row.ThirdFourth = true;
+                    PlaceLayoutElem(new ChapterLayoutElem {Page = BlockInChapter}, 0, -2);
+                    PlaceLayoutElem(NewGridLink(), 0, -1);
+                    PlaceLayoutElem(new ChapterLayoutElem {Page = Rel}, 0, 0);
+                    PlaceLayoutElem(NewGridLink(), 0, 1);
+                    PlaceLayoutElem(new ChapterLayoutElem {Page = other}, 0, 2);
                     return;
                 }
 
-                _row.ThirdColumn.Add(new ChapterLayoutElem {Page = BlockInChapter, RowSpan = 1});
+                PlaceLayoutElem(new ChapterLayoutElem {Page = BlockInChapter}, 0, 0);
 
                 if (IsLeftNeightbor(other))
                 {
-                    _row.SecondColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
+                    PlaceLayoutElem(NewGridLink(), 0, -1);
+                    PlaceLayoutElem(new ChapterLayoutElem {Page = Rel}, 0, -2);
                     return;
                 }
                 if (IsRightNeightbor(other))
                 {
-                    _row.FourthColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
+                    PlaceLayoutElem(NewGridLink(), 0, 1);
+                    PlaceLayoutElem(new ChapterLayoutElem {Page = Rel}, 0, 2);
                     return;
                 }
                 if (IsInBook(other))
                 {
-                    _row.FourthColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
+                    PlaceLayoutElem(NewGridLink(), 0, 1);
+                    PlaceLayoutElem(new ChapterLayoutElem {Page = Rel}, 0, 2);
                     _row.Inner = true;
                     return;
                 }
 
-                _row.FirstColumn.Add(new ChapterLayoutElem {Page = other, RowSpan = 1});
-                _row.SecondColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
-                _row.FirstSecond = true;
-                _row.SecondThird = true;
-                
+                PlaceLayoutElem(NewGridLink(), 0, -1);
+                PlaceLayoutElem(new ChapterLayoutElem {Page = Rel}, 0, -2);
+                PlaceLayoutElem(NewGridLink(), 0, -3);
+                PlaceLayoutElem(new ChapterLayoutElem {Page = other}, 0, -4);
+
                 return;
             }
 
-            _row.ThirdColumn.Add(new ChapterLayoutElem {Page = Rel, RowSpan = 1});
+            PlaceLayoutElem(new ChapterLayoutElem {Page = Rel}, 0, 0);
+
             if (!IsLeftNeightbor(Rel.RelationFirst) && !IsRightNeightbor(Rel.RelationFirst)
                 && !IsInBook(Rel.RelationFirst))
-                _row.SecondColumn.Add(new ChapterLayoutElem {Page = Rel.RelationFirst, RowSpan = 1});
+            {
+                PlaceLayoutElem(NewGridLink(), 0, -1);
+                PlaceLayoutElem(new ChapterLayoutElem {Page = Rel.RelationFirst}, 0, -2);
+            }
             if (!IsLeftNeightbor(Rel.RelationSecond) && !IsRightNeightbor(Rel.RelationSecond)
                 && !IsInBook(Rel.RelationSecond))
-                _row.FourthColumn.Add(new ChapterLayoutElem { Page = Rel.RelationSecond, RowSpan = 1 });
+            {
+                PlaceLayoutElem(NewGridLink(), 0, 1);
+                PlaceLayoutElem(new ChapterLayoutElem {Page = Rel.RelationSecond}, 0, 2);
+            }
+        }
+
+        private static ChapterLayoutElem NewGridLink()
+        {
+            return new ChapterLayoutElem
+            {
+                GridLinkPart = new GridLinkPart
+                {Direction = GridLinkPartDirection.WestEast, Type = GridLinkPartType.Relation}
+            };
+        }
+
+        private void PlaceLayoutElem(ChapterLayoutElem content, int row, int col)
+        {
+            var gridElem = new GridElem(_row) {Content = content};
+            gridElem.PlaceOn(row, col);
         }
     }
 }
