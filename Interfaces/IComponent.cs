@@ -7,10 +7,8 @@ namespace MemOrg.Interfaces
     public interface IComponent
     {
         List<IComponent> Childs { get; set; }
-        List<DrawingVisual> Render(Point p);
-        Size GetSize();
-        double RenderWidth { get; set; }
-        double RenderHeight { get; set; }
+        List<DrawingVisual> Render(Point p1, Point? p2);
+        Size GetActualSize();
         HorizontalAligment HorizontalAligment { get; set; }
         VerticalAligment VerticalAligment{ get; set; }
     }

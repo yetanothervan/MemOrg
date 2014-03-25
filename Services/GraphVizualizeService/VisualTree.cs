@@ -42,18 +42,17 @@ namespace GraphVizualizeService
             set { _mySelf.Childs = value; }
         }
 
-        public List<DrawingVisual> Render(Point p)
+        public List<DrawingVisual> Render(Point p1, Point? p2)
         {
-            return _mySelf.Render(p);
+            return _mySelf.Render(p1, p2);
         }
 
-        public Size GetSize()
+        public Size GetActualSize()
         {
-            return _mySelf.GetSize();
+            return _mySelf.GetActualSize();
         }
 
-        public double RenderWidth { get; set; }
-        public double RenderHeight { get; set; }
+        public double Height { get; set; }
         public HorizontalAligment HorizontalAligment { get; set; }
         public VerticalAligment VerticalAligment { get; set; }
 

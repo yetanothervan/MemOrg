@@ -58,7 +58,7 @@ namespace GraphViewer
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
-                var elems = dc.Grid.Render(new Point(Offset.X, Offset.Y));
+                var elems = dc.Grid.Render(new Point(Offset.X, Offset.Y), null);
                 foreach (var elem in elems) _visuals.Add(elem);
             }
         }

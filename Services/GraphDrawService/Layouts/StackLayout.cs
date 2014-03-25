@@ -22,12 +22,12 @@ namespace GraphDrawService.Layouts
             if (!_childs.Any()) return new Size(0, 0);
             double length =
                 isHorizontal
-                    ? _childs.Sum(child => (child.GetSize().Width + _margin)) + _margin
-                    : _childs.Sum(child => (child.GetSize().Height + _margin)) + _margin;
+                    ? _childs.Sum(child => (child.GetActualSize().Width + _margin)) + _margin
+                    : _childs.Sum(child => (child.GetActualSize().Height + _margin)) + _margin;
             double width =
                 isHorizontal
-                    ? _childs.Max(child => (child.GetSize().Height)) + _margin * 2
-                    : _childs.Max(child => (child.GetSize().Width)) + _margin*2;
+                    ? _childs.Max(child => (child.GetActualSize().Height)) + _margin * 2
+                    : _childs.Max(child => (child.GetActualSize().Width)) + _margin*2;
 
             return isHorizontal
                 ? new Size { Height = width, Width = length }
@@ -45,11 +45,11 @@ namespace GraphDrawService.Layouts
             curPt.Offset(_margin, _margin);
             foreach (var child in _childs)
             {
-                result.AddRange(child.Render(curPt));
+                result.AddRange(child.Render(curPt, null));
                 if (isHorizontal)
-                    curPt.Offset(child.GetSize().Width +_margin, 0.0);
+                    curPt.Offset(child.GetActualSize().Width +_margin, 0.0);
                 else
-                    curPt.Offset(0.0, child.GetSize().Height + _margin);
+                    curPt.Offset(0.0, child.GetActualSize().Height + _margin);
             }
             return result;
         }

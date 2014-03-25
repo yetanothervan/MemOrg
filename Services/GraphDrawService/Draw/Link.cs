@@ -20,23 +20,29 @@ namespace GraphDrawService.Draw
             _pen = pen;
         }
 
-        public override List<DrawingVisual> Render(Point p)
+        public override List<DrawingVisual> Render(Point p1, Point? p2)
         {
             var result = new List<DrawingVisual>();
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
-                dc.DrawLine(_pen, new Point(p.X, p.Y + 20),
-                    new Point(p.X + 10, p.Y + 20));
+                dc.DrawLine(_pen,
+                    new Point(
+                        p1.X, 
+                        p1.Y + (p2 != null ? (p2.Value.Y - p1.Y) / 2 : 20)),
+                    new Point(
+                        (p2 != null ? p2.Value.X : p1.X + 10),
+                        p1.Y + (p2 != null ? (p2.Value.Y - p1.Y) / 2 : 20)
+                        ));
             }
             result.Add(dv);
             return result;
         }
         
-        public override Size GetSize()
+        public override Size GetActualSize()
         {
-            //var height = (RenderHeight >= 0) ? RenderHeight : 20.0;
-            //var width = (RenderWidth >= 0) ? RenderWidth : 20.0;
+            //var height = (Height >= 0) ? Height : 20.0;
+            //var width = (Width >= 0) ? Width : 20.0;
             return new Size(10, 20);
         }
     }

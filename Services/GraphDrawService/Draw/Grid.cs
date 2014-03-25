@@ -21,30 +21,57 @@ namespace GraphDrawService.Draw
             _style = style;
         }
         
-        public override List<DrawingVisual> Render(Point p)
+        public override List<DrawingVisual> Render(Point p1, Point? p2)
         {
             var result = new List<DrawingVisual>();
+            var size = GetActualSize();
+            Point pS;
+            if (p2 == null) pS = p1;
+            else
+            {
+                switch (HorizontalAligment)
+                {
+                    case HorizontalAligment.Left:
+                        pS = p1;
+                        break;
+                        case HorizontalAligment.Right:
+                        pS = new Point(p2.Value.X - size.Width, p1.Y);
+                        break;
+                        case HorizontalAligment.Center:
+                        pS = new Point((p2.Value.X - p1.X - size.Width) / 2 + p1.X, p1.Y);
+                        break;
+                        case HorizontalAligment.Stretch:
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
             
+
             foreach (var child in Childs)
             {
                 var gridElem = child as GridElem;
                 if (gridElem == null) continue;
 
-                var x = _colWidths.Where(o => o.Key < gridElem.Col).Sum(o => o.Value)
+                var x1 = pS.X + _colWidths.Where(o => o.Key < gridElem.Col).Sum(o => o.Value)
                            + (_colWidths.Count(o => o.Key < gridElem.Col) + 1) * Margin;
 
-                var y = _rowHeights.Where(o => o.Key < gridElem.Row).Sum(o => o.Value)
+                var y1 = pS.Y + _rowHeights.Where(o => o.Key < gridElem.Row).Sum(o => o.Value)
                            + (_rowHeights.Count(o => o.Key < gridElem.Row) + 1) * Margin;
 
-                var pC = new Point(x + p.X, y + p.Y);
-                
-                result.AddRange(child.Render(pC));
+                var x2 = x1 + _colWidths.First(c => c.Key == gridElem.Col).Value;
+
+                var y2 = y1 + _rowHeights.First(c => c.Key == gridElem.Row).Value;
+
+                result.AddRange(child.Render(
+                    new Point(x1, y1),
+                    new Point(x2, y2)
+                    ));
             }
 
             return result;
         }
 
-        public override Size GetSize()
+        public override Size GetActualSize()
         {
             if (_colWidths == null)
                 CalculateGrid();
@@ -68,7 +95,7 @@ namespace GraphDrawService.Draw
                 var gridElem = child as GridElem;
                 if (gridElem != null)
                 {
-                    var elemSize = child.GetSize();
+                    var elemSize = child.GetActualSize();
 
                     if (!_colWidths.ContainsKey(gridElem.Col)
                         || _colWidths[gridElem.Col] < elemSize.Width)

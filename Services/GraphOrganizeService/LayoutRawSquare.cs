@@ -35,12 +35,12 @@ namespace GraphOrganizeService
             {
 // ReSharper disable once AccessToForEachVariableInClosure
                 var tag = graphService.TagsBlock.First(o => o.TagBlock.BlockId == blockTag.BlockId);
-                var ge = new GridElem(grid) {Content = new OrgBlockTag(blockTag, tag)};
+                var ge = new GridElem(grid) {Content = new OrgBlockTag(blockTag, tag, null)};
                 _allocator.PlaceNextGridElem(ge);
             }
             foreach (var blockRel in graphService.BlockRels)
             {
-                var ge = new GridElem(grid) {Content = new OrgBlockRel(blockRel)};
+                var ge = new GridElem(grid) {Content = new OrgBlockRel(blockRel, null)};
                 _allocator.PlaceNextGridElem(ge);
             }
             foreach (var block in graphService.BlockOthers)
@@ -48,9 +48,9 @@ namespace GraphOrganizeService
                 var ge = new GridElem(grid);
                 if (block.Particles.Count == block.Particles.OfType<UserTextParticle>().Count()
                     && block.Particles.Count != 0)
-                    ge.Content = new OrgBlockUserText(block);
+                    ge.Content = new OrgBlockUserText(block, null);
                 else
-                    ge.Content = new OrgBlockOthers(block);
+                    ge.Content = new OrgBlockOthers(block, null);
                 _allocator.PlaceNextGridElem(ge);
             }
 

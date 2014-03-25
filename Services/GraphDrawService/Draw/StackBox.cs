@@ -14,12 +14,12 @@ namespace GraphDrawService.Draw
     {
         private const double Margin = 10.0;
         
-        public override List<DrawingVisual> Render(Point p)
+        public override List<DrawingVisual> Render(Point p1, Point? p2)
         {
-            return new VerticalStackLayout(Childs, Margin).Render(p).ToList();
+            return new VerticalStackLayout(Childs, Margin).Render(p1).ToList();
         }
 
-        public override Size GetSize()
+        public override Size GetActualSize()
         {
             return new VerticalStackLayout(Childs, Margin).CalculateSize();
         }

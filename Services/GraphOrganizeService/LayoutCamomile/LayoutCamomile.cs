@@ -102,7 +102,7 @@ namespace GraphOrganizeService.LayoutCamomile
                 
                 if (relsInPage.Any())
                 {
-                    PlaceLayoutElem(row, new ChapterLayoutElem { Page = page }, height, -2);
+                    PlaceLayoutElem(row, NewGridElem(page, NESW.East), height, -2);
                     foreach (var p in relsInPage)
                     {
                         PlaceLayoutElem(row,
@@ -110,11 +110,11 @@ namespace GraphOrganizeService.LayoutCamomile
                                 ? NewGridLink()
                                 : NewGridLink(GridLinkPartDirection.NorthEast),
                             height, -1);
-                        PlaceLayoutElem(row, new ChapterLayoutElem { Page = p }, height, 0);
+                        PlaceLayoutElem(row, NewGridElem(p, NESW.West, NESW.East), height, 0);
                         var oppose = p.RelationFirst.Block.BlockId != page.Block.BlockId 
                             ? p.RelationFirst : p.RelationSecond;
                         PlaceLayoutElem(row, NewGridLink(), height, 1);
-                        PlaceLayoutElem(row, new ChapterLayoutElem { Page = oppose }, height, 2);
+                        PlaceLayoutElem(row, NewGridElem(oppose, NESW.West), height, 2);
                         rels.Add(p);
                         height++;
                     }
@@ -173,7 +173,8 @@ namespace GraphOrganizeService.LayoutCamomile
         private void DoChapterLayout(ChapterLayout layout, OrgGrid orgGrid, int chapterColumnLeft)
         {
             //source elem
-            var ge = new GridElem(orgGrid) {Content = new OrgBlockSource(layout.ChapterBlock)};
+            var ge = new GridElem(orgGrid)
+            {Content = new OrgBlockSource(layout.ChapterBlock, null)};
             ge.PlaceOn(0, chapterColumnLeft);
 
             int whole = 0;
@@ -189,6 +190,15 @@ namespace GraphOrganizeService.LayoutCamomile
             }
         }
 
+        private static ChapterLayoutElem NewGridElem(IPage content, params NESW[] conPoints)
+        {
+            return new ChapterLayoutElem
+            {
+                Page = content,
+                ConnectionPoints = new List<NESW>(conPoints)
+            };
+        }
+
         private void PlaceElemInGrid(ChapterLayoutElem page, OrgGrid orgGrid, int row, int col)
         {
             var ge = new GridElem(orgGrid);
@@ -196,11 +206,12 @@ namespace GraphOrganizeService.LayoutCamomile
             if (page.IsGridLinkPart)
                 ge.Content = page.GridLinkPart;
             else if (page.Page.IsBlockTag)
-                ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag);
+                ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag, page.ConnectionPoints);
             else if (page.Page.IsBlockRel)
-                ge.Content = new OrgBlockRel(page.Page.Block);
+                ge.Content = new OrgBlockRel(page.Page.Block, page.ConnectionPoints);
             else
-                ge.Content = new OrgBlockOthers(page.Page.Block);
+                ge.Content = new OrgBlockOthers(page.Page.Block, page.ConnectionPoints);
+            
             ge.PlaceOn(row, col);
             page.Placed = true;
             page.Row = row;

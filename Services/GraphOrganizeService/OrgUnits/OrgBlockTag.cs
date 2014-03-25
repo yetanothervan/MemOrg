@@ -1,4 +1,5 @@
-﻿using DAL.Entity;
+﻿using System.Collections.Generic;
+using DAL.Entity;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.OrgUnits;
 
@@ -8,8 +9,8 @@ namespace GraphOrganizeService.OrgUnits
     {
         private readonly Tag _tag;
 
-        public OrgBlockTag(Block block, Tag tag)
-            : base(block)
+        public OrgBlockTag(Block block, Tag tag, List<NESW> conPoints)
+            : base(block, conPoints)
         {
             _tag = tag;
         }

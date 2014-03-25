@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.OrgUnits;
 
@@ -24,6 +25,8 @@ namespace GraphOrganizeService.LayoutCamomile
 
         public GridLinkPart GridLinkPart;
         public bool IsGridLinkPart { get { return GridLinkPart != null; }}
+
+        public List<NESW> ConnectionPoints { get; set; }
         
         private IPage _page;
 

@@ -26,7 +26,7 @@ namespace GraphVizualizeService
             {
                 IComponent component;
                 if (gridElem.Content is GridLinkPart)
-                    component = drawer.DrawCaption("===");
+                    component = drawer.DrawLink();
                 else 
                     component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
                 var ge = drawer.DrawGridElem(gridElem.RowIndex, gridElem.ColIndex);
@@ -79,6 +79,12 @@ namespace GraphVizualizeService
                 if (right) AddBoxLink(drawer, grid, 1, 2);
                 if (up) AddBoxLink(drawer, grid, 0, 1);
                 if (down) AddBoxLink(drawer, grid, 2, 0);
+
+                if (left && right) grid.HorizontalAligment = HorizontalAligment.Center;
+                else if (left)
+                    grid.HorizontalAligment = HorizontalAligment.Left;
+                else if (right)
+                    grid.HorizontalAligment = HorizontalAligment.Right;
             }
 
             return grid;
@@ -87,7 +93,7 @@ namespace GraphVizualizeService
         private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col)
         {
             var gridElem = drawer.DrawGridElem(row, col);
-            gridElem.Childs.Add(drawer.DrawCaption("==="));
+            gridElem.Childs.Add(drawer.DrawLink());
             grid.Childs.Add(gridElem);
         }
 
@@ -115,18 +121,16 @@ namespace GraphVizualizeService
             set { _mySelf.Childs = value; }
         }
         
-        public List<DrawingVisual> Render(Point p)
+        public List<DrawingVisual> Render(Point p1, Point? p2)
         {
-            return _mySelf != null ? _mySelf.Render(p) : null;
+            return _mySelf != null ? _mySelf.Render(p1, p2) : null;
         }
 
-        public Size GetSize()
+        public Size GetActualSize()
         {
-            return _mySelf != null ? _mySelf.GetSize() : new Size();
+            return _mySelf != null ? _mySelf.GetActualSize() : new Size();
         }
-
-        public double RenderWidth { get; set; }
-        public double RenderHeight { get; set; }
+        
         public HorizontalAligment HorizontalAligment { get; set; }
         public VerticalAligment VerticalAligment { get; set; }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using DAL.Entity;
 using MemOrg.Interfaces.OrgUnits;
 
@@ -8,10 +9,10 @@ namespace GraphOrganizeService.OrgUnits
     {
         private readonly Block _block;
 
-        protected OrgBlock(Block block)
+        protected OrgBlock(Block block, IEnumerable<NESW> conPoints)
         {
             _block = block;
-            ConnectionPoints = new List<NESW>();
+            ConnectionPoints = conPoints ?? new List<NESW>();
         }
 
         public Block Block

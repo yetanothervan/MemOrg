@@ -23,9 +23,9 @@ namespace GraphDrawService.Draw
             Pen = pen;
         }
         
-        public abstract override List<DrawingVisual> Render(Point p);
+        public abstract override List<DrawingVisual> Render(Point p1, Point? p2);
 
-        public override Size GetSize()
+        public override Size GetActualSize()
         {
             return new VerticalStackLayout(Childs, Margin).CalculateSize();
         }

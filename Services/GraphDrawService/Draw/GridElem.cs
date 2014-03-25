@@ -19,18 +19,18 @@ namespace GraphDrawService.Draw
         public int Col { get; private set; }
         public int Row { get; private set; }
 
-        public override List<DrawingVisual> Render(Point p)
+        public override List<DrawingVisual> Render(Point p1, Point? p2)
         {
             if (Childs.Count == 0)
                 return null;
-            return Childs[0].Render(p);
+            return Childs[0].Render(p1, p2);
         }
 
-        public override Size GetSize()
+        public override Size GetActualSize()
         {
             if (Childs.Count == 0)
                 return new Size(0, 0);
-            return Childs[0].GetSize();
+            return Childs[0].GetActualSize();
         }
     }
 }
