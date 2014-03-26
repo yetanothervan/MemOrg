@@ -53,6 +53,8 @@
     <Compile Include="GridElem.cs" />
     <Compile Include="GridEnumerator.cs" />
     <Compile Include="IOrgGrid.cs" />
+    <Compile Include="IOrgGridElem.cs" />
+    <Compile Include="OrgGridElem.cs" />
     <Compile Include="OrgUnits\GridLink.cs" />
     <Compile Include="OrgUnits\IOrgBlockOthers.cs" />
     <Compile Include="OrgUnits\IOrgBlockRel.cs" />

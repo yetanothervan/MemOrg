@@ -27,6 +27,7 @@ namespace GraphOrganizeService.LayoutCamomile
         public bool IsGridLinkPart { get { return GridLinkPart != null; }}
 
         public List<NESW> ConnectionPoints { get; set; }
+        public HorizontalAligment HorizontalAligment;
         
         private IPage _page;
 

@@ -72,57 +72,57 @@ namespace GraphOrganizeService.LayoutCamomile
                 var other = Other(BlockInChapter);
                 if (IsInChapter(other))
                 {
-                    PlaceLayoutElem(NewGridElem(BlockInChapter, NESW.East), 0, -2);
+                    PlaceLayoutElem(NewGridElem(BlockInChapter, HorizontalAligment.Right, NESW.East), 0, -2);
                     PlaceLayoutElem(NewGridLink(), 0, -1);
-                    PlaceLayoutElem(NewGridElem(Rel, NESW.West, NESW.East), 0, 0);
+                    PlaceLayoutElem(NewGridElem(Rel, HorizontalAligment.Center, NESW.West, NESW.East), 0, 0);
                     PlaceLayoutElem(NewGridLink(), 0, 1);
-                    PlaceLayoutElem(NewGridElem(other, NESW.West), 0, 2);
+                    PlaceLayoutElem(NewGridElem(other, HorizontalAligment.Left, NESW.West), 0, 2);
                     return;
                 }
 
-                PlaceLayoutElem(NewGridElem(BlockInChapter, NESW.West), 0, 0);
+                PlaceLayoutElem(NewGridElem(BlockInChapter, HorizontalAligment.Left, NESW.West), 0, 0);
 
                 if (IsLeftNeightbor(other))
                 {
                     PlaceLayoutElem(NewGridLink(), 0, -1);
-                    PlaceLayoutElem(NewGridElem(Rel, NESW.West, NESW.East), 0, -2);
+                    PlaceLayoutElem(NewGridElem(Rel, HorizontalAligment.Center, NESW.West, NESW.East), 0, -2);
                     return;
                 }
                 if (IsRightNeightbor(other))
                 {
                     PlaceLayoutElem(NewGridLink(), 0, 1);
-                    PlaceLayoutElem(NewGridElem(Rel, NESW.West, NESW.East), 0, 2);
+                    PlaceLayoutElem(NewGridElem(Rel, HorizontalAligment.Center, NESW.West, NESW.East), 0, 2);
                     return;
                 }
                 if (IsInBook(other))
                 {
                     PlaceLayoutElem(NewGridLink(), 0, 1);
-                    PlaceLayoutElem(NewGridElem(Rel, NESW.West, NESW.East), 0, 2);
+                    PlaceLayoutElem(NewGridElem(Rel, HorizontalAligment.Center, NESW.West, NESW.East), 0, 2);
                     _row.Inner = true;
                     return;
                 }
 
                 PlaceLayoutElem(NewGridLink(), 0, -1);
-                PlaceLayoutElem(NewGridElem(Rel, NESW.West, NESW.East), 0, -2);
+                PlaceLayoutElem(NewGridElem(Rel, HorizontalAligment.Center, NESW.West, NESW.East), 0, -2);
                 PlaceLayoutElem(NewGridLink(), 0, -3);
-                PlaceLayoutElem(NewGridElem(other, NESW.East), 0, -4);
+                PlaceLayoutElem(NewGridElem(other, HorizontalAligment.Right, NESW.East), 0, -4);
 
                 return;
             }
 
-            PlaceLayoutElem(NewGridElem(Rel, NESW.West, NESW.East), 0, 0);
+            PlaceLayoutElem(NewGridElem(Rel, HorizontalAligment.Center, NESW.West, NESW.East), 0, 0);
 
             if (!IsLeftNeightbor(Rel.RelationFirst) && !IsRightNeightbor(Rel.RelationFirst)
                 && !IsInBook(Rel.RelationFirst))
             {
                 PlaceLayoutElem(NewGridLink(), 0, -1);
-                PlaceLayoutElem(NewGridElem(Rel.RelationFirst, NESW.East), 0, -2);
+                PlaceLayoutElem(NewGridElem(Rel.RelationFirst, HorizontalAligment.Right, NESW.East), 0, -2);
             }
             if (!IsLeftNeightbor(Rel.RelationSecond) && !IsRightNeightbor(Rel.RelationSecond)
                 && !IsInBook(Rel.RelationSecond))
             {
                 PlaceLayoutElem(NewGridLink(), 0, 1);
-                PlaceLayoutElem(NewGridElem(Rel.RelationSecond, NESW.West), 0, 2);
+                PlaceLayoutElem(NewGridElem(Rel.RelationSecond, HorizontalAligment.Left, NESW.West), 0, 2);
             }
         }
 
@@ -135,12 +135,14 @@ namespace GraphOrganizeService.LayoutCamomile
             };
         }
 
-        private static ChapterLayoutElem NewGridElem(IPage content, params NESW[] conPoints)
+        private static ChapterLayoutElem NewGridElem(IPage content, HorizontalAligment horAligment, 
+            params NESW[] conPoints)
         {
             return new ChapterLayoutElem
             {
                 Page = content,
-                ConnectionPoints = new List<NESW>(conPoints)
+                ConnectionPoints = new List<NESW>(conPoints),
+                HorizontalAligment = horAligment
             };
         }
 

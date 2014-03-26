@@ -21,15 +21,15 @@ namespace GraphVizualizeService
 
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
-            _mySelf = drawer.DrawGrid();
-            foreach (var gridElem in _grid)
+            _mySelf = drawer.DrawGrid(null, null);
+            foreach (var gridElem in _grid.OfType<IOrgGridElem>())
             {
                 IComponent component;
                 if (gridElem.Content is GridLinkPart)
                     component = drawer.DrawLink();
                 else 
                     component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
-                var ge = drawer.DrawGridElem(gridElem.RowIndex, gridElem.ColIndex);
+                var ge = drawer.DrawGridElem(gridElem);
                 ge.Childs.Add(component);
                 Childs.Add(ge);
             }
@@ -38,8 +38,8 @@ namespace GraphVizualizeService
             back.Childs.Add(_mySelf);
             return back;
         }
-        
-        private IComponent CreateLinkedBoxWithBlock(IGridElem elem, IDrawer drawer, IVisualizeOptions options)
+
+        private IComponent CreateLinkedBoxWithBlock(IOrgGridElem elem, IDrawer drawer, IVisualizeOptions options)
         {
             IComponent result;
 
@@ -62,11 +62,11 @@ namespace GraphVizualizeService
             else
                 throw new NotImplementedException();
 
-            var grid = drawer.DrawGrid();
             var gridcenter = drawer.DrawGridElem(1, 1);
             gridcenter.Childs.Add(result);
-            grid.Childs.Add(gridcenter);
-            
+
+            IComponent grid;
+
             var orgBlock = gc as IOrgBlock;
             if (orgBlock != null)
             {
@@ -75,18 +75,26 @@ namespace GraphVizualizeService
                 bool right = orgBlock.ConnectionPoints.Any(p => p == NESW.East);
                 bool down = orgBlock.ConnectionPoints.Any(p => p == NESW.South);
 
+                var colsWidths = new Dictionary<int, double>();
+                var rowsHeights = new Dictionary<int, double>();
+
+                if (left && elem.HorizontalContentAligment != HorizontalAligment.Left) colsWidths.Add(0, 1);
+                if (right && elem.HorizontalContentAligment != HorizontalAligment.Right ) colsWidths.Add(2, 1);
+                if (up && elem.VerticalContentAligment != VerticalAligment.Top) rowsHeights.Add(0, 1);
+                if (down && elem.VerticalContentAligment != VerticalAligment.Bottom) rowsHeights.Add(2, 1);
+
+                grid = drawer.DrawGrid(colsWidths, rowsHeights);
+                grid.Childs.Add(gridcenter);
+
                 if (left) AddBoxLink(drawer, grid, 1, 0);
                 if (right) AddBoxLink(drawer, grid, 1, 2);
                 if (up) AddBoxLink(drawer, grid, 0, 1);
                 if (down) AddBoxLink(drawer, grid, 2, 0);
-
-                if (left && right) grid.HorizontalAligment = HorizontalAligment.Center;
-                else if (left)
-                    grid.HorizontalAligment = HorizontalAligment.Left;
-                else if (right)
-                    grid.HorizontalAligment = HorizontalAligment.Right;
+                return grid;
             }
 
+            grid = drawer.DrawGrid(null, null);
+            grid.Childs.Add(gridcenter);
             return grid;
         }
 
@@ -130,8 +138,5 @@ namespace GraphVizualizeService
         {
             return _mySelf != null ? _mySelf.GetActualSize() : new Size();
         }
-        
-        public HorizontalAligment HorizontalAligment { get; set; }
-        public VerticalAligment VerticalAligment { get; set; }
     }
 }

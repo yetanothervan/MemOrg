@@ -15,6 +15,9 @@ namespace GraphDrawService.Draw
         private const double Margin = 0.0;
 
         private readonly IDrawStyle _style;
+
+        public IDictionary<int, double> ColStarWidths;
+        public IDictionary<int, double> RowStarHeights;
         
         public Grid(IDrawStyle style)
         {
@@ -25,6 +28,13 @@ namespace GraphDrawService.Draw
         {
             var result = new List<DrawingVisual>();
             var size = GetActualSize();
+            
+            //set star sizes
+            if (p2 != null) 
+            {
+                
+            }
+
             Point pS;
             if (p2 == null) pS = p1;
             else

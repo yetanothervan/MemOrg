@@ -78,7 +78,12 @@ namespace GraphOrganizeService.LayoutCamomile
 
             if (row.Pages.Count == 1)
             {
-                PlaceLayoutElem(row, new ChapterLayoutElem {Page = row.Pages[0]}, 0, 0);
+                PlaceLayoutElem(row,
+                    new ChapterLayoutElem
+                    {
+                        Page = row.Pages[0],
+                        HorizontalAligment = HorizontalAligment.Center
+                    }, 0, 0);
                 if (row.Pages[0].MySources == BlockQuoteParticleSources.MyBook)
                     row.Inner = true;
                 return;
@@ -102,7 +107,7 @@ namespace GraphOrganizeService.LayoutCamomile
                 
                 if (relsInPage.Any())
                 {
-                    PlaceLayoutElem(row, NewGridElem(page, NESW.East), height, -2);
+                    PlaceLayoutElem(row, NewGridElem(page, HorizontalAligment.Right, NESW.East), height, -2);
                     foreach (var p in relsInPage)
                     {
                         PlaceLayoutElem(row,
@@ -110,11 +115,11 @@ namespace GraphOrganizeService.LayoutCamomile
                                 ? NewGridLink()
                                 : NewGridLink(GridLinkPartDirection.NorthEast),
                             height, -1);
-                        PlaceLayoutElem(row, NewGridElem(p, NESW.West, NESW.East), height, 0);
+                        PlaceLayoutElem(row, NewGridElem(p, HorizontalAligment.Center, NESW.West, NESW.East), height, 0);
                         var oppose = p.RelationFirst.Block.BlockId != page.Block.BlockId 
                             ? p.RelationFirst : p.RelationSecond;
                         PlaceLayoutElem(row, NewGridLink(), height, 1);
-                        PlaceLayoutElem(row, NewGridElem(oppose, NESW.West), height, 2);
+                        PlaceLayoutElem(row, NewGridElem(oppose, HorizontalAligment.Left, NESW.West), height, 2);
                         rels.Add(p);
                         height++;
                     }
@@ -173,8 +178,12 @@ namespace GraphOrganizeService.LayoutCamomile
         private void DoChapterLayout(ChapterLayout layout, OrgGrid orgGrid, int chapterColumnLeft)
         {
             //source elem
-            var ge = new GridElem(orgGrid)
-            {Content = new OrgBlockSource(layout.ChapterBlock, null)};
+            var ge = new OrgGridElem(orgGrid)
+            {
+                HorizontalContentAligment = HorizontalAligment.Center,
+                VerticalContentAligment = VerticalAligment.Center,
+                Content = new OrgBlockSource(layout.ChapterBlock, null)
+            };
             ge.PlaceOn(0, chapterColumnLeft);
 
             int whole = 0;
@@ -185,23 +194,28 @@ namespace GraphOrganizeService.LayoutCamomile
                 {
                     var cle = elem.Content as ChapterLayoutElem;
                     if (cle != null)
-                        PlaceElemInGrid(cle, orgGrid, elem.RowIndex + whole, chapterColumnLeft + elem.ColIndex);
+                        PlaceElemInGrid(cle, orgGrid, elem.RowIndex + whole, 
+                            chapterColumnLeft + elem.ColIndex);
                 }
             }
         }
 
-        private static ChapterLayoutElem NewGridElem(IPage content, params NESW[] conPoints)
+        private static ChapterLayoutElem NewGridElem(IPage content, HorizontalAligment horAligment, params NESW[] conPoints)
         {
             return new ChapterLayoutElem
             {
                 Page = content,
-                ConnectionPoints = new List<NESW>(conPoints)
+                ConnectionPoints = new List<NESW>(conPoints),
+                HorizontalAligment = horAligment
             };
         }
 
-        private void PlaceElemInGrid(ChapterLayoutElem page, OrgGrid orgGrid, int row, int col)
+        private void PlaceElemInGrid(ChapterLayoutElem page, OrgGrid orgGrid,
+            int row, int col)
         {
-            var ge = new GridElem(orgGrid);
+            var ge = new OrgGridElem(orgGrid);
+            ge.VerticalContentAligment = VerticalAligment.Center;
+            ge.HorizontalContentAligment = page.HorizontalAligment;
 
             if (page.IsGridLinkPart)
                 ge.Content = page.GridLinkPart;

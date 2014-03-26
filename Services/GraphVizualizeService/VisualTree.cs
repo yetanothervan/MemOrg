@@ -51,11 +51,7 @@ namespace GraphVizualizeService
         {
             return _mySelf.GetActualSize();
         }
-
-        public double Height { get; set; }
-        public HorizontalAligment HorizontalAligment { get; set; }
-        public VerticalAligment VerticalAligment { get; set; }
-
+        
         public IOrgTag MyElem { get; set; }
         public ICollection<ITree> Subtrees { get; set; }
     }

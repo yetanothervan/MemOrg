@@ -11,12 +11,6 @@ namespace GraphDrawService.Draw
 {
     public abstract class Component : IComponent
     {
-        protected Component()
-        {
-            HorizontalAligment = HorizontalAligment.Left;
-            VerticalAligment = VerticalAligment.Top;
-        }
-
         private List<IComponent> _childs;
         public List<IComponent> Childs
         {
@@ -30,7 +24,6 @@ namespace GraphDrawService.Draw
 
         public abstract List<DrawingVisual> Render(Point p1, Point? p2);
         public abstract Size GetActualSize();
-        public HorizontalAligment HorizontalAligment { get; set; }
-        public VerticalAligment VerticalAligment { get; set; }
+        public Size? PreferSize { get; set; }
     }
 }

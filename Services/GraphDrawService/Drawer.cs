@@ -18,14 +18,23 @@ namespace GraphDrawService
             _style = style;
         }
 
-        public IComponent DrawGrid()
+        public IComponent DrawGrid(IDictionary<int, double> colStarWidth, 
+            IDictionary<int, double> rowStarHeight)
         {
-            return new Grid(_style);
+            var grid = new Grid(_style) {ColStarWidths = colStarWidth, RowStarHeights = rowStarHeight};
+            return grid;
+        }
+
+        public IComponent DrawGridElem(IOrgGridElem orgElem)
+        {
+            var gridElem = new GridElem(orgElem);
+            return gridElem;
         }
 
         public IComponent DrawGridElem(int row, int col)
         {
-            return new GridElem(row, col);
+            var gridElem = new GridElem(row, col);
+            return gridElem;
         }
 
         public IComponent DrawCaption(string text)
