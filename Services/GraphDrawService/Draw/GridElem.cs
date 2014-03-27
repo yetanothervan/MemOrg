@@ -11,6 +11,8 @@ namespace GraphDrawService.Draw
 {
     class GridElem: Component
     {
+        private Size? _preferSize;
+
         public GridElem(IOrgGridElem orgElem)
         {
             Row = orgElem.RowIndex;
@@ -33,18 +35,48 @@ namespace GraphDrawService.Draw
         public HorizontalAligment HorizontalAligment { get; set; }
         public VerticalAligment VerticalAligment { get; set; }
 
-        public override List<DrawingVisual> Render(Point p1, Point? p2)
+        public override List<DrawingVisual> Render(Point p)
         {
-            if (Childs.Count == 0)
+            if (!Childs.Any())
                 return null;
-            return Childs[0].Render(p1, p2);
+
+            if (PreferSize != null)
+            {
+                double x, y;
+                if (HorizontalAligment == HorizontalAligment.Right)
+                    x = p.X + PreferSize.Value.Width - GetActualSize().Width;
+                else if (HorizontalAligment == HorizontalAligment.Center)
+                    x = p.X + (PreferSize.Value.Width - GetActualSize().Width)/2;
+                else x = p.X;
+
+                if (VerticalAligment == VerticalAligment.Bottom)
+                    y = p.Y + PreferSize.Value.Height - GetActualSize().Height;
+                else if (VerticalAligment == VerticalAligment.Center)
+                    y = p.Y + (PreferSize.Value.Height - GetActualSize().Height)/2;
+                else y = p.Y;
+
+                return Childs.First().Render(new Point(x, y));
+            }
+
+            return Childs.First().Render(p);
+        }
+
+        public override Size? PreferSize
+        {
+            get { return _preferSize; }
+            set
+            {
+                _preferSize = value;
+                if (Childs.Any())
+                    Childs.First().PreferSize = value;
+            }
         }
 
         public override Size GetActualSize()
         {
-            if (Childs.Count == 0)
+            if (!Childs.Any())
                 return new Size(0, 0);
-            return Childs[0].GetActualSize();
+            return Childs.First().GetActualSize();
         }
     }
 }

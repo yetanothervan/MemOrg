@@ -30,12 +30,12 @@ namespace GraphVizualizeService
                 else 
                     component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
                 var ge = drawer.DrawGridElem(gridElem);
-                ge.Childs.Add(component);
-                Childs.Add(ge);
+                ge.AddChild(component);
+                _mySelf.AddChild(ge);
             }
 
             var back = drawer.DrawBacking();
-            back.Childs.Add(_mySelf);
+            back.AddChild(_mySelf);
             return back;
         }
 
@@ -63,7 +63,7 @@ namespace GraphVizualizeService
                 throw new NotImplementedException();
 
             var gridcenter = drawer.DrawGridElem(1, 1);
-            gridcenter.Childs.Add(result);
+            gridcenter.AddChild(result);
 
             IComponent grid;
 
@@ -84,7 +84,7 @@ namespace GraphVizualizeService
                 if (down && elem.VerticalContentAligment != VerticalAligment.Bottom) rowsHeights.Add(2, 1);
 
                 grid = drawer.DrawGrid(colsWidths, rowsHeights);
-                grid.Childs.Add(gridcenter);
+                grid.AddChild(gridcenter);
 
                 if (left) AddBoxLink(drawer, grid, 1, 0);
                 if (right) AddBoxLink(drawer, grid, 1, 2);
@@ -94,15 +94,15 @@ namespace GraphVizualizeService
             }
 
             grid = drawer.DrawGrid(null, null);
-            grid.Childs.Add(gridcenter);
+            grid.AddChild(gridcenter);
             return grid;
         }
 
         private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col)
         {
             var gridElem = drawer.DrawGridElem(row, col);
-            gridElem.Childs.Add(drawer.DrawLink());
-            grid.Childs.Add(gridElem);
+            gridElem.AddChild(drawer.DrawLink());
+            grid.AddChild(gridElem);
         }
 
         public IEnumerator<IGridElem> GetEnumerator()
@@ -123,20 +123,26 @@ namespace GraphVizualizeService
         }
         
         private IComponent _mySelf;
-        public List<IComponent> Childs
+        public IEnumerable<IComponent> Childs
         {
             get { return _mySelf.Childs; }
-            set { _mySelf.Childs = value; }
         }
-        
-        public List<DrawingVisual> Render(Point p1, Point? p2)
+
+        public void AddChild(IComponent child)
         {
-            return _mySelf != null ? _mySelf.Render(p1, p2) : null;
+            _mySelf.AddChild(child);
+        }
+
+        public List<DrawingVisual> Render(Point p)
+        {
+            return _mySelf != null ? _mySelf.Render(p) : null;
         }
 
         public Size GetActualSize()
         {
             return _mySelf != null ? _mySelf.GetActualSize() : new Size();
         }
+
+        public Size? PreferSize { get; set; }
     }
 }

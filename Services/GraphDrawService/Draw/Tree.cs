@@ -20,24 +20,24 @@ namespace GraphDrawService.Draw
             _style = style;
         }
 
-        public override List<DrawingVisual> Render(Point p1, Point? p2)
+        public override List<DrawingVisual> Render(Point p)
         {
             var res = new List<DrawingVisual>();
-            if (Childs != null && Childs.Count > 0)
+            if (Childs != null && Childs.Any())
             {
-                Size rootSize = Childs[0].GetActualSize();
+                Size rootSize = Childs.First().GetActualSize();
                 Size childSize = new HorizontalStackLayout(Childs.Skip(1), Margin).CalculateSize();
-                var leftTopRootPoint = new Point(Math.Max(childSize.Width, rootSize.Width)/2 - rootSize.Width/2 + p1.X, p1.Y);
-                res.AddRange(Childs[0].Render(leftTopRootPoint, p2)); //draw root elem
+                var leftTopRootPoint = new Point(Math.Max(childSize.Width, rootSize.Width)/2 - rootSize.Width/2 + p.X, p.Y);
+                res.AddRange(Childs.First().Render(leftTopRootPoint)); //draw root elem
                 
                 //draw lines
-                if (Childs.Count > 1)
+                if (Childs.Count() > 1)
                 {
-                    p1.Offset(0.0, rootSize.Height + RootLineHeight);
+                    p.Offset(0.0, rootSize.Height + RootLineHeight);
                     var lines =  new DrawingVisual();
                     using (var dc = lines.RenderOpen())
                     {
-                        var bottomStemPoint = new Point(leftTopRootPoint.X + rootSize.Width/2.0, p1.Y);
+                        var bottomStemPoint = new Point(leftTopRootPoint.X + rootSize.Width/2.0, p.Y);
                         dc.DrawLine(_style.OthersBlockPen,
                             new Point(bottomStemPoint.X, bottomStemPoint.Y - RootLineHeight),
                             bottomStemPoint);
@@ -46,13 +46,13 @@ namespace GraphDrawService.Draw
                         var last = Childs.Skip(1).Last();
 
                         dc.DrawLine(_style.OthersBlockPen,
-                            new Point(p1.X + Margin + first.GetActualSize().Width/2.0, p1.Y),
-                            new Point(p1.X + childSize.Width - Margin - last.GetActualSize().Width / 2.0, p1.Y));
+                            new Point(p.X + Margin + first.GetActualSize().Width/2.0, p.Y),
+                            new Point(p.X + childSize.Width - Margin - last.GetActualSize().Width / 2.0, p.Y));
 
                         if (childSize.Width < rootSize.Width)
-                            p1.Offset((rootSize.Width - childSize.Width) / 2.0, 0.0);
+                            p.Offset((rootSize.Width - childSize.Width) / 2.0, 0.0);
 
-                        var lp = new Point(p1.X, p1.Y);
+                        var lp = new Point(p.X, p.Y);
                         
                         foreach (var elem in Childs.Skip(1))
                         {
@@ -64,7 +64,7 @@ namespace GraphDrawService.Draw
                         }
                     }
                     res.Add(lines);
-                    res.AddRange(new HorizontalStackLayout(Childs.Skip(1), Margin).Render(p1));
+                    res.AddRange(new HorizontalStackLayout(Childs.Skip(1), Margin).Render(p));
                 }
             }
             return res;
@@ -75,10 +75,10 @@ namespace GraphDrawService.Draw
             double height = 0;
             double width = 0;
             
-            if (Childs != null && Childs.Count > 0)
+            if (Childs != null && Childs.Any())
             {
-                height += Childs[0].GetActualSize().Height;
-                width += Childs[0].GetActualSize().Width;
+                height += Childs.First().GetActualSize().Height;
+                width += Childs.First().GetActualSize().Width;
                 Size childSize = new HorizontalStackLayout(Childs.Skip(1), Margin).CalculateSize();
                 height += childSize.Height;
                 height += RootLineHeight;

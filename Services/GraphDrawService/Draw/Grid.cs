@@ -23,62 +23,78 @@ namespace GraphDrawService.Draw
         {
             _style = style;
         }
-        
-        public override List<DrawingVisual> Render(Point p1, Point? p2)
+
+        public override List<DrawingVisual> Render(Point p)
         {
             var result = new List<DrawingVisual>();
-            var size = GetActualSize();
             
-            //set star sizes
-            if (p2 != null) 
-            {
-                
-            }
-
-            Point pS;
-            if (p2 == null) pS = p1;
-            else
-            {
-                switch (HorizontalAligment)
-                {
-                    case HorizontalAligment.Left:
-                        pS = p1;
-                        break;
-                        case HorizontalAligment.Right:
-                        pS = new Point(p2.Value.X - size.Width, p1.Y);
-                        break;
-                        case HorizontalAligment.Center:
-                        pS = new Point((p2.Value.X - p1.X - size.Width) / 2 + p1.X, p1.Y);
-                        break;
-                        case HorizontalAligment.Stretch:
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
-            
-
             foreach (var child in Childs)
             {
                 var gridElem = child as GridElem;
-                if (gridElem == null) continue;
+                if (gridElem == null) 
+                    continue;
 
-                var x1 = pS.X + _colWidths.Where(o => o.Key < gridElem.Col).Sum(o => o.Value)
-                           + (_colWidths.Count(o => o.Key < gridElem.Col) + 1) * Margin;
+                gridElem.PreferSize = new Size(_colWidths[gridElem.Col], _rowHeights[gridElem.Row]);
 
-                var y1 = pS.Y + _rowHeights.Where(o => o.Key < gridElem.Row).Sum(o => o.Value)
-                           + (_rowHeights.Count(o => o.Key < gridElem.Row) + 1) * Margin;
+                var x = p.X + _colWidths.Where(o => o.Key < gridElem.Col).Sum(o => o.Value)
+                        + (_colWidths.Count(o => o.Key < gridElem.Col) + 1)*Margin;
 
-                var x2 = x1 + _colWidths.First(c => c.Key == gridElem.Col).Value;
-
-                var y2 = y1 + _rowHeights.First(c => c.Key == gridElem.Row).Value;
+                var y = p.Y + _rowHeights.Where(o => o.Key < gridElem.Row).Sum(o => o.Value)
+                        + (_rowHeights.Count(o => o.Key < gridElem.Row) + 1)*Margin;
 
                 result.AddRange(child.Render(
-                    new Point(x1, y1),
-                    new Point(x2, y2)
-                    ));
+                    new Point(x, y)));
             }
 
             return result;
+        }
+
+        public override Size? PreferSize
+        {
+            get { return _preferSize ?? (_preferSize = new Size()); }
+            set
+            {
+                _preferSize = value;
+                RecalculateSize();
+            }
+        }
+
+        private void RecalculateSize()
+        {
+            var size = GetActualSize();
+            //set star sizes
+            if (PreferSize == null)
+                PreferSize = GetActualSize();
+
+            if (ColStarWidths != null && ColStarWidths.Count > 0)
+            {
+                var starwidthprice = (PreferSize.Value.Width - size.Width) / ColStarWidths.Sum(c => c.Value);
+
+                var newWidths = new Dictionary<int, double>();
+                foreach (var colWidth in _colWidths.Keys)
+                    if (ColStarWidths.ContainsKey(colWidth))
+                        newWidths[colWidth] =
+                            (_colWidths[colWidth] > starwidthprice * ColStarWidths[colWidth]
+                                ? _colWidths[colWidth]
+                                : starwidthprice * ColStarWidths[colWidth]);
+                    else newWidths[colWidth] = _colWidths[colWidth];
+                _colWidths = newWidths;
+            }
+
+            if (RowStarHeights != null && RowStarHeights.Count > 0)
+            {
+                var starheigthprice = (PreferSize.Value.Height - size.Height) / RowStarHeights.Sum(c => c.Value);
+
+                var newHeights = new Dictionary<int, double>();
+                foreach (var rowHeight in _rowHeights.Keys)
+                    if (RowStarHeights.ContainsKey(rowHeight))
+                        newHeights[rowHeight] =
+                            (_rowHeights[rowHeight] > starheigthprice * RowStarHeights[rowHeight]
+                                ? _rowHeights[rowHeight]
+                                : starheigthprice * RowStarHeights[rowHeight]);
+                    else newHeights[rowHeight] = _rowHeights[rowHeight];
+                _rowHeights = newHeights;
+            }
         }
 
         public override Size GetActualSize()
@@ -94,7 +110,8 @@ namespace GraphDrawService.Draw
 
         private Dictionary<int, double> _colWidths; 
         private Dictionary<int, double> _rowHeights;
-        
+        private Size? _preferSize;
+
         void CalculateGrid()
         {
             _colWidths = new Dictionary<int, double>();
@@ -116,6 +133,13 @@ namespace GraphDrawService.Draw
                         _rowHeights[gridElem.Row] = elemSize.Height;
                 }
             }
+        }
+
+        public override void AddChild(IComponent child)
+        {
+            base.AddChild(child);
+            _colWidths = null;
+            _rowHeights = null;
         }
     }
 }

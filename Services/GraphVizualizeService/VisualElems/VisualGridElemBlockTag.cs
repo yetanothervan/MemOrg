@@ -18,15 +18,15 @@ namespace GraphVizualizeService.VisualElems
         {
             var res = drawer.DrawBlockTag();
             var caption = drawer.DrawCaption(_org.Tag.Caption);
-            res.Childs.Add(caption);
+            res.AddChild(caption);
             if (options.HeadersOnly) return res;
 
             foreach (var part in _org.Block.Particles.OrderBy(o => o.Order))
             {
                 if (part is UserTextParticle)
-                    res.Childs.Add(VisualFuncs.UserText(part as UserTextParticle, drawer));
+                    res.AddChild(VisualFuncs.UserText(part as UserTextParticle, drawer));
                 else if (part is QuoteSourceParticle)
-                    res.Childs.Add(VisualFuncs.QuoteSourceText(part as QuoteSourceParticle, drawer));
+                    res.AddChild(VisualFuncs.QuoteSourceText(part as QuoteSourceParticle, drawer));
                 else
                     throw new NotImplementedException();
             }

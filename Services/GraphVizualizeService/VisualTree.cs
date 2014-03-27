@@ -23,35 +23,41 @@ namespace GraphVizualizeService
             _mySelf = drawer.DrawTree();
             
             var rootComp = new VisualGridElemTag(_tree.MyElem).Visualize(drawer, options);
-            _mySelf.Childs = new List<IComponent> {rootComp};
+            _mySelf.AddChild(rootComp);
 
             if (_tree.Subtrees != null)
                 foreach (var subtree in _tree.Subtrees)
                 {
                     var vst = new VisualTree(subtree);
                     IComponent st = vst.Visualize(drawer, options);
-                    _mySelf.Childs.Add(st);
+                    _mySelf.AddChild(st);
                 }
 
             return _mySelf;
         }
 
-        public List<IComponent> Childs
+        public IEnumerable<IComponent> Childs
         {
             get { return _mySelf.Childs; }
-            set { _mySelf.Childs = value; }
         }
 
-        public List<DrawingVisual> Render(Point p1, Point? p2)
+        public void AddChild(IComponent child)
         {
-            return _mySelf.Render(p1, p2);
+            _mySelf.AddChild(child);
+        }
+
+        public List<DrawingVisual> Render(Point p1)
+        {
+            return _mySelf.Render(p1);
         }
 
         public Size GetActualSize()
         {
             return _mySelf.GetActualSize();
         }
-        
+
+        public Size? PreferSize { get; set; }
+
         public IOrgTag MyElem { get; set; }
         public ICollection<ITree> Subtrees { get; set; }
     }

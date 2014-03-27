@@ -6,8 +6,9 @@ namespace MemOrg.Interfaces
 {
     public interface IComponent
     {
-        List<IComponent> Childs { get; set; }
-        List<DrawingVisual> Render(Point p1, Point? p2);
+        IEnumerable<IComponent> Childs { get; }
+        void AddChild(IComponent child);
+        List<DrawingVisual> Render(Point p);
         Size GetActualSize();
         Size? PreferSize { get; set; }
     }

@@ -19,30 +19,30 @@ namespace GraphDrawService.Draw
             _style = style;
         }
 
-        public override List<DrawingVisual> Render(Point p1, Point? p2)
+        public override List<DrawingVisual> Render(Point p)
         {
             var result = new List<DrawingVisual>();
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
-                var rect = new Rect(p1, GetActualSize());                
+                var rect = new Rect(p, GetActualSize());                
                 dc.DrawRectangle(_style.QuoteBlockBrush, _style.QuoteBlockPen, rect);
             }
             result.Add(dv);
 
-            if (Childs.Count > 0)
+            if (Childs.Any())
             {
-                p1.Offset(Margin, Margin);
-                result.AddRange(Childs[0].Render(p1, p2));
+                p.Offset(Margin, Margin);
+                result.AddRange(Childs.First().Render(p));
             }
             return result;
         }
 
         public override Size GetActualSize()
         {
-            if (Childs.Count == 0)
+            if (!Childs.Any())
                 return new Size(0, 0);
-            Size s = Childs[0].GetActualSize();
+            Size s = Childs.First().GetActualSize();
             s.Width += Margin * 2;
             s.Height += Margin * 2;
             return s;

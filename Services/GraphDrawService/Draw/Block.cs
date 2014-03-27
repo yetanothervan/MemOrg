@@ -23,7 +23,7 @@ namespace GraphDrawService.Draw
             Pen = pen;
         }
         
-        public abstract override List<DrawingVisual> Render(Point p1, Point? p2);
+        public abstract override List<DrawingVisual> Render(Point p);
 
         public override Size GetActualSize()
         {

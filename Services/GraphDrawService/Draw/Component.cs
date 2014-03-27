@@ -12,18 +12,18 @@ namespace GraphDrawService.Draw
     public abstract class Component : IComponent
     {
         private List<IComponent> _childs;
-        public List<IComponent> Childs
+        public virtual IEnumerable<IComponent> Childs
         {
-            get
-            {
-                if (_childs == null) Childs = new List<IComponent>(0);
-                return _childs;
-            }
-            set { _childs = value; }
+            get { return _childs ?? (_childs = new List<IComponent>(0)); }
         }
 
-        public abstract List<DrawingVisual> Render(Point p1, Point? p2);
+        public virtual void AddChild(IComponent child)
+        {
+            (_childs ?? (_childs = new List<IComponent>(0))).Add(child);
+        }
+
+        public abstract List<DrawingVisual> Render(Point p);
         public abstract Size GetActualSize();
-        public Size? PreferSize { get; set; }
+        public virtual Size? PreferSize { get; set; }
     }
 }

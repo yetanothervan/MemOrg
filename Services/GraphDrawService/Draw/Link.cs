@@ -20,7 +20,7 @@ namespace GraphDrawService.Draw
             _pen = pen;
         }
 
-        public override List<DrawingVisual> Render(Point p1, Point? p2)
+        public override List<DrawingVisual> Render(Point p)
         {
             var result = new List<DrawingVisual>();
             var dv = new DrawingVisual();
@@ -28,11 +28,11 @@ namespace GraphDrawService.Draw
             {
                 dc.DrawLine(_pen,
                     new Point(
-                        p1.X, 
-                        p1.Y + (p2 != null ? (p2.Value.Y - p1.Y) / 2 : 20)),
+                        p.X,
+                        p.Y + (PreferSize != null ? PreferSize.Value.Height / 2 : 20)),
                     new Point(
-                        (p2 != null ? p2.Value.X : p1.X + 10),
-                        p1.Y + (p2 != null ? (p2.Value.Y - p1.Y) / 2 : 20)
+                        p.X + (PreferSize != null ? PreferSize.Value.Width : 10),
+                        p.Y + (PreferSize != null ? PreferSize.Value.Height / 2 : 20)
                         ));
             }
             result.Add(dv);

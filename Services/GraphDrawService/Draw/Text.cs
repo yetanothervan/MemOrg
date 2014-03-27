@@ -22,12 +22,12 @@ namespace GraphDrawService.Draw
             _text.MaxTextHeight = style.MaxTextBlockHeight;
         }
 
-        public override List<DrawingVisual> Render(Point p1, Point? p2)
+        public override List<DrawingVisual> Render(Point p)
         {
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
-                dc.DrawText(_text, p1);
+                dc.DrawText(_text, p);
             }
             return new List<DrawingVisual> {dv};
         }

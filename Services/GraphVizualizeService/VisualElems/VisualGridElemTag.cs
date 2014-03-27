@@ -15,7 +15,7 @@ namespace GraphVizualizeService.VisualElems
         {
             var res = drawer.DrawTag();
             var caption = drawer.DrawCaption(_org.Tag.Caption);
-            res.Childs.Add(caption);
+            res.AddChild(caption);
             return res;
         }
     }

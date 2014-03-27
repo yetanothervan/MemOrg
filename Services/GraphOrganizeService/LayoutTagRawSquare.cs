@@ -38,7 +38,7 @@ namespace GraphOrganizeService
             var allocator = new RawSquareGridElemAllocator(_graph.GraphService.TagRoots.Count());
             foreach (var tagRoot in _graph.GraphService.TagRoots)
             {
-                var ge = new GridElem(grid);
+                var ge = new OrgGridElem(grid);
                 var tree = CreateTree(tagRoot);
                 ge.Content = tree;
                 allocator.PlaceNextGridElem(ge);

@@ -45,7 +45,7 @@ namespace GraphDrawService.Layouts
             curPt.Offset(_margin, _margin);
             foreach (var child in _childs)
             {
-                result.AddRange(child.Render(curPt, null));
+                result.AddRange(child.Render(curPt));
                 if (isHorizontal)
                     curPt.Offset(child.GetActualSize().Width +_margin, 0.0);
                 else

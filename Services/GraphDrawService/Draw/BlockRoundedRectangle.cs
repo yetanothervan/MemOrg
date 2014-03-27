@@ -14,18 +14,18 @@ namespace GraphDrawService.Draw
         {
         }
 
-        public override List<DrawingVisual> Render(Point p1, Point? p2)
+        public override List<DrawingVisual> Render(Point p)
         {
             var result = new List<DrawingVisual>();
 
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
-                var rect = new Rect(p1, GetActualSize());
+                var rect = new Rect(p, GetActualSize());
                 dc.DrawRoundedRectangle(Brush, Pen, rect, 10.0, 10.0);
             }
             result.Add(dv);
-            result.AddRange(new VerticalStackLayout(Childs, Margin).Render(p1));
+            result.AddRange(new VerticalStackLayout(Childs, Margin).Render(p));
             return result;
         }
     }

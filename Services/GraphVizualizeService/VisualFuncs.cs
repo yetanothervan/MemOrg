@@ -14,7 +14,7 @@ namespace GraphVizualizeService
         {
             var t = drawer.DrawQuoteText(quoteSourceParticle.SourceTextParticle.Content);
             var qb = drawer.DrawQuoteBox();
-            qb.Childs.Add(t);
+            qb.AddChild(t);
             return qb;
         }
 

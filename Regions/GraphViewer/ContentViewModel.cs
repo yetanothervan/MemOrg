@@ -48,7 +48,9 @@ namespace GraphViewer
             var tagVisTree = _graphVizualizeService.VisualizeGrid(_tagTrees, options, _drawer);
 
             var stack = _graphVizualizeService.StackPanel(options, _drawer);
-            stack.Childs = new List<IComponent> { tagVisTree, camoVisGrid, rawVisGrid };
+            stack.AddChild(tagVisTree);
+            stack.AddChild(camoVisGrid);
+            stack.AddChild(rawVisGrid);
 
             Grid = stack;
         }
