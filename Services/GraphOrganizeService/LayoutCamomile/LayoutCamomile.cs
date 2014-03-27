@@ -213,19 +213,24 @@ namespace GraphOrganizeService.LayoutCamomile
         private void PlaceElemInGrid(ChapterLayoutElem page, OrgGrid orgGrid,
             int row, int col)
         {
-            var ge = new OrgGridElem(orgGrid);
-            ge.VerticalContentAligment = VerticalAligment.Center;
-            ge.HorizontalContentAligment = page.HorizontalAligment;
+            var ge = new OrgGridElem(orgGrid)
+            {
+                VerticalContentAligment = VerticalAligment.Center,
+                HorizontalContentAligment = page.HorizontalAligment
+            };
 
             if (page.IsGridLinkPart)
+            {
                 ge.Content = page.GridLinkPart;
+                ge.VerticalContentAligment = VerticalAligment.Top;
+            }
             else if (page.Page.IsBlockTag)
                 ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag, page.ConnectionPoints);
             else if (page.Page.IsBlockRel)
                 ge.Content = new OrgBlockRel(page.Page.Block, page.ConnectionPoints);
             else
                 ge.Content = new OrgBlockOthers(page.Page.Block, page.ConnectionPoints);
-            
+
             ge.PlaceOn(row, col);
             page.Placed = true;
             page.Row = row;

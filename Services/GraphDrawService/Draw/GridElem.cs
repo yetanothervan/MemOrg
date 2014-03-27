@@ -39,7 +39,7 @@ namespace GraphDrawService.Draw
         {
             if (!Childs.Any())
                 return null;
-
+            
             if (PreferSize != null)
             {
                 double x, y;

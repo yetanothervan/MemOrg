@@ -68,7 +68,10 @@ namespace GraphDrawService.Draw
 
             if (ColStarWidths != null && ColStarWidths.Count > 0)
             {
-                var starwidthprice = (PreferSize.Value.Width - size.Width) / ColStarWidths.Sum(c => c.Value);
+                var freesize = PreferSize.Value.Width - 
+                    _colWidths.Where(w => !ColStarWidths.ContainsKey(w.Key))
+                    .Sum(w => w.Value); //сумма всех фиксированных ширин
+                var starwidthprice = freesize / ColStarWidths.Sum(c => c.Value);
 
                 var newWidths = new Dictionary<int, double>();
                 foreach (var colWidth in _colWidths.Keys)
@@ -83,7 +86,10 @@ namespace GraphDrawService.Draw
 
             if (RowStarHeights != null && RowStarHeights.Count > 0)
             {
-                var starheigthprice = (PreferSize.Value.Height - size.Height) / RowStarHeights.Sum(c => c.Value);
+                var freesize = PreferSize.Value.Height -
+                    _rowHeights.Where(h => !RowStarHeights.ContainsKey(h.Key))
+                    .Sum(h => h.Value); //сумма всех фиксированных высот
+                var starheigthprice = freesize / RowStarHeights.Sum(c => c.Value);
 
                 var newHeights = new Dictionary<int, double>();
                 foreach (var rowHeight in _rowHeights.Keys)

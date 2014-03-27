@@ -26,13 +26,15 @@ namespace GraphDrawService.Draw
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
+                if (PreferSize == null)
+                    return result;
                 dc.DrawLine(_pen,
                     new Point(
                         p.X,
-                        p.Y + (PreferSize != null ? PreferSize.Value.Height / 2 : 20)),
+                        p.Y + (PreferSize != null ? PreferSize.Value.Height / 2 : 15)),
                     new Point(
                         p.X + (PreferSize != null ? PreferSize.Value.Width : 10),
-                        p.Y + (PreferSize != null ? PreferSize.Value.Height / 2 : 20)
+                        p.Y + (PreferSize != null ? PreferSize.Value.Height / 2 : 15)
                         ));
             }
             result.Add(dv);
@@ -41,9 +43,7 @@ namespace GraphDrawService.Draw
         
         public override Size GetActualSize()
         {
-            //var height = (Height >= 0) ? Height : 20.0;
-            //var width = (Width >= 0) ? Width : 20.0;
-            return new Size(10, 20);
+            return new Size(10, 1);
         }
     }
 }
