@@ -128,11 +128,13 @@ namespace GraphOrganizeService.LayoutCamomile
 
         private static ChapterLayoutElem NewGridLink()
         {
-            return new ChapterLayoutElem
+            var res = new ChapterLayoutElem();
+            res.AddGridLink(new GridLinkPart
             {
-                GridLinkPart = new GridLinkPart
-                {Direction = GridLinkPartDirection.WestEast, Type = GridLinkPartType.Relation}
-            };
+                Direction = GridLinkPartDirection.WestEast, 
+                Type = GridLinkPartType.Relation
+            });
+            return res;
         }
 
         private static ChapterLayoutElem NewGridElem(IPage content, HorizontalAligment horAligment, 

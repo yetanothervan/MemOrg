@@ -8,13 +8,13 @@ namespace MemOrg.Interfaces
 {
     public class GridEnumerator<T> : IEnumerator<T> where T : IGridElem
     {
-        private readonly Dictionary<Pair<int, int>, T> _elems;
-        private readonly List<Pair<int, int>> _pairs; 
+        private readonly Dictionary<IntIntPair, T> _elems;
+        private readonly List<IntIntPair> _pairs;
 
-        public GridEnumerator(Dictionary<Pair<int, int>, T> elems)
+        public GridEnumerator(Dictionary<IntIntPair, T> elems)
         {
             _elems = elems;
-            _pairs = _elems.Keys.OrderBy(o => o.First).ThenBy(o => o.Second).ToList();
+            _pairs = _elems.Keys.OrderBy(o => o.Row).ThenBy(o => o.Col).ToList();
             Reset();
         }
 
@@ -36,7 +36,7 @@ namespace MemOrg.Interfaces
             _iter = null;
         }
 
-        private IEnumerator<Pair<int, int>> _iter;
+        private IEnumerator<IntIntPair> _iter;
         public T Current
         {
             get

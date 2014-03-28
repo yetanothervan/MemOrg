@@ -8,5 +8,6 @@ namespace MemOrg.Interfaces
         int RowCount { get; }
         int RowLength { get; }
         void PlaceElem(int row, int col, IGridElem elem);
+        IGridElem GetElem(int row, int col);
     }
 }

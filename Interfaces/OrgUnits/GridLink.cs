@@ -16,7 +16,9 @@
         NorthSouth,
         NorthWest,
         NorthEast,
-        WestEast
+        WestEast,
+        WestSouth,
+        SouthEast
     }
 
     public enum GridLinkPartType

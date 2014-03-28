@@ -52,6 +52,7 @@
     <Compile Include="Grid.cs" />
     <Compile Include="GridElem.cs" />
     <Compile Include="GridEnumerator.cs" />
+    <Compile Include="IntIntPair.cs" />
     <Compile Include="IOrgGrid.cs" />
     <Compile Include="IOrgGridElem.cs" />
     <Compile Include="OrgGridElem.cs" />

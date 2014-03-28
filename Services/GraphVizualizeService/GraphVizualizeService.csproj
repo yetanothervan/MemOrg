@@ -55,7 +55,6 @@
     <Compile Include="VisualElems\VisualGridElemBlockSource.cs" />
     <Compile Include="VisualElems\VisualGridElemBlockTag.cs" />
     <Compile Include="VisualElems\VisualGridElemTag.cs" />
-    <Compile Include="VisualElems\VisualGridLink.cs" />
     <Compile Include="VisualElems\VisualStackPanel.cs" />
     <Compile Include="VisualFuncs.cs" />
     <Compile Include="VisualGrid.cs" />

@@ -25,8 +25,8 @@ namespace GraphVizualizeService
             foreach (var gridElem in _grid.OfType<IOrgGridElem>())
             {
                 IComponent component;
-                if (gridElem.Content is GridLinkPart)
-                    component = drawer.DrawLink();
+                if (gridElem.Content is IReadOnlyList<GridLinkPart>)
+                    component = drawer.DrawLink(gridElem.Content as IReadOnlyList<GridLinkPart>);
                 else 
                     component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
                 var ge = drawer.DrawGridElem(gridElem);
@@ -85,11 +85,11 @@ namespace GraphVizualizeService
 
                 grid = drawer.DrawGrid(colsWidths, rowsHeights);
                 grid.AddChild(gridcenter);
-
-                if (left) AddBoxLink(drawer, grid, 1, 0);
-                if (right) AddBoxLink(drawer, grid, 1, 2);
-                if (up) AddBoxLink(drawer, grid, 0, 1);
-                if (down) AddBoxLink(drawer, grid, 2, 0);
+                
+                if (left) AddBoxLink(drawer, grid, 1, 0, false);
+                if (right) AddBoxLink(drawer, grid, 1, 2, false);
+                if (up) AddBoxLink(drawer, grid, 0, 1, true);
+                if (down) AddBoxLink(drawer, grid, 2, 0, true);
                 return grid;
             }
 
@@ -98,10 +98,18 @@ namespace GraphVizualizeService
             return grid;
         }
 
-        private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col)
+        private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col, bool vertical)
         {
+            var parts = new List<GridLinkPart>
+            {
+                new GridLinkPart
+                {
+                    Direction = vertical ? GridLinkPartDirection.NorthSouth : GridLinkPartDirection.WestEast,
+                    Type = GridLinkPartType.Relation
+                }
+            };
             var gridElem = drawer.DrawGridElem(row, col);
-            gridElem.AddChild(drawer.DrawLink());
+            gridElem.AddChild(drawer.DrawLink(parts));
             grid.AddChild(gridElem);
         }
 
@@ -121,7 +129,12 @@ namespace GraphVizualizeService
         {
             throw new NotImplementedException();
         }
-        
+
+        public IGridElem GetElem(int row, int col)
+        {
+            throw new NotImplementedException();
+        }
+
         private IComponent _mySelf;
         public IEnumerable<IComponent> Childs
         {

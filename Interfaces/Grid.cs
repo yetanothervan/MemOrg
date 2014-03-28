@@ -11,11 +11,11 @@ namespace MemOrg.Interfaces
 {
     public class Grid : IGrid
     {
-        private readonly Dictionary<Pair<int, int>, IGridElem> _elems;
-        
-        public Grid()
+        private readonly Dictionary<IntIntPair, IGridElem> _elems;
+
+        protected Grid()
         {
-            _elems = new Dictionary<Pair<int, int>, IGridElem>();
+            _elems = new Dictionary<IntIntPair, IGridElem>();
         }
         
         public IEnumerator<IGridElem> GetEnumerator()
@@ -30,11 +30,18 @@ namespace MemOrg.Interfaces
 
         public void PlaceElem(int row, int col, IGridElem elem)
         {
-            var p = new Pair<int, int>(row, col);
-            if (_elems.ContainsKey(p))
-                throw new ArgumentOutOfRangeException();
+            var p = new IntIntPair(row, col);
+            /*if (_elems.ContainsKey(p))
+                throw new ArgumentOutOfRangeException();*/
             _elems[p] = elem;
             _gridInfo = null;
+        }
+
+        public IGridElem GetElem(int row, int col)
+        {
+            var p = new IntIntPair(row, col);
+            IGridElem res;
+            return _elems.TryGetValue(p, out res) ? res : null;
         }
 
 
@@ -49,10 +56,10 @@ namespace MemOrg.Interfaces
         {
             var gridInfo = new GridInfo
             {
-                MaxRow = _elems.Keys.Max(o => o.First),
-                MinRow = _elems.Keys.Min(o => o.First),
-                MaxCol = _elems.Keys.Max(o => o.Second),
-                MinCol = _elems.Keys.Min(o => o.Second)
+                MaxRow = _elems.Keys.Max(o => o.Row),
+                MinRow = _elems.Keys.Min(o => o.Row),
+                MaxCol = _elems.Keys.Max(o => o.Col),
+                MinCol = _elems.Keys.Min(o => o.Col)
             };
             return gridInfo;
         }
@@ -62,7 +69,7 @@ namespace MemOrg.Interfaces
             {
                 if (_gridInfo == null)
                     _gridInfo = CalculateSize();
-                return _gridInfo.MaxRow - _gridInfo.MinRow;
+                return _gridInfo.MaxRow - _gridInfo.MinRow + 1;
             }
         }
 
@@ -72,7 +79,7 @@ namespace MemOrg.Interfaces
             {
                 if (_gridInfo == null)
                     _gridInfo = CalculateSize();
-                return _gridInfo.MaxCol - _gridInfo.MinCol;
+                return _gridInfo.MaxCol - _gridInfo.MinCol + 1;
             }
         }
     }

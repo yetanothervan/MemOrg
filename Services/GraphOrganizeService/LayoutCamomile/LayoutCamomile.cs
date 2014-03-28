@@ -46,8 +46,8 @@ namespace GraphOrganizeService.LayoutCamomile
                     //rows.ForEach(ProvideReferences);
                     
                     var layout = new ChapterLayout {Rows = rows, ChapterBlock = chapter.ChapterBlock};
-                    
-                    int chapterColumnLeft = left - rows.Min(r => r.GridInfo.MinCol);
+
+                    int chapterColumnLeft = left + (rows.Max(r => r.GridInfo.MaxCol) - rows.Min(r => r.GridInfo.MinCol) + 1);
                     
                     DoChapterLayout(layout, grid, chapterColumnLeft);
 
@@ -97,32 +97,117 @@ namespace GraphOrganizeService.LayoutCamomile
             }
 
             //complicated case
-            var rels = new HashSet<IPage>();
+            var cr = new ComplicatedLayoutRow(row);
+            if (cr.nestRows.Count(nr => nr.nestRows.Count > 0) > 1)
+                throw new Exception("TODO");
+            
+            LayoutMain(cr, row);
+        }
 
-            var pages = row.Pages.Where(p => !p.IsBlockRel).OrderByDescending(r => r.RelatedBy.Count).ToList();
-            int height = 0;
-            foreach (var page in pages)
+        private void LayoutMain(ComplicatedLayoutRow cr, ChapterLayoutRow row)
+        {
+            var upper = cr.nestRows.FirstOrDefault(nr => nr.nestRows.Count > 0);
+            if (upper != null)
+                LayoutUpper(upper, row);
+
+            var lower = cr.nestRows.Where(nr => nr.nestRows.Count == 0).ToList();
+
+            //main
+            PlaceLayoutElem(row, NewGridElem(cr.MySelf, HorizontalAligment.Right, NESW.East), 0, -2);
+            var mainlinks = new List<GridLinkPartDirection>{GridLinkPartDirection.WestEast};
+            if (lower.Count > 1) mainlinks.Add(GridLinkPartDirection.WestSouth);
+            PlaceLayoutElem(row, NewGridLink(mainlinks), 0, -1);
+            
+            var mainSecondLinks = new List<GridLinkPartDirection> { GridLinkPartDirection.WestEast };
+            if (upper != null) mainSecondLinks.Add(GridLinkPartDirection.NorthEast);
+            
+            if (upper == null)
             {
-                var relsInPage = page.RelatedBy.Where(r => r.MyChapter == row.MyChapter).Except(rels).ToList();
-                
-                if (relsInPage.Any())
+                upper = lower.First();
+                lower = lower.Skip(1).ToList();
+            }
+
+            PlaceLayoutElem(row, NewGridElem(upper.ParentRel, HorizontalAligment.Center, NESW.East, NESW.West), 0, 0);
+            PlaceLayoutElem(row, NewGridLink(mainSecondLinks), 0, 1);
+            PlaceLayoutElem(row, NewGridElem(upper.MySelf, HorizontalAligment.Left, NESW.West), 0, 2);
+
+            LayoutLower(lower, row);
+        }
+
+        private void LayoutLower(List<ComplicatedLayoutRow> lower, ChapterLayoutRow row)
+        {
+            var height = 1;
+            foreach (var low in lower)
+            {
+                var links = new List<GridLinkPartDirection> {GridLinkPartDirection.NorthEast};
+                if (low != lower.Last()) links.Add(GridLinkPartDirection.NorthSouth);
+
+                PlaceLayoutElem(row, NewGridLink(links), height, -1);
+                PlaceLayoutElem(row, NewGridElem(low.ParentRel, HorizontalAligment.Center, NESW.East, NESW.West), height, 0);
+                PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> { GridLinkPartDirection.WestEast }), height, 1);
+                PlaceLayoutElem(row, NewGridElem(low.MySelf, HorizontalAligment.Left, NESW.West), height, 2);
+                ++height;
+            }
+        }
+
+        private void LayoutUpper(ComplicatedLayoutRow upper, ChapterLayoutRow row)
+        {
+            PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> {GridLinkPartDirection.WestSouth}), -1, 1);
+            PlaceLayoutElem(row, NewGridElem(upper.nestRows.First().ParentRel, HorizontalAligment.Center, NESW.East, NESW.West), -1, 0);
+            PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> {GridLinkPartDirection.WestEast}), -1, -1);
+            PlaceLayoutElem(row, NewGridElem(upper.nestRows.First().MySelf, HorizontalAligment.Right, NESW.East), -1, -2);
+        }
+
+        class ComplicatedLayoutRow
+        {
+            public readonly IPage MySelf;
+            public IPage ParentRel;
+            private int Level;
+            public List<ComplicatedLayoutRow> nestRows;
+
+            private ComplicatedLayoutRow(IPage myRel, IPage me, int level, ISet<IPage> exceptPages)
+            {
+                Level = level;
+                ParentRel = myRel;
+                MySelf = me;
+                nestRows = new List<ComplicatedLayoutRow>();
+
+                var relsInMySelf = MySelf.RelatedBy.Where(r => r.MyChapter == myRel.MyChapter).Except(exceptPages).ToList();
+                if (!relsInMySelf.Any()) return;
+
+                foreach (var rel in relsInMySelf)
                 {
-                    PlaceLayoutElem(row, NewGridElem(page, HorizontalAligment.Right, NESW.East), height, -2);
-                    foreach (var p in relsInPage)
-                    {
-                        PlaceLayoutElem(row,
-                            height == 0
-                                ? NewGridLink()
-                                : NewGridLink(GridLinkPartDirection.NorthEast),
-                            height, -1);
-                        PlaceLayoutElem(row, NewGridElem(p, HorizontalAligment.Center, NESW.West, NESW.East), height, 0);
-                        var oppose = p.RelationFirst.Block.BlockId != page.Block.BlockId 
-                            ? p.RelationFirst : p.RelationSecond;
-                        PlaceLayoutElem(row, NewGridLink(), height, 1);
-                        PlaceLayoutElem(row, NewGridElem(oppose, HorizontalAligment.Left, NESW.West), height, 2);
-                        rels.Add(p);
-                        height++;
-                    }
+                    exceptPages.Add(rel);
+                    var oppose = rel.RelationFirst.Block.BlockId != MySelf.Block.BlockId
+                        ? rel.RelationFirst
+                        : rel.RelationSecond;
+                    var nestRow = new ComplicatedLayoutRow(rel, oppose, Level + 1, exceptPages);
+                    nestRows.Add(nestRow);
+                }
+            }
+
+            public ComplicatedLayoutRow(ChapterLayoutRow row)
+            {
+                Level = 0;
+                ParentRel = null;
+                nestRows = new List<ComplicatedLayoutRow>();
+                
+                //с самым большим кол-вом связей - первый
+                MySelf = row.Pages.Where(p => !p.IsBlockRel).OrderByDescending(r => r.RelatedBy.Count).FirstOrDefault();
+                if (MySelf == null) return;
+
+                var rels = new HashSet<IPage>();
+                var relsInMySelf = MySelf.RelatedBy.Where(r => r.MyChapter == row.MyChapter).Except(rels).ToList();
+                if (!relsInMySelf.Any()) return;
+
+                foreach (var rel in relsInMySelf)
+                {
+                    rels.Add(rel);
+                    var oppose = rel.RelationFirst.Block.BlockId != MySelf.Block.BlockId
+                        ? rel.RelationFirst
+                        : rel.RelationSecond;
+                    var nestRow = new ComplicatedLayoutRow(rel, oppose, Level + 1, rels);
+                    nestRows.Add(nestRow);
                 }
             }
         }
@@ -133,13 +218,18 @@ namespace GraphOrganizeService.LayoutCamomile
             gridElem.PlaceOn(row, col);
         }
 
-        private static ChapterLayoutElem NewGridLink(GridLinkPartDirection direction = GridLinkPartDirection.WestEast)
+        private static ChapterLayoutElem NewGridLink(IEnumerable<GridLinkPartDirection> directions)
         {
-            return new ChapterLayoutElem
+            var res = new ChapterLayoutElem();
+            foreach (var gridLinkPartDirection in directions)
             {
-                GridLinkPart =
-                    new GridLinkPart {Direction = direction, Type = GridLinkPartType.Relation}
-            };
+                res.AddGridLink(new GridLinkPart
+                {
+                    Direction = gridLinkPartDirection,
+                    Type = GridLinkPartType.Relation
+                });
+            }
+            return res;
         }
 
 
@@ -189,12 +279,12 @@ namespace GraphOrganizeService.LayoutCamomile
             int whole = 0;
             foreach (var chapterLayoutRow in layout.Rows)
             {
-                whole -= (chapterLayoutRow.RowCount + 1);
+                whole -= chapterLayoutRow.RowCount;
                 foreach (var elem in chapterLayoutRow)
                 {
                     var cle = elem.Content as ChapterLayoutElem;
                     if (cle != null)
-                        PlaceElemInGrid(cle, orgGrid, elem.RowIndex + whole, 
+                        PlaceElemInGrid(cle, orgGrid, elem.RowIndex + whole - chapterLayoutRow.GridInfo.MinRow,
                             chapterColumnLeft + elem.ColIndex);
                 }
             }
@@ -221,7 +311,7 @@ namespace GraphOrganizeService.LayoutCamomile
 
             if (page.IsGridLinkPart)
             {
-                ge.Content = page.GridLinkPart;
+                ge.Content = page.GridLinkParts;
                 ge.VerticalContentAligment = VerticalAligment.Top;
             }
             else if (page.Page.IsBlockTag)
