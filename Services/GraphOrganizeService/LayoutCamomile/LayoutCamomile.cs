@@ -61,17 +61,7 @@ namespace GraphOrganizeService.LayoutCamomile
             
             return grid;
         }
-        
-        /*private void CheckColumn(List<ChapterLayoutElem> column, ChapterLayoutRow row)
-        {
-            var toAdd = new List<ChapterLayoutElem>();
-            foreach (var elem in column.Where(c => c.Page.ReferencedBy.Any()))
-                foreach (var page in elem.Page.ReferencedBy)
-                    if (!row.MyChapter.PagesBlocks.Contains(page))
-                        toAdd.Add(new ChapterLayoutElem { Page = page, RowSpan = 1 });
-            column.AddRange(toAdd);
-        }*/
-
+       
         private void ApplyLayout(ChapterLayoutRow row)
         {
             if (row.Pages == null || row.Pages.Count == 0) return;
@@ -150,12 +140,36 @@ namespace GraphOrganizeService.LayoutCamomile
             }
         }
 
+        /*private void CheckColumn(List<ChapterLayoutElem> column, ChapterLayoutRow row)
+       {
+           var toAdd = new List<ChapterLayoutElem>();
+           foreach (var elem in column.Where(c => c.Page.ReferencedBy.Any()))
+               foreach (var page in elem.Page.ReferencedBy)
+                   if (!row.MyChapter.PagesBlocks.Contains(page))
+                       toAdd.Add(new ChapterLayoutElem { Page = page, RowSpan = 1 });
+           column.AddRange(toAdd);
+       }*/
+
         private void LayoutUpper(ComplicatedLayoutRow upper, ChapterLayoutRow row)
         {
-            PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> {GridLinkPartDirection.WestSouth}), -1, 1);
-            PlaceLayoutElem(row, NewGridElem(upper.nestRows.First().ParentRel, HorizontalAligment.Center, NESW.East, NESW.West), -1, 0);
-            PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> {GridLinkPartDirection.WestEast}), -1, -1);
-            PlaceLayoutElem(row, NewGridElem(upper.nestRows.First().MySelf, HorizontalAligment.Right, NESW.East), -1, -2);
+            int height = -1;
+            if (upper.nestRows.First().MySelf.ReferencedBy.Count > 0)
+            {
+                LayoutReference(upper.nestRows.First().MySelf.ReferencedBy.First(),
+                    HorizontalAligment.Right, -1, -2, row);
+                PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> { GridLinkPartDirection.NorthSouth }), -1, 1);
+                height = -2;
+            }
+            PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> { GridLinkPartDirection.WestSouth }), height, 1);
+            PlaceLayoutElem(row, NewGridElem(upper.nestRows.First().ParentRel, HorizontalAligment.Center, NESW.East, NESW.West), height, 0);
+            PlaceLayoutElem(row, NewGridLink(new List<GridLinkPartDirection> { GridLinkPartDirection.WestEast }), height, -1);
+            PlaceLayoutElem(row, NewGridElem(upper.nestRows.First().MySelf, HorizontalAligment.Right, NESW.East), height, -2);
+        }
+
+        private void LayoutReference(IPage reference, HorizontalAligment horAligment, int row, int col, ChapterLayoutRow grid)
+        {
+            //PlaceLayoutElem(grid, NewGridLink(new List<GridLinkPartDirection> { GridLinkPartDirection.NorthSouth }), row, col);
+            PlaceLayoutElem(grid, NewGridElem(reference, horAligment, NESW.North), row, col);
         }
 
         class ComplicatedLayoutRow
