@@ -9,6 +9,12 @@ namespace DAL.Entity
     public class Relation
     {
         public Int32 RelationId { get; set; }
+
+        public Int32 RelationTypeId { get; set; }
+        public Int32 FirstBlockId { get; set; }
+        public Int32 SecondBlockId { get; set; }
+        public Int32? RelationBlockId { get; set; }
+
         public virtual RelationType RelationType { get; set; }
         public virtual Block FirstBlock { get; set; }
         public virtual Block SecondBlock { get; set; }

@@ -8,7 +8,6 @@ namespace TmpXmlExportImportService
     public class XmlReference
     {
         public Int32 ReferenceId;
-        public Int32 BlockId;
         public Int32 ReferenceBlockId;
         public String CaptionString;
 
@@ -17,7 +16,6 @@ namespace TmpXmlExportImportService
             return references.Select(reference => new XmlReference
             {
                 ReferenceId = reference.ReferenceId,
-                BlockId = reference.Block.BlockId, 
                 CaptionString = reference.CaptionsString,
                 ReferenceBlockId = reference.ReferencedBlock.BlockId
             }).ToList();

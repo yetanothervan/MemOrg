@@ -12,22 +12,25 @@ namespace WinApp.MainView
     public class MainViewViewModel : ViewModelBase
     {
         private readonly ITmpXmlExportImportService _exportImportService;
+
         public MainViewViewModel(ITmpXmlExportImportService exportImportService)
         {
             _exportImportService = exportImportService;
-            ExportCommand = new DelegateCommand(ExecuteExportCommand, CanExecuteExportCommand);
+            ExportCommand = new DelegateCommand(ExecuteExportCommand, () => true);
+            ImportCommand = new DelegateCommand(ExecuteImportCommand, () => true);
         }
 
         public DelegateCommand ExportCommand { get; set; }
+        public DelegateCommand ImportCommand { get; set; }
 
         public void ExecuteExportCommand()
         {
            _exportImportService.SaveGraph(); 
         }
 
-        public bool CanExecuteExportCommand()
+        public void ExecuteImportCommand()
         {
-            return true;
+            _exportImportService.LoadGraph();
         }
     }
 }

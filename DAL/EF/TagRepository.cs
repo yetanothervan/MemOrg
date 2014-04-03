@@ -9,11 +9,11 @@ namespace EF
 {
     public class TagRepository : ITagRepository
     {
-        private readonly MemOrgContext _context;
+        private readonly IMemOrgContext _context;
 
-        public TagRepository()
+        public TagRepository(IMemOrgContext context)
         {
-            if (_context == null) _context = new MemOrgContext();
+            _context = context;
         }
 
         public IQueryable<Tag> All
@@ -22,6 +22,17 @@ namespace EF
             {
                 return _context.Tags.AsNoTracking();
             }
+        }
+
+        public IQueryable<Tag> Tracking
+        {
+            get { return _context.Tags; }
+        }
+
+        public void AddTag(Tag tag)
+        {
+            _context.Tags.Add(tag);
+            _context.SaveChanges();
         }
     }
 }

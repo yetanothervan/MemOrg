@@ -21,6 +21,7 @@ namespace GraphService.ModuleDefinition
 
         public void Initialize()
         {
+            _container.RegisterInstance(typeof(IMemOrgContext), new MemOrgContext());
             _container.RegisterType<IGraphService, GraphService>();
             _container.RegisterType<IBlockRepository, BlockRepository>();
             _container.RegisterType<IRelationRepository, RelationRepository>();

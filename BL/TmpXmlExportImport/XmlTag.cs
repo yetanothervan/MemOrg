@@ -8,8 +8,8 @@ namespace TmpXmlExportImportService
     public class XmlTag
     {
         public Int32 TagId;
-        public Int32 ParentTagId;
-        public Int32 TagBlockId;
+        public Int32? ParentTagId;
+        public Int32? TagBlockId;
         public String Caption;
 
         public static List<XmlTag> Convert(IEnumerable<Tag> tags)
@@ -17,8 +17,8 @@ namespace TmpXmlExportImportService
             return tags.Select(tag => new XmlTag
             {
                 TagId = tag.TagId,
-                ParentTagId = tag.Parent.TagId,
-                TagBlockId = tag.TagBlock.BlockId,
+                ParentTagId = tag.ParentId,
+                TagBlockId = (tag.TagBlock == null) ? (int?)null : tag.TagBlock.BlockId,
                 Caption = tag.Caption
             }).ToList();
         }

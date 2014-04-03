@@ -7,8 +7,13 @@ namespace DAL.Entity.Mapping
         public TagMap()
         {
             this.HasOptional(t => t.Parent)
-                .WithMany(t => t.Childs);
-            
+                .WithMany(t => t.Childs)
+                .HasForeignKey(t => t.ParentId);
+
+            this.HasOptional(t => t.TagBlock)
+                .WithMany()
+                .HasForeignKey(t => t.TagBlockId);
+
             this.HasMany(t => t.Blocks).WithMany(d => d.Tags);
         }
     }

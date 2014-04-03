@@ -3,5 +3,6 @@
     public interface ITmpXmlExportImportService
     {
         void SaveGraph();
+        void LoadGraph();
     }
 }

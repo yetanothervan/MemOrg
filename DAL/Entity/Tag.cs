@@ -15,6 +15,8 @@ namespace DAL.Entity
         }
         public Int32 TagId { get; set; }
         public string Caption { get; set; }
+        public Int32? ParentId { get; set; }
+        public Int32? TagBlockId { get; set; }
         
         public virtual Tag Parent { get; set; }
         public virtual ICollection<Tag> Childs { get; set; }

@@ -22,6 +22,125 @@ namespace TmpXmlExportImportService
             SerializeGraph(g);
         }
 
+        public void LoadGraph()
+        {
+            var graphService = (IGraphService) ServiceLocator.Current.GetService(typeof (IGraphService));
+            var xmlGraph = XmlDeserializeSolution();
+
+            var blockIds = new int[xmlGraph.Blocks.Max(b => b.BlockId) + 1];
+            var relationTypeIds = new int[xmlGraph.RelationTypes.Max(t => t.RelationTypeId) + 1];
+            var tagIds = new int[xmlGraph.Tags.Max(t => t.TagId) + 1];
+            var partIds = new int[xmlGraph.Blocks
+                .Where(b => b.Particles != null && b.Particles.Count != 0)
+                .Max(b => b.Particles.Max(p => p.ParticleId)) + 1];
+
+            foreach (var rt in xmlGraph.RelationTypes)
+            {
+                var i = new RelationType {Caption = rt.Caption};
+                graphService.AddRelationType(i);
+                relationTypeIds[rt.RelationTypeId] = i.RelationTypeId;
+            }
+            graphService.SaveChanges();
+
+            foreach (var block in xmlGraph.Blocks)
+            {
+                var i = new Block
+                {
+                    Caption = block.Caption,
+                    ParamName = block.ParamName,
+                    ParamValue = block.ParamValue
+                };
+                graphService.AddBlock(i);
+                blockIds[block.BlockId] = i.BlockId;
+            }
+            graphService.SaveChanges();
+
+            foreach (var tag in xmlGraph.Tags)
+            {
+                var i = new Tag
+                {
+                    Caption = tag.Caption,
+                    TagBlockId = tag.TagBlockId != null ? blockIds[tag.TagBlockId.Value] : (int?) null
+                };
+                graphService.AddTag(i);
+                tagIds[tag.TagId] = i.TagId;
+            }
+            graphService.SaveChanges();
+
+            foreach (var tag in xmlGraph.Tags)
+            {
+                int id = tagIds[tag.TagId];
+                graphService.TrackingTags
+                    .First(t => t.TagId == id).ParentId = tagIds[tag.TagId];
+                graphService.SaveChanges();
+            }
+
+            foreach (var block in xmlGraph.Blocks)
+            {
+                var id = blockIds[block.BlockId];
+                var bb = graphService.TrackingBlocks.First(b => b.BlockId == id);
+                var toi = block.Particles.Where(p => p is XmlSourceText || p is XmlUserText).ToList();
+                var i = toi.Select(p =>
+                {
+                    Particle res;
+                    if (p is XmlSourceText)
+                        res = new SourceTextParticle {Content = (p as XmlSourceText).Content};
+                    else if (p is XmlUserText)
+                        res = new UserTextParticle {Content = (p as XmlUserText).Content};
+                    else
+                        throw new NotImplementedException();
+
+                    res.Order = p.Order;
+                    return res;
+                }).ToList();
+                bb.Particles = i;
+                graphService.SaveChanges();
+                for (int index = 0; index < i.Count; index++)
+                    partIds[toi[index].ParticleId] = i[index].ParticleId;
+
+                var trueTags = block.Tags.Select(t => tagIds[t]);
+                //спать, а потом всё это нахер
+
+                bb.Tags = graphService.TrackingTags.Where(t => trueTags.Contains(t.TagId)).ToList();
+                bb.References = block.References.Select(r => new Reference
+                {
+                    CaptionsString = r.CaptionString,
+                    ReferenceId = r.ReferenceId,
+                    ReferencedBlockId = r.ReferenceBlockId
+                }).ToList();
+            }
+            graphService.SaveChanges();
+
+            foreach (var block in xmlGraph.Blocks)
+            {
+                var bb = graphService.TrackingBlocks.First(b => b.BlockId == block.BlockId);
+                foreach (var p in block.Particles.OfType<XmlQuoteSource>())
+                {
+                    var res = new QuoteSourceParticle
+                    {
+                        SourceTextParticleId = p.SourceTextId,
+                        Order = p.Order,
+                        ParticleId = p.ParticleId
+                    };
+                    bb.Particles.Add(res);
+                }
+            }
+            graphService.SaveChanges();
+
+            foreach (var relation in xmlGraph.Relations)
+            {
+                graphService.AddRelation(new Relation
+                {
+                    RelationId = relation.RelationId,
+                    RelationTypeId = relation.RelationType,
+                    RelationBlockId = relation.RelationBlockId,
+                    FirstBlockId = relation.FirstBlockId,
+                    SecondBlockId = relation.SecondBlockId
+                });
+            }
+            graphService.SaveChanges();
+        }
+
 
         public static void SerializeGraph(XmlGraph s)
         {
@@ -34,14 +153,14 @@ namespace TmpXmlExportImportService
             doc.Save("graph.xml");
         }
 
-        /*public static Solution XmlDeserializeSolution(string path)
+        public static XmlGraph XmlDeserializeSolution()
         {
-            Solution result = new Solution();
-            TextReader tr = new StreamReader(path);
-            XmlSerializer xmlDeserializer = new XmlSerializer(typeof (Solution));
-            result = (Solution) xmlDeserializer.Deserialize(tr);
+            const string graphPath = "graph.xml";
+            TextReader tr = new StreamReader(graphPath);
+            var xmlDeserializer = new XmlSerializer(typeof(XmlGraph));
+            var res = (XmlGraph) xmlDeserializer.Deserialize(tr);
             tr.Close();
-            return result;
-        }*/
+            return res;
+        }
     }
 }

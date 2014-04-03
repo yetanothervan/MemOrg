@@ -13,7 +13,7 @@ namespace EF
 
         public SeedConceptualWar(MemOrgContext acontext)
         {
-            _context = acontext;   
+            _context = acontext;
         }
 
         public void Seed()

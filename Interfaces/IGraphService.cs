@@ -43,6 +43,11 @@ namespace MemOrg.Interfaces
         IQueryable<Tag> TagsBlock { get; }
 
         /// <summary>
+        /// Все таги
+        /// </summary>
+        IQueryable<Tag> TagsAll { get; }
+
+        /// <summary>
         /// Таги корни или таги без родителей
         /// </summary>
         IQueryable<Tag> TagRoots { get; }
@@ -58,8 +63,21 @@ namespace MemOrg.Interfaces
         IQueryable<Relation> RelationsNoBlock { get; }
 
         /// <summary>
+        /// Типы реляций
+        /// </summary>
+        IQueryable<RelationType> RelationTypes { get; }
+        
+        /// <summary>
         /// Собственно, граф
         /// </summary>
         IGraph Graph { get; }
+        
+        void AddRelationType(RelationType relationType);
+        void AddRelation(Relation relation);
+        void AddBlock(Block block);
+        IQueryable<Block> TrackingBlocks { get; }
+        void AddTag(Tag tag);
+        IQueryable<Tag> TrackingTags { get; }
+        void SaveChanges();
     }
 }

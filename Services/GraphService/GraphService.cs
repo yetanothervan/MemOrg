@@ -54,6 +54,11 @@ namespace GraphService
             get { return _tagRepository.All.Where(tag => tag.TagBlock != null); }
         }
 
+        public IQueryable<Tag> TagsAll
+        {
+            get { return _tagRepository.All; }
+        }
+
         public IQueryable<Tag> TagRoots
         {
             get { return _tagRepository.All.Where(tag => tag.Parent == null); }
@@ -73,6 +78,43 @@ namespace GraphService
         public IGraph Graph
         {
             get { return _graph ?? (_graph = new Graph(this)); }
+        }
+        
+        public IQueryable<RelationType> RelationTypes
+        {
+            get { return _relationRepository.RelationTypes; }
+        }
+
+
+        public void AddRelationType(RelationType relationType)
+        {
+            _relationRepository.AddRelationType(relationType);
+        }
+
+        public void AddRelation(Relation relation)
+        {
+            _relationRepository.AddRelation(relation);
+        }
+
+        public void AddBlock(Block block)
+        {
+            _blockRepository.AddBlock(block);
+        }
+
+        public IQueryable<Block> TrackingBlocks { get { return _blockRepository.Tracking; } }
+
+        public void AddTag(Tag tag)
+        {
+            _tagRepository.AddTag(tag);
+        }
+
+        public IQueryable<Tag> TrackingTags {
+            get { return _tagRepository.Tracking; }
+        }
+
+        public void SaveChanges()
+        {
+            _blockRepository.SaveChanges();
         }
     }
 }

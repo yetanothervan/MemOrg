@@ -9,14 +9,33 @@ namespace EF
 {
     public class RelationRepository : IRelationRepository
     {
-        private MemOrgContext _context;
+        private readonly IMemOrgContext _context;
+
+        public RelationRepository(IMemOrgContext context)
+        {
+            _context = context;
+        }
+
         public IQueryable<Relation> All
         {
-            get
-            {
-                if (_context == null) _context = new MemOrgContext();
-                return _context.Relations.AsNoTracking();
-            }
+            get { return _context.Relations.AsNoTracking(); }
+        }
+
+        public IQueryable<RelationType> RelationTypes
+        {
+            get { return _context.RelationTypes.AsNoTracking(); }
+        }
+
+        public void AddRelationType(RelationType relationType)
+        {
+            _context.RelationTypes.Add(relationType);
+            _context.SaveChanges();
+        }
+        
+        public void AddRelation(Relation relation)
+        {
+            _context.Relations.Add(relation);
+            _context.SaveChanges();
         }
     }
 }

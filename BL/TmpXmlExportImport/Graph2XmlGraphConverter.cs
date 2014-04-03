@@ -13,23 +13,32 @@ namespace TmpXmlExportImportService
         public static XmlGraph Convert(IGraphService graphService)
         {
             var xmlBlocks = 
-            graphService.BlockOthers
-                .Union(graphService.BlockRels)
-                .Union(graphService.BlockSources)
-                .Union(graphService.BlockTags).Select(block => new XmlBlock
+            graphService.BlockAll.ToList().Select(block => new XmlBlock
             {
-                
                 BlockId = block.BlockId, 
                 Caption = block.Caption, 
+                ParamName = block.ParamName,
+                ParamValue = block.ParamValue,
+                Tags = block.Tags.Select(t => t.TagId).ToList(),
                 Particles = XmlParticle.Convert(block.Particles),
-                References = XmlReference.Convert(block.References),
-                Tags = XmlTag.Convert(block.Tags)
+                References = XmlReference.Convert(block.References)
             }).ToList();
 
-            var xmlTags =
-                graphService.TagsBlock.Union(graphService.TagsNoBlock).ToList();
+            var xmlTags = XmlTag.Convert(graphService.TagsAll);
 
-            return new XmlGraph { Blocks = xmlBlocks, Tags = XmlTag.Convert(xmlTags)};
+            var xmlRelationTypes = XmlRelationType.Convert(graphService.RelationTypes);
+
+            var xmlRelations = XmlRelation.Convert(
+                graphService.RelationsBlock.Union(
+                    graphService.RelationsNoBlock));
+
+            return new XmlGraph
+            {
+                RelationTypes = xmlRelationTypes,
+                Tags = xmlTags,
+                Blocks = xmlBlocks,
+                Relations = xmlRelations
+            };
         }
     }
 }

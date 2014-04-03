@@ -10,7 +10,7 @@ using DAL.Entity.Mapping;
 
 namespace EF
 {
-    public class MemOrgContext : DbContext
+    public class MemOrgContext : DbContext, IMemOrgContext
     {
         public MemOrgContext()
         {

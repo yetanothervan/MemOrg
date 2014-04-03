@@ -9,9 +9,9 @@ namespace TmpXmlExportImportService
 {
     public class XmlGraph
     {
+        public List<XmlRelationType> RelationTypes;
         public List<XmlBlock> Blocks;
         public List<XmlTag> Tags;
         public List<XmlRelation> Relations;
-        public List<XmlRelationType> RelationType;
     }
 }

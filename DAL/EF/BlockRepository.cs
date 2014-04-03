@@ -9,13 +9,13 @@ namespace EF
 {
     public class BlockRepository : IBlockRepository
     {
-        private readonly MemOrgContext _context;
+        private readonly IMemOrgContext _context;
 
-        public BlockRepository()
+        public BlockRepository(IMemOrgContext context)
         {
-            if (_context == null) _context = new MemOrgContext();
+            _context = context;
         }
-        
+
         public IQueryable<Block> All
         {
             get
@@ -78,6 +78,23 @@ where TagId is null and RelationId is null and t1.ParticleId is null";*/
         public IQueryable<Block> BlockRels
         {
             get { return _context.Relations.AsNoTracking().Where(rel => rel.RelationBlock != null).Select(r => r.RelationBlock); }
+        }
+
+        public IQueryable<Block> Tracking
+        {
+            get { return _context.Blocks; }
+        }
+
+
+        public void AddBlock(Block block)
+        {
+            _context.Blocks.Add(block);
+            _context.SaveChanges();
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

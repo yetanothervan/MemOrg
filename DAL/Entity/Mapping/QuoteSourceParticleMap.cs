@@ -7,6 +7,9 @@ namespace DAL.Entity.Mapping
         public QuoteSourceParticleMap()
         {
             this.ToTable("QuoteSourceParticle");
+            this.HasRequired(q => q.SourceTextParticle)
+                .WithMany()
+                .HasForeignKey(f => f.SourceTextParticleId);
         }
     }
 }

@@ -10,5 +10,8 @@ namespace EF
     public interface IRelationRepository
     {
         IQueryable<Relation> All { get; }
+        IQueryable<RelationType> RelationTypes { get; }
+        void AddRelationType(RelationType relationType);
+        void AddRelation(Relation relation);
     }
 }

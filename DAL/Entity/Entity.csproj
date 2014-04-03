@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Block.cs" />
+    <Compile Include="IMemOrgContext.cs" />
     <Compile Include="Mapping\BlockMap.cs" />
     <Compile Include="Mapping\ParticleMap.cs" />
     <Compile Include="Mapping\QuoteSourceParticleMap.cs" />

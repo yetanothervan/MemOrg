@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <Menu>
             <MenuItem Header="File">
-                <MenuItem Header="Import"/>
+                <MenuItem Header="Import" Command="{Binding ImportCommand}"/>
                 <MenuItem Header="Export" Command="{Binding ExportCommand}"/>
                 <Separator/>
                 <MenuItem Header="Exit"/>
