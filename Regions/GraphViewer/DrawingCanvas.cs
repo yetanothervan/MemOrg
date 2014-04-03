@@ -42,7 +42,7 @@ namespace GraphViewer
                     {
                         var a = (result.VisualHit as Visual);
                         if (a != null)
-                            dc.HitTest(a);
+                            dc.VisualMouseDown(a);
                     }
                 }
 

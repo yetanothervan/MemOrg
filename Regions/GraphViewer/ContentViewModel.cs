@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using DAL.Entity;
 using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
 
 namespace GraphViewer
 {
@@ -12,6 +14,7 @@ namespace GraphViewer
     {
         private readonly IGraphDrawService _graphDrawService;
         private readonly IGraphVizualizeService _graphVizualizeService;
+        private readonly IEventAggregator _eventAggregator;
         private readonly IDrawer _drawer;
         private IVisualizeOptions _options;
 
@@ -20,10 +23,12 @@ namespace GraphViewer
         readonly IOrgGrid _tagTrees;
 
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
-            IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService)
+            IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService,
+            IEventAggregator eventAggregator)
         {
             _graphDrawService = graphDrawService;
             _graphVizualizeService = graphVizualizeService;
+            _eventAggregator = eventAggregator;
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
 
@@ -60,9 +65,11 @@ namespace GraphViewer
         }
         private bool _headersOnly = true;
 
-        public void HitTest(Visual vis)
+        public void VisualMouseDown(Visual vis)
         {
             var res = _graphDrawService.GetByVisual(vis);
+            if (res is Block)
+            _eventAggregator.GetEvent<BlockSelected>().Publish(res as Block);
         }
 
         private void ToggleHeaders()

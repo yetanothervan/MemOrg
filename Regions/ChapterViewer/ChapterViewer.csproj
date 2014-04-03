@@ -92,6 +92,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DAL\Entity\Entity.csproj">
+      <Project>{335b8662-f9fd-487d-9de7-7dbd001a41fc}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Interfaces\MemOrg.Interfaces.csproj">
       <Project>{C7ECB5BA-4854-4842-B849-323D58E0DE32}</Project>
       <Name>MemOrg.Interfaces</Name>

@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockQuoteParticleSources.cs" />
+    <Compile Include="Events.cs" />
     <Compile Include="GlobalCommands.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="GridElem.cs" />

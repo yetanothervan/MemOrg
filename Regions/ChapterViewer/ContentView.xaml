@@ -7,27 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
     <Grid d:DataContext="{d:DesignInstance chapterViewer:ContentViewModel}">
-        <FlowDocumentScrollViewer>
-            <FlowDocumentScrollViewer.Document>
-                <FlowDocument>
-                        <Paragraph FontSize="22" FontWeight="Bold">Chapter 1</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                        <Paragraph>Content poipo iapsodi paosidp aosidpaosidpaosid</Paragraph>
-                </FlowDocument>
-            </FlowDocumentScrollViewer.Document>
-        </FlowDocumentScrollViewer>
+        <FlowDocumentScrollViewer Document="{Binding Document}"/>
     </Grid>
 </UserControl>
