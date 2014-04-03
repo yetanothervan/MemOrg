@@ -17,9 +17,9 @@ namespace GraphDrawService.Draw
         {
         }
 
-        public override List<DrawingVisual> Render(Point p)
+        public override List<Visual> Render(Point p)
         {
-            var result = new List<DrawingVisual>();
+            var result = new List<Visual>();
 
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())

@@ -22,8 +22,9 @@ namespace GraphDrawService.Draw
             (_childs ?? (_childs = new List<IComponent>(0))).Add(child);
         }
 
-        public abstract List<DrawingVisual> Render(Point p);
+        public abstract List<Visual> Render(Point p);
         public abstract Size GetActualSize();
         public virtual Size? PreferSize { get; set; }
+        public object Logical { get; set; }
     }
 }

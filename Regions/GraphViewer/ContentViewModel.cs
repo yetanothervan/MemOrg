@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Navigation;
 using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
@@ -9,6 +10,7 @@ namespace GraphViewer
 {
     public class ContentViewModel : ViewModelBase
     {
+        private readonly IGraphDrawService _graphDrawService;
         private readonly IGraphVizualizeService _graphVizualizeService;
         private readonly IDrawer _drawer;
         private IVisualizeOptions _options;
@@ -20,6 +22,7 @@ namespace GraphViewer
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
             IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService)
         {
+            _graphDrawService = graphDrawService;
             _graphVizualizeService = graphVizualizeService;
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
@@ -39,6 +42,7 @@ namespace GraphViewer
 
             _options = _graphVizualizeService.GetVisualizeOptions();
             UpdateGrid(_options);
+            Offset = new Vector(0, -300);
         }
 
         private void UpdateGrid(IVisualizeOptions options)
@@ -55,6 +59,11 @@ namespace GraphViewer
             Grid = stack;
         }
         private bool _headersOnly = true;
+
+        public void HitTest(Visual vis)
+        {
+            var res = _graphDrawService.GetByVisual(vis);
+        }
 
         private void ToggleHeaders()
         {

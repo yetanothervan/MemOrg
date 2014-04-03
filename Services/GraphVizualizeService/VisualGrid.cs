@@ -42,7 +42,7 @@ namespace GraphVizualizeService
         private IComponent CreateLinkedBoxWithBlock(IOrgGridElem elem, IDrawer drawer, IVisualizeOptions options)
         {
             IComponent result;
-
+            
             var gc = elem.Content;
 
             if (gc is IOrgBlockOthers)
@@ -146,7 +146,7 @@ namespace GraphVizualizeService
             _mySelf.AddChild(child);
         }
 
-        public List<DrawingVisual> Render(Point p)
+        public List<Visual> Render(Point p)
         {
             return _mySelf != null ? _mySelf.Render(p) : null;
         }
@@ -157,5 +157,6 @@ namespace GraphVizualizeService
         }
 
         public Size? PreferSize { get; set; }
+        public object Logical { get; set; }
     }
 }

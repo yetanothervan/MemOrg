@@ -143,6 +143,10 @@
       <Project>{c7ecb5ba-4854-4842-b849-323d58e0de32}</Project>
       <Name>MemOrg.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Regions\ChapterViewer\ChapterViewer.csproj">
+      <Project>{1D5CE89B-E01D-4669-9B4F-5F8EECF5A8D2}</Project>
+      <Name>ChapterViewer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Regions\GraphViewer\GraphViewer.csproj">
       <Project>{6b694e9c-fbe2-4cd5-b99a-7c020e85fb6c}</Project>
       <Name>GraphViewer</Name>

@@ -36,9 +36,9 @@ namespace GraphDrawService.Layouts
 
         public abstract Size CalculateSize();
 
-        protected IEnumerable<DrawingVisual> Render(Point p, bool isHorizontal)
+        protected IEnumerable<Visual> Render(Point p, bool isHorizontal)
         {
-            var result = new List<DrawingVisual>();
+            var result = new List<Visual>();
             if (!_childs.Any()) return result;
 
             var curPt = p;
@@ -54,6 +54,6 @@ namespace GraphDrawService.Layouts
             return result;
         }
 
-        public abstract IEnumerable<DrawingVisual> Render(Point p);
+        public abstract IEnumerable<Visual> Render(Point p);
     }
 }

@@ -7,7 +7,7 @@
              xmlns:intr="clr-namespace:MemOrg.Interfaces;assembly=MemOrg.Interfaces"
              xmlns:local="clr-namespace:MemOrg.WinApp.Avalon"
              xmlns:vm="clr-namespace:WinApp.MainView"
-             mc:Ignorable="d">
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600">
 
     <Grid d:DataContext="{d:DesignInstance vm:MainViewViewModel}">
         <Grid.RowDefinitions>
@@ -29,13 +29,24 @@
             </layout:DockingManager.Theme>
             <layout:LayoutRoot>
                 <layout:LayoutPanel Orientation="Horizontal">
+                    <layout:LayoutPanel Orientation="Vertical">
                     <layout:LayoutDocumentPaneGroup>
                         <layout:LayoutDocumentPane>
-                            <layout:LayoutDocument Title="Doc1"
+                            
+                            <layout:LayoutDocument Title="Graph"
                                                    local:AvalonDockRegion.DocName ="{x:Static intr:RegionNames.GraphViewerRegion}">
                             </layout:LayoutDocument>
                         </layout:LayoutDocumentPane>
                     </layout:LayoutDocumentPaneGroup>
+                        <layout:LayoutDocumentPaneGroup>
+                            <layout:LayoutDocumentPane>
+
+                                <layout:LayoutDocument Title="Chapter"
+                                                   local:AvalonDockRegion.DocName ="{x:Static intr:RegionNames.ChapterViewerRegion}">
+                                </layout:LayoutDocument>
+                            </layout:LayoutDocumentPane>
+                        </layout:LayoutDocumentPaneGroup>
+                    </layout:LayoutPanel>
                     <layout:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
                         <layout:LayoutAnchorablePane>
                             <layout:LayoutAnchorable Title="Tool 1" local:AvalonDockRegion.AnchorName="{x:Static intr:RegionNames.TempToolbarRegion}">

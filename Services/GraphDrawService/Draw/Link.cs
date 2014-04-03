@@ -22,9 +22,9 @@ namespace GraphDrawService.Draw
             _gridLinkParts = gridLinkParts;
         }
 
-        public override List<DrawingVisual> Render(Point p)
+        public override List<Visual> Render(Point p)
         {
-            var result = new List<DrawingVisual>();
+            var result = new List<Visual>();
             if (_gridLinkParts == null)
                 return result;
 

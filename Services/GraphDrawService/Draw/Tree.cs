@@ -20,9 +20,9 @@ namespace GraphDrawService.Draw
             _style = style;
         }
 
-        public override List<DrawingVisual> Render(Point p)
+        public override List<Visual> Render(Point p)
         {
-            var res = new List<DrawingVisual>();
+            var res = new List<Visual>();
             if (Childs != null && Childs.Any())
             {
                 Size rootSize = Childs.First().GetActualSize();

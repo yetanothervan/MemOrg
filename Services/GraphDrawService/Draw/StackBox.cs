@@ -13,8 +13,8 @@ namespace GraphDrawService.Draw
     public class StackBox : Component
     {
         private const double Margin = 10.0;
-        
-        public override List<DrawingVisual> Render(Point p)
+
+        public override List<Visual> Render(Point p)
         {
             return new VerticalStackLayout(Childs, Margin).Render(p).ToList();
         }

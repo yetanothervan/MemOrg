@@ -6,5 +6,6 @@ namespace MemOrg.Interfaces
     {
         IDrawer GetDrawer(IDrawStyle style);
         IDrawStyle GetStyle();
+        object GetByVisual(Visual vis);
     }
 }

@@ -21,15 +21,15 @@ namespace GraphDrawService.Draw
             _text.MaxTextWidth = style.MaxTextBlockWidth;
             _text.MaxTextHeight = style.MaxTextBlockHeight;
         }
-        
-        public override List<DrawingVisual> Render(Point p)
+
+        public override List<Visual> Render(Point p)
         {
             var dv = new DrawingVisual();
             using (var dc = dv.RenderOpen())
             {
                 dc.DrawText(_text, p);
             }
-            return new List<DrawingVisual> {dv};
+            return new List<Visual> { dv };
         }
 
         public override Size GetActualSize()

@@ -35,11 +35,13 @@ namespace GraphDrawService.Draw
         public HorizontalAligment HorizontalAligment { get; set; }
         public VerticalAligment VerticalAligment { get; set; }
 
-        public override List<DrawingVisual> Render(Point p)
+        public override List<Visual> Render(Point p)
         {
             if (!Childs.Any())
                 return null;
-            
+
+            var child = Childs.First();
+
             if (PreferSize != null)
             {
                 double x, y;
@@ -55,10 +57,18 @@ namespace GraphDrawService.Draw
                     y = p.Y + (PreferSize.Value.Height - GetActualSize().Height)/2;
                 else y = p.Y;
 
-                return Childs.First().Render(new Point(x, y));
+                p = new Point(x, y);
+            }
+            
+            if (child.Logical != null)
+            {
+                var container = new LogicalBlock { Data = child.Logical };
+                var children = child.Render(p);
+                foreach (var vis in children) container.Children.Add(vis);
+                return new List<Visual> {container};
             }
 
-            return Childs.First().Render(p);
+            return child.Render(p);
         }
 
         public override Size? PreferSize

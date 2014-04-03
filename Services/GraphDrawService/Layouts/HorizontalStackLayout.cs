@@ -19,7 +19,7 @@ namespace GraphDrawService.Layouts
             return CalculateSize(IsHorizontal);
         }
 
-        public override IEnumerable<DrawingVisual> Render(Point p)
+        public override IEnumerable<Visual> Render(Point p)
         {
             return Render(p, IsHorizontal);
         }

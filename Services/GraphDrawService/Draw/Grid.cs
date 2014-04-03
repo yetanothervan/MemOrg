@@ -24,9 +24,9 @@ namespace GraphDrawService.Draw
             _style = style;
         }
 
-        public override List<DrawingVisual> Render(Point p)
+        public override List<Visual> Render(Point p)
         {
-            var result = new List<DrawingVisual>();
+            var result = new List<Visual>();
             
             foreach (var child in Childs)
             {
@@ -41,9 +41,8 @@ namespace GraphDrawService.Draw
 
                 var y = p.Y + _rowHeights.Where(o => o.Key < gridElem.Row).Sum(o => o.Value)
                         + (_rowHeights.Count(o => o.Key < gridElem.Row) + 1)*Margin;
-
-                result.AddRange(child.Render(
-                    new Point(x, y)));
+                
+                result.AddRange(child.Render(new Point(x, y)));
             }
 
             return result;

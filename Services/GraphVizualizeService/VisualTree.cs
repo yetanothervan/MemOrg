@@ -46,7 +46,7 @@ namespace GraphVizualizeService
             _mySelf.AddChild(child);
         }
 
-        public List<DrawingVisual> Render(Point p1)
+        public List<Visual> Render(Point p1)
         {
             return _mySelf.Render(p1);
         }
@@ -57,6 +57,7 @@ namespace GraphVizualizeService
         }
 
         public Size? PreferSize { get; set; }
+        public object Logical { get; set; }
 
         public IOrgTag MyElem { get; set; }
         public ICollection<ITree> Subtrees { get; set; }

@@ -20,6 +20,7 @@ namespace GraphVizualizeService.VisualElems
             var res = _org.Block.Particles.Count > 0
                 ? drawer.DrawBlockOthers()
                 : drawer.DrawBlockOthersNoParticles();
+            res.Logical = _org.Block;
 
             var caption = drawer.DrawCaption(_org.Block.Caption);
             res.AddChild(caption);
@@ -34,6 +35,7 @@ namespace GraphVizualizeService.VisualElems
                 else
                     throw new NotImplementedException();
             }
+            
             return res;
         }
     }

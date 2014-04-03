@@ -48,6 +48,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogicalBlock.cs" />
     <Compile Include="Draw\Backing.cs" />
     <Compile Include="Draw\BlockRoundedRectangle.cs" />
     <Compile Include="Drawer.cs" />

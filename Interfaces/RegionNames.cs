@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace MemOrg.Interfaces
 {
-    public class RegionNames
+    public static class RegionNames
     {
-        public static string GraphViewerRegion = "GraphViewerRegion";
-        public static string TempToolbarRegion = "TempToolbarRegion";
-        public static string MainViewRegion = "MainViewRegion";
+        public const string GraphViewerRegion = "GraphViewerRegion";
+        public const string TempToolbarRegion = "TempToolbarRegion";
+        public const string MainViewRegion = "MainViewRegion";
+        public const string ChapterViewerRegion = "ChapterViewerRegion";
     }
 }

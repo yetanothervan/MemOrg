@@ -8,8 +8,9 @@ namespace MemOrg.Interfaces
     {
         IEnumerable<IComponent> Childs { get; }
         void AddChild(IComponent child);
-        List<DrawingVisual> Render(Point p);
+        List<Visual> Render(Point p);
         Size GetActualSize();
         Size? PreferSize { get; set; }
+        object Logical { get; set; }
     }
 }

@@ -29,9 +29,26 @@ namespace GraphViewer
 
         public DrawingCanvas()
         {
-            _visuals = new VisualCollection(this);            
+            _visuals = new VisualCollection(this);
+            MouseDown += (sender, args) =>
+            {
+                var dc = DataContext as ContentViewModel;
+                if (dc != null)
+                {
+                    Point pt = args.GetPosition((UIElement) sender);
+                    HitTestResult result = VisualTreeHelper.HitTest(this, pt);
+
+                    if (result != null)
+                    {
+                        var a = (result.VisualHit as Visual);
+                        if (a != null)
+                            dc.HitTest(a);
+                    }
+                }
+
+            };
         }
-        
+
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
@@ -59,7 +76,10 @@ namespace GraphViewer
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
                 var elems = dc.Grid.Render(new Point(Offset.X, Offset.Y));
-                foreach (var elem in elems) _visuals.Add(elem);
+                foreach (var elem in elems)
+                {
+                    _visuals.Add(elem);
+                }
             }
         }
         

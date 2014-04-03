@@ -17,6 +17,7 @@ namespace GraphVizualizeService.VisualElems
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
             var res = drawer.DrawBlockTag();
+            res.Logical = _org.Block;
             var caption = drawer.DrawCaption(_org.Tag.Caption);
             res.AddChild(caption);
             if (options.HeadersOnly) return res;

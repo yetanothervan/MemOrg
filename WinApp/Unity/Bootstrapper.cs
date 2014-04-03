@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using ChapterViewer.ModuleDefinition;
 using GraphDrawService.ModuleDefinition;
 using GraphVizualizeService.ModuleDefinition;
 using TempToolbar.ModuleDefinition;
@@ -33,7 +34,7 @@ namespace MemOrg.WinApp.Unity
             var regionManager = Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(Interfaces.RegionNames.MainViewRegion, typeof(MainView));
             regionManager.RegisterViewWithRegion(Interfaces.RegionNames.TempToolbarRegion, typeof(TempToolbar.ContentView));
-
+            
             Container.RegisterType<ITmpXmlExportImportService, TmpXmlExportImportService.TmpXmlExportImportService>();
 
             return Container.Resolve<Shell>();
@@ -73,6 +74,7 @@ namespace MemOrg.WinApp.Unity
             AddModule<GraphVisualizeServiceModule>();
             AddModule<GraphViewerModule>();
             AddModule<TempToolbarModule>();
+            AddModule<ChapterViewerModule>();
         }
 
         private void AddModule<T>() where T : IModule
