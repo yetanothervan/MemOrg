@@ -1,3 +1,4 @@
+using System;
 using MemOrg.Interfaces;
 
 namespace GraphOrganizeService.LayoutCamomile
@@ -32,6 +33,11 @@ namespace GraphOrganizeService.LayoutCamomile
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == this.GetType() && Equals((PageEdge) obj);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0} => {1}", First, Second);
         }
     }
 }

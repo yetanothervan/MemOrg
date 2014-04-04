@@ -33,10 +33,12 @@ namespace GraphOrganizeService.LayoutCamomile
                     while (pagesSet.Count > 0)
                     {
                         var graph = ChapterLayoutGraph.ExtractGraph(pagesSet);
-                        var cyc = ChapterLayoutGraph.CheckCyclic(graph);
-                        if (!cyc) graphs.Add(ChapterLayoutGraph.ExtractGraph(pagesSet));
+                        ChapterLayoutGraph.Uncycle(graph);
+                        graphs.Add(graph);
                     }
 
+
+                    
                     //rows.ForEach(ApplyLayout);
                     //rows.ForEach(ProvideReferences);
 

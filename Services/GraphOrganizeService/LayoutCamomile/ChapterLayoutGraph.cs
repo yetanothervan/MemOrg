@@ -9,33 +9,84 @@ namespace GraphOrganizeService.LayoutCamomile
     {
         private readonly HashSet<PageEdge> _edges;
         private readonly HashSet<IPage> _vertex;
+        private readonly HashSet<PageEdge> _removedEdge;
+
 
         private ChapterLayoutGraph()
         {
             _edges = new HashSet<PageEdge>();
             _vertex = new HashSet<IPage>();
+            _removedEdge = new HashSet<PageEdge>();
         }
 
-        public static bool CheckCyclic(ChapterLayoutGraph graph)
+        public static void Uncycle(ChapterLayoutGraph graph)
         {
-            if (graph._vertex.Count == 0) return false;
-            var vertexVisited = new HashSet<IPage>();
-            var edgesVisited = new HashSet<PageEdge>();
+            if (graph._vertex.Count == 0) return;
+            var cycPars = new CyclingParams(graph);
 
-            return CheckCyclicProceed(vertexVisited, edgesVisited, graph._vertex.First(), graph);
+            IPage c;
+            while ((c = UncycleProceed(cycPars, graph._vertex.First())) != null)
+            {
+                bool refDeleted = false;
+                //let's delete reference (if we find it)
+                foreach (var edge in cycPars.Path)
+                {
+                    if (!edge.Equals(cycPars.Path.First()) && (edge.First == c || edge.Second == c))
+                        break;
+
+                    if (!edge.First.RelatedBy.Contains(edge.Second))
+                    {
+                        graph._removedEdge.Add(edge);
+                        graph._edges.Remove(edge);
+                        refDeleted = true;
+                        break;
+                    }
+                }
+
+                if (!refDeleted) //delete first
+                {
+                    var first = cycPars.Path.Pop();
+                    graph._removedEdge.Add(first);
+                    graph._edges.Remove(first);
+                }
+
+                cycPars = new CyclingParams(graph);
+            }
         }
 
-        private static bool CheckCyclicProceed(HashSet<IPage> vertexVisited, HashSet<PageEdge> edgesVisited, IPage vertex, ChapterLayoutGraph graph)
+        struct CyclingParams
         {
-            if (vertexVisited.Contains(vertex)) return true;
-            vertexVisited.Add(vertex);
-            foreach (var edge in graph._edges.Where(e => (!edgesVisited.Contains(e) && (e.First == vertex || e.Second == vertex))))
+            public CyclingParams(ChapterLayoutGraph graph)
+            {
+                Graph = graph;
+                VertexVisited = new HashSet<IPage>();
+                EdgesVisited = new HashSet<PageEdge>();
+                Path = new Stack<PageEdge>();
+            }
+
+            public readonly HashSet<IPage> VertexVisited;
+            public readonly HashSet<PageEdge> EdgesVisited;
+            public readonly ChapterLayoutGraph Graph;
+            public readonly Stack<PageEdge> Path;
+        }
+
+
+        private static IPage UncycleProceed(CyclingParams cycPars, IPage vertex)
+        {
+            if (cycPars.VertexVisited.Contains(vertex)) return vertex;
+            cycPars.VertexVisited.Add(vertex);
+
+            foreach (var edge in cycPars.Graph._edges
+                .Where(e => (!cycPars.EdgesVisited.Contains(e) && (e.First == vertex || e.Second == vertex))))
             {
                 var other = (edge.First == vertex) ? edge.Second : edge.First;
-                edgesVisited.Add(edge);
-                if (CheckCyclicProceed(vertexVisited, edgesVisited, other, graph)) return true;
+                cycPars.EdgesVisited.Add(edge);
+                cycPars.Path.Push(edge);
+                var c = UncycleProceed(cycPars, other);
+                if (c != null) return c;
+                cycPars.Path.Pop();
             }
-            return false;
+            return null;
         }
 
         public static ChapterLayoutGraph ExtractGraph(HashSet<IPage> fromArray)

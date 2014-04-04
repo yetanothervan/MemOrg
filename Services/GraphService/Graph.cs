@@ -105,7 +105,11 @@ namespace GraphService
                         chapter.PagesBlocks.FirstOrDefault(p =>
                             p.Block.BlockId == reference.ReferencedBlock.BlockId)
                         ?? new Page {Block = reference.ReferencedBlock};
-                    page.ReferencedBy.Add(referencedBlock);
+                    if (!page.ReferencedBy.Contains(referencedBlock))
+                    {
+                        page.ReferencedBy.Add(referencedBlock);
+                        referencedBlock.ReferencedBy.Add(page);
+                    }
                 }
             }
         }
