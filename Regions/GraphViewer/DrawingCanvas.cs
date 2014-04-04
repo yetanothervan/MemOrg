@@ -45,7 +45,6 @@ namespace GraphViewer
                             dc.VisualMouseDown(a);
                     }
                 }
-
             };
         }
 

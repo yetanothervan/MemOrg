@@ -47,10 +47,14 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LayoutCamomile\BundleDirection.cs" />
     <Compile Include="LayoutCamomile\ChapterLayout.cs" />
+    <Compile Include="LayoutCamomile\ChapterLayoutBundle.cs" />
     <Compile Include="LayoutCamomile\ChapterLayoutElem.cs" />
+    <Compile Include="LayoutCamomile\ChapterLayoutGraph.cs" />
     <Compile Include="LayoutCamomile\ChapterLayoutRow.cs" />
     <Compile Include="LayoutCamomile\ChapterLayoutRowTriplet.cs" />
+    <Compile Include="LayoutCamomile\PageEdge.cs" />
     <Compile Include="OrgUnits\OrgBlockUserText.cs" />
     <Compile Include="OrgUnits\OrgBlockOthers.cs" />
     <Compile Include="OrgUnits\OrgBlockTag.cs" />

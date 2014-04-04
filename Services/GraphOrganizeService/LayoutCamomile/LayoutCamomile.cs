@@ -25,37 +25,32 @@ namespace GraphOrganizeService.LayoutCamomile
                 int left = 0;
                 foreach (var chapter in book.Chapters)
                 {
-                    //let's fill rows
-                    var rows = new List<ChapterLayoutRow>();
+                    //let's fill graphs
+                    var graphs = new List<ChapterLayoutGraph>();
                     
-                    //and pour out pagesSet
                     var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
-                    
+                    //desert out pagesSet
                     while (pagesSet.Count > 0)
                     {
-                        var page = pagesSet.FirstOrDefault(r => !r.IsBlockRel);
-                        if (page == null) throw new ArgumentException();
-
-                        rows.Add(
-                            YeildChapterLayoutRow(pagesSet,
-                                ExtractRowForBlockInChapter(pagesSet, chapter.ChapterBlock.BlockId, page, null)));
+                        var graph = ChapterLayoutGraph.ExtractGraph(pagesSet);
+                        var cyc = ChapterLayoutGraph.CheckCyclic(graph);
+                        if (!cyc) graphs.Add(ChapterLayoutGraph.ExtractGraph(pagesSet));
                     }
 
-                    rows.ForEach(r => r.MyChapter = chapter);
-                    rows.ForEach(ApplyLayout);
+                    //rows.ForEach(ApplyLayout);
                     //rows.ForEach(ProvideReferences);
-                    
-                    var layout = new ChapterLayout {Rows = rows, ChapterBlock = chapter.ChapterBlock};
 
-                    int chapterColumnLeft = left + (rows.Max(r => r.GridInfo.MaxCol) - rows.Min(r => r.GridInfo.MinCol) + 1);
-                    
-                    DoChapterLayout(layout, grid, chapterColumnLeft);
+                    //var layout = new ChapterLayout { Rows = rows, ChapterBlock = chapter.ChapterBlock };
 
-                    int chapterLayoutWidth =
-                        rows.Max(r => r.GridInfo.MaxCol) -
-                        rows.Min(r => r.GridInfo.MinCol);
+                    //int chapterColumnLeft = left + (rows.Max(r => r.GridInfo.MaxCol) - rows.Min(r => r.GridInfo.MinCol) + 1);
 
-                    left += chapterLayoutWidth;
+                    //DoChapterLayout(layout, grid, chapterColumnLeft);
+
+                    //int chapterLayoutWidth =
+                    //    rows.Max(r => r.GridInfo.MaxCol) -
+                    //    rows.Min(r => r.GridInfo.MinCol);
+
+                    //left += chapterLayoutWidth;
                 }
             }
             
@@ -246,39 +241,7 @@ namespace GraphOrganizeService.LayoutCamomile
             return res;
         }
 
-
-        private IEnumerable<IPage> ExtractRowForBlockInChapter(HashSet<IPage> @from, int chapterId, IPage blockPage, List<IPage> res)
-        {
-            if (res == null)
-                res = new List<IPage> { blockPage };
-            else
-                if (!res.Contains(blockPage)) res.Add(blockPage);
-            
-            if (blockPage.RelatedBy.Count == 0) return res;
-
-            var toAdd = blockPage.RelatedBy.Where(r => !res.Contains(r)
-                && r.MyChapter.ChapterBlock.BlockId == chapterId).ToList();
-            res.AddRange(toAdd);
-
-            foreach (var rel in toAdd)
-            {
-                var next = rel.RelationFirst.Block.BlockId == blockPage.Block.BlockId
-                    ? rel.RelationSecond
-                    : rel.RelationFirst;
-                ExtractRowForBlockInChapter(@from, chapterId, next, res);
-            }
-
-            return res;
-        }
-
-
-        private ChapterLayoutRow YeildChapterLayoutRow(HashSet<IPage> @from, IEnumerable<IPage> whatList)
-        {
-            var enumerable = whatList as IList<IPage> ?? whatList.ToList();
-            @from.RemoveWhere(enumerable.Contains);
-            return new ChapterLayoutRow { Pages = enumerable.ToList() };
-        }
-
+        
         private void DoChapterLayout(ChapterLayout layout, OrgGrid orgGrid, int chapterColumnLeft)
         {
             //source elem
