@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GraphOrganizeService.Chapter;
 using GraphOrganizeService.OrgUnits;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.OrgUnits;
@@ -25,19 +26,8 @@ namespace GraphOrganizeService.LayoutCamomile
                 int left = 0;
                 foreach (var chapter in book.Chapters)
                 {
-                    //let's fill graphs
-                    var graphs = new List<ChapterLayoutGraph>();
-                    
-                    var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
-                    //desert out pagesSet
-                    while (pagesSet.Count > 0)
-                    {
-                        var graph = ChapterLayoutGraph.ExtractGraph(pagesSet);
-                        ChapterLayoutGraph.Uncycle(graph);
-                        graphs.Add(graph);
-                    }
-
-
+                    var graphs = ChapterLayoutGraph.GetGraphsFromChapter(chapter);
+                 
                     //let's turn graphs into bundles
                     var bundles = graphs
                         .Select(graph => 

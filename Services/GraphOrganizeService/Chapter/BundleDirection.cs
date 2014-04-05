@@ -1,4 +1,4 @@
-namespace GraphOrganizeService.LayoutCamomile
+namespace GraphOrganizeService.Chapter
 {
     public enum BundleDirection
     {

@@ -80,9 +80,9 @@ namespace GraphService
         private void ProvideWithReferences(IChapter chapter)
         {
             var blocks = chapter.PagesBlocks.Select(c => c.Block.BlockId).ToList();
-            var relnoblocksOfChapter = _graphService.RelationsNoBlock.Where(r => blocks.Contains(r.FirstBlock.BlockId)
-                                                                                 ||
-                                                                                 blocks.Contains(r.SecondBlock.BlockId))
+            var relnoblocksOfChapter = _graphService.RelationsNoBlock
+                .Where(r => blocks.Contains(r.FirstBlock.BlockId)
+                    || blocks.Contains(r.SecondBlock.BlockId))
                 .ToList();
 
             foreach (var rel in relnoblocksOfChapter)
@@ -107,6 +107,9 @@ namespace GraphService
                         ?? new Page {Block = reference.ReferencedBlock};
                     if (!page.ReferencedBy.Contains(referencedBlock))
                     {
+                        referencedBlock.IsBlockUserText = 
+                            referencedBlock.Block.Particles.All(p => p is UserTextParticle);
+
                         page.ReferencedBy.Add(referencedBlock);
                         referencedBlock.ReferencedBy.Add(page);
                     }

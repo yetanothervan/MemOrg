@@ -3,7 +3,7 @@ using DAL.Entity;
 
 namespace MemOrg.Interfaces.OrgUnits
 {
-    public interface IOrgBlock
+    public interface IOrgBlock : IOrg
     {
         Block Block { get; }
         IEnumerable<NESW> ConnectionPoints { get; }

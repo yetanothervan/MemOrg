@@ -24,7 +24,9 @@ namespace GraphService
         {
             get { return Relation != null; }
         }
-        
+
+        public bool IsBlockUserText { get; set; }
+
         public BlockQuoteParticleSources MySources { get; set; }
 
         public IPage RelationFirst { get; set; }

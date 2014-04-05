@@ -21,8 +21,25 @@ namespace GraphVizualizeService
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
             _mySelf = drawer.DrawTree();
+            IComponent rootComp;
+            if (_tree.MyElem is IOrgBlockTag)
+                rootComp = new VisualGridElemBlockTag(_tree.MyElem as IOrgBlockTag)
+                    .Visualize(drawer, options);
+            else if (_tree.MyElem is IOrgBlockRel)
+                rootComp = new VisualGridElemBlockRel(_tree.MyElem as IOrgBlockRel)
+                    .Visualize(drawer, options);
+            else if (_tree.MyElem is IOrgBlockUserText)
+                rootComp = new VisualGridElemBlockUserText(_tree.MyElem as IOrgBlockUserText)
+                    .Visualize(drawer, options);
+            else if (_tree.MyElem is IOrgBlockOthers)
+                rootComp = new VisualGridElemBlock(_tree.MyElem as IOrgBlockOthers)
+                    .Visualize(drawer, options);
+            else if (_tree.MyElem is IOrgTag)
+                rootComp = new VisualGridElemTag(_tree.MyElem as IOrgTag)
+                    .Visualize(drawer, options);
+            else 
+                throw new NotImplementedException();
             
-            var rootComp = new VisualGridElemTag(_tree.MyElem).Visualize(drawer, options);
             _mySelf.AddChild(rootComp);
 
             if (_tree.Subtrees != null)
@@ -59,7 +76,7 @@ namespace GraphVizualizeService
         public Size? PreferSize { get; set; }
         public object Logical { get; set; }
 
-        public IOrgTag MyElem { get; set; }
+        public IOrg MyElem { get; set; }
         public ICollection<ITree> Subtrees { get; set; }
     }
 }

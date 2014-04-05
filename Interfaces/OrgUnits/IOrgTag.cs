@@ -2,7 +2,7 @@
 
 namespace MemOrg.Interfaces.OrgUnits
 {
-    public interface IOrgTag 
+    public interface IOrgTag : IOrg
     {
         Tag Tag { get; }
     }

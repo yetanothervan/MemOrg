@@ -6,7 +6,7 @@ namespace GraphOrganizeService.OrgUnits
 {
     public class Tree : ITree 
     {
-        public IOrgTag MyElem { get; set; }
+        public IOrg MyElem { get; set; }
         public ICollection<ITree> Subtrees { get; set; }
     }
 }

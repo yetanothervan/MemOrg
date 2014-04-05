@@ -5,7 +5,7 @@ namespace MemOrg.Interfaces
 {
     public interface ITree
     {
-        IOrgTag MyElem { get; set; }
+        IOrg MyElem { get; set; }
         ICollection<ITree> Subtrees { get; set; }
     }
 }

@@ -25,5 +25,10 @@ namespace DAL.Entity
         public virtual ICollection<Particle> Particles { get; set; }
         public virtual ICollection<Reference> References { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
+
+        public override string ToString()
+        {
+            return Caption;
+        }
     }
 }

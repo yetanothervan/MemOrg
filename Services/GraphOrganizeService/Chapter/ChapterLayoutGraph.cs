@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GraphOrganizeService.LayoutCamomile;
 using MemOrg.Interfaces;
 
-namespace GraphOrganizeService.LayoutCamomile
+namespace GraphOrganizeService.Chapter
 {
     public class ChapterLayoutGraph
     {
@@ -34,7 +35,7 @@ namespace GraphOrganizeService.LayoutCamomile
             return res.Key;
         }
 
-        public static void Uncycle(ChapterLayoutGraph graph)
+        private static void Uncycle(ChapterLayoutGraph graph)
         {
             if (graph._vertexes.Count == 0) return;
             var cycPars = new CyclingParams(graph);
@@ -104,7 +105,7 @@ namespace GraphOrganizeService.LayoutCamomile
             return null;
         }
 
-        public static ChapterLayoutGraph ExtractGraph(HashSet<IPage> fromArray)
+        private static ChapterLayoutGraph ExtractGraph(HashSet<IPage> fromArray)
         {
             var byPage = fromArray.FirstOrDefault();
             if (byPage == null) throw new ArgumentNullException();
@@ -157,6 +158,20 @@ namespace GraphOrganizeService.LayoutCamomile
                 result._edges.Add(edge);
                 Proceed(result, refer);
             }
+        }
+
+        public static IEnumerable<ChapterLayoutGraph> GetGraphsFromChapter(IChapter chapter)
+        {
+            var result = new List<ChapterLayoutGraph>();
+            var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
+            //desert out pagesSet
+            while (pagesSet.Count > 0)
+            {
+                var graph = ExtractGraph(pagesSet);
+                Uncycle(graph);
+                result.Add(graph);
+            }
+            return result;
         }
     }
 }

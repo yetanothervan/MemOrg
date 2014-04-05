@@ -21,6 +21,7 @@ namespace GraphViewer
         readonly IOrgGrid _rawGrid;
         readonly IOrgGrid _camoGrid;
         readonly IOrgGrid _tagTrees;
+        readonly IOrgGrid _blockTrees;
 
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
             IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService,
@@ -37,10 +38,12 @@ namespace GraphViewer
             IGridLayout rawLayout = graphOrganizeService.GetFullLayout(graph);
             IGridLayout camoLayout = graphOrganizeService.GetLayout(graph);
             ITreeLayout tagLayout = graphOrganizeService.GetTagLayout(graph);
+            ITreeLayout blockLayout = graphOrganizeService.GetChapterTreeLayout(graph);
 
             _camoGrid = camoLayout.CreateGrid();
             _rawGrid = rawLayout.CreateGrid();
             _tagTrees = tagLayout.CreateTreesGrid();
+            _blockTrees = blockLayout.CreateTreesGrid();
 
             IDrawStyle style = graphDrawService.GetStyle();
             _drawer = graphDrawService.GetDrawer(style);
@@ -55,8 +58,10 @@ namespace GraphViewer
             var rawVisGrid = _graphVizualizeService.VisualizeGrid(_rawGrid, options, _drawer);
             var camoVisGrid = _graphVizualizeService.VisualizeGrid(_camoGrid, options, _drawer);
             var tagVisTree = _graphVizualizeService.VisualizeGrid(_tagTrees, options, _drawer);
+            var blockVisTree = _graphVizualizeService.VisualizeGrid(_blockTrees, options, _drawer);
 
             var stack = _graphVizualizeService.StackPanel(options, _drawer);
+            stack.AddChild(blockVisTree);
             stack.AddChild(tagVisTree);
             stack.AddChild(camoVisGrid);
             stack.AddChild(rawVisGrid);

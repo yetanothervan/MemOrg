@@ -1,7 +1,7 @@
 using System;
 using MemOrg.Interfaces;
 
-namespace GraphOrganizeService.LayoutCamomile
+namespace GraphOrganizeService.Chapter
 {
     public class PageEdge
     {

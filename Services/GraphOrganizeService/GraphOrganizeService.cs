@@ -37,5 +37,10 @@ namespace GraphOrganizeService
         {
             return new LayoutTagRawSquare(graph);
         }
+
+        public ITreeLayout GetChapterTreeLayout(IGraph graph)
+        {
+            return new LayoutChaptersTree(graph);
+        }
     }
 }

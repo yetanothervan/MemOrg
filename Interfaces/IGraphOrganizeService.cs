@@ -9,5 +9,6 @@ namespace MemOrg.Interfaces
         IGridLayout GetFullLayout(IGraph graph);
         IGridLayout GetLayout(IGraph graph);
         ITreeLayout GetTagLayout(IGraph graph);
+        ITreeLayout GetChapterTreeLayout(IGraph graph);
     }
 }

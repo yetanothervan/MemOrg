@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using GraphOrganizeService.LayoutCamomile;
 using MemOrg.Interfaces;
 
-namespace GraphOrganizeService.LayoutCamomile
+namespace GraphOrganizeService.Chapter
 {
     public class ChapterLayoutBundle
     {
@@ -12,6 +13,11 @@ namespace GraphOrganizeService.LayoutCamomile
         private ChapterLayoutBundle _parent;
         private BundleDirection _direction;
         
+        public IPage MyElem { get { return _myElem; }}
+        public IReadOnlyCollection<ChapterLayoutBundle> Bundles { get { return _bundles; }}
+        public IReadOnlyCollection<PageEdge> Ones { get { return _ones; } }
+        public BundleDirection Direction { get { return _direction; } }
+
         private ChapterLayoutBundle()
         {
             _direction = BundleDirection.Root;

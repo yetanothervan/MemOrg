@@ -58,6 +58,7 @@
     <Compile Include="IOrgGridElem.cs" />
     <Compile Include="OrgGridElem.cs" />
     <Compile Include="OrgUnits\GridLink.cs" />
+    <Compile Include="OrgUnits\IOrg.cs" />
     <Compile Include="OrgUnits\IOrgBlockOthers.cs" />
     <Compile Include="OrgUnits\IOrgBlockRel.cs" />
     <Compile Include="OrgUnits\IOrgBlockTag.cs" />
