@@ -38,7 +38,11 @@ namespace GraphOrganizeService.LayoutCamomile
                     }
 
 
-                    
+                    //let's turn graphs into bundles
+                    var bundles = graphs
+                        .Select(graph => 
+                            ChapterLayoutBundle.ExtractBundlesFromGraph(graph, chapter)).ToList();
+
                     //rows.ForEach(ApplyLayout);
                     //rows.ForEach(ProvideReferences);
 
@@ -136,17 +140,7 @@ namespace GraphOrganizeService.LayoutCamomile
                 ++height;
             }
         }
-
-        /*private void CheckColumn(List<ChapterLayoutElem> column, ChapterLayoutRow row)
-       {
-           var toAdd = new List<ChapterLayoutElem>();
-           foreach (var elem in column.Where(c => c.Page.ReferencedBy.Any()))
-               foreach (var page in elem.Page.ReferencedBy)
-                   if (!row.MyChapter.PagesBlocks.Contains(page))
-                       toAdd.Add(new ChapterLayoutElem { Page = page, RowSpan = 1 });
-           column.AddRange(toAdd);
-       }*/
-
+        
         private void LayoutUpper(ComplicatedLayoutRow upper, ChapterLayoutRow row)
         {
             int height = -1;

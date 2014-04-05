@@ -8,24 +8,39 @@ namespace GraphOrganizeService.LayoutCamomile
     public class ChapterLayoutGraph
     {
         private readonly HashSet<PageEdge> _edges;
-        private readonly HashSet<IPage> _vertex;
+        private readonly HashSet<IPage> _vertexes;
         private readonly HashSet<PageEdge> _removedEdge;
-
 
         private ChapterLayoutGraph()
         {
             _edges = new HashSet<PageEdge>();
-            _vertex = new HashSet<IPage>();
+            _vertexes = new HashSet<IPage>();
             _removedEdge = new HashSet<PageEdge>();
+        }
+
+        public IEnumerable<PageEdge> GetEdgesForVertex(IPage vertex)
+        {
+            return _edges.Where(e => e.First == vertex || e.Second == vertex);
+        }
+
+        public IPage GetMostLargestNumberOfEdgeVertex()
+        {
+            var res =
+                _vertexes.SelectMany(v => _edges, (v, e) => new {v, e})
+                    .Where(@t => @t.e.First == @t.v || @t.e.Second == @t.v).GroupBy(g => g.v)
+                    .Select(group => new {group.Key, Count = group.Count()})
+                    .OrderByDescending(o => o.Count).First(v => !v.Key.IsBlockRel);
+
+            return res.Key;
         }
 
         public static void Uncycle(ChapterLayoutGraph graph)
         {
-            if (graph._vertex.Count == 0) return;
+            if (graph._vertexes.Count == 0) return;
             var cycPars = new CyclingParams(graph);
 
             IPage c;
-            while ((c = UncycleProceed(cycPars, graph._vertex.First())) != null)
+            while ((c = UncycleProceed(cycPars, graph._vertexes.First())) != null)
             {
                 bool refDeleted = false;
                 //let's delete reference (if we find it)
@@ -91,13 +106,13 @@ namespace GraphOrganizeService.LayoutCamomile
 
         public static ChapterLayoutGraph ExtractGraph(HashSet<IPage> fromArray)
         {
-            var byPage = fromArray.FirstOrDefault(r => !r.IsBlockRel);
-            if (byPage == null) throw new ArgumentException();
+            var byPage = fromArray.FirstOrDefault();
+            if (byPage == null) throw new ArgumentNullException();
 
             var result = new ChapterLayoutGraph();
             Proceed(result, byPage);
 
-            foreach (var vertex in result._vertex)
+            foreach (var vertex in result._vertexes)
                 fromArray.Remove(vertex);
             
             return result;
@@ -105,29 +120,37 @@ namespace GraphOrganizeService.LayoutCamomile
 
         private static void Proceed(ChapterLayoutGraph result, IPage byPage)
         {
-            result._vertex.Add(byPage);
+            result._vertexes.Add(byPage);
+
+            if (byPage.IsBlockRel)
+            {
+                var edgeFirst = new PageEdge(byPage, byPage.RelationFirst);
+                if (!result._edges.Contains(edgeFirst))
+                {
+                    result._edges.Add(edgeFirst);
+                    Proceed(result, byPage.RelationFirst);
+                }
+                
+                var edgeSecond = new PageEdge(byPage, byPage.RelationSecond);
+                if (!result._edges.Contains(edgeSecond))
+                {
+                    result._edges.Add(edgeSecond);
+                    Proceed(result, byPage.RelationSecond);
+                }
+            }
 
             foreach (var rel in byPage.RelatedBy)
             {
-                result._vertex.Add(rel);
                 var edge = new PageEdge(byPage, rel);
                 if (result._edges.Contains(edge)) continue;
-                
+
                 result._edges.Add(edge);
                 Proceed(result, rel);
-
-                var other = (rel.RelationFirst == byPage) ? rel.RelationSecond : rel.RelationFirst;
-
-                var edge2 = new PageEdge(rel, other);
-                if (result._edges.Contains(edge2)) continue;
-
-                result._edges.Add(edge2);
-                Proceed(result, other);
             }
 
             foreach (var refer in byPage.ReferencedBy)
             {
-                result._vertex.Add(refer);
+                result._vertexes.Add(refer);
                 var edge = new PageEdge(byPage, refer);
                 if (result._edges.Contains(edge)) continue;
 
