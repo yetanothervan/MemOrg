@@ -27,7 +27,7 @@ namespace GraphOrganizeService.Chapter
             _parent = null;
         }
 
-        public static ChapterLayoutBundle ExtractBundlesFromGraph(ChapterLayoutGraph graph, IChapter chapter)
+        public static ChapterLayoutBundle ExtractBundlesFromGraph(ChapterLayoutGraph graph)
         {
             //let's find vertex with the most count of edges
             var root = graph.GetMostLargestNumberOfEdgeVertex();
@@ -43,27 +43,27 @@ namespace GraphOrganizeService.Chapter
             var bundleOrderedByPower
                             = bundle._bundles.OrderByDescending(b => b.GetBundlePower()).ToList();
 
-            if (bundleOrderedByPower.Count <= 0) return;
+            if (bundleOrderedByPower.Count == 0) return;
             
-            if (bundleOrderedByPower.Count > 1)
+            if (bundleOrderedByPower.Count > 0)
             {
                 var upper = bundleOrderedByPower[0];
                 if (upper._parent._direction == BundleDirection.Root 
-                    || upper._parent._direction == BundleDirection.OuterRoot 
-                    || upper._direction == BundleDirection.Upper)
+                    || upper._parent._direction == BundleDirection.OuterRoot
+                    || upper._parent._direction == BundleDirection.Upper)
                     upper._direction = BundleDirection.Upper;
                 else
                     upper._direction = BundleDirection.OuterRoot;
 
-                if (bundleOrderedByPower.Count > 2)
+                if (bundleOrderedByPower.Count > 1)
                 {
                     var lower = bundleOrderedByPower[1];
                     if (lower._parent._direction == BundleDirection.Root
                         || lower._parent._direction == BundleDirection.OuterRoot
-                        || lower._direction == BundleDirection.Lower)
+                        || lower._parent._direction == BundleDirection.Lower)
                         lower._direction = BundleDirection.Lower;
                     else
-                        upper._direction = BundleDirection.OuterRoot;
+                        lower._direction = BundleDirection.OuterRoot;
                 }
             }
             foreach (var ordBundle in bundleOrderedByPower)

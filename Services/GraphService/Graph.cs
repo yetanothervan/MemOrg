@@ -87,12 +87,12 @@ namespace GraphService
 
             foreach (var rel in relnoblocksOfChapter)
             {
-                var first = chapter.PagesBlocks.FirstOrDefault(p => p.Block.BlockId == rel.FirstBlock.BlockId);
-                var second = chapter.PagesBlocks.FirstOrDefault(p => p.Block.BlockId == rel.SecondBlock.BlockId);
-                if (first == null)
-                    first = new Page {Block = rel.FirstBlock};
-                if (second == null)
-                    second = new Page {Block = rel.SecondBlock};
+                var first = chapter.MyBook.GetPageByBlock(rel.FirstBlock.BlockId) 
+                    ?? new Page {Block = rel.FirstBlock};
+
+                var second = chapter.MyBook.GetPageByBlock(rel.SecondBlock.BlockId) 
+                    ?? new Page {Block = rel.SecondBlock};
+
                 first.ReferencedBy.Add(second);
                 second.ReferencedBy.Add(first);
             }
@@ -101,10 +101,9 @@ namespace GraphService
             {
                 foreach (var reference in page.Block.References)
                 {
-                    var referencedBlock =
-                        chapter.PagesBlocks.FirstOrDefault(p =>
-                            p.Block.BlockId == reference.ReferencedBlock.BlockId)
-                        ?? new Page {Block = reference.ReferencedBlock};
+                    var referencedBlock = chapter.MyBook.GetPageByBlock(reference.ReferencedBlock.BlockId)
+                        ?? new Page { Block = reference.ReferencedBlock };
+
                     if (!page.ReferencedBy.Contains(referencedBlock))
                     {
                         referencedBlock.IsBlockUserText = 

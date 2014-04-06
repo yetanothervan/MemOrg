@@ -11,9 +11,11 @@ namespace GraphOrganizeService.Chapter
         private readonly HashSet<PageEdge> _edges;
         private readonly HashSet<IPage> _vertexes;
         private readonly HashSet<PageEdge> _removedEdge;
+        private readonly IChapter _myChapter;
 
-        private ChapterLayoutGraph()
+        private ChapterLayoutGraph(IChapter myChapter)
         {
+            _myChapter = myChapter;
             _edges = new HashSet<PageEdge>();
             _vertexes = new HashSet<IPage>();
             _removedEdge = new HashSet<PageEdge>();
@@ -105,72 +107,106 @@ namespace GraphOrganizeService.Chapter
             return null;
         }
 
-        private static ChapterLayoutGraph ExtractGraph(HashSet<IPage> fromArray)
+        private static IEnumerable<ChapterLayoutGraph> ExtractGraph(IChapter chapter,
+            HashSet<IPage> pagesInBook)
         {
-            var byPage = fromArray.FirstOrDefault();
-            if (byPage == null) throw new ArgumentNullException();
+            var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
+            var result = new List<ChapterLayoutGraph>();
 
-            var result = new ChapterLayoutGraph();
-            Proceed(result, byPage);
+            //desert out pagesSet
+            while (pagesSet.Count > 0)
+            {
+                var byPage = pagesSet.FirstOrDefault();
+                if (byPage == null) throw new ArgumentNullException();
 
-            foreach (var vertex in result._vertexes)
-                fromArray.Remove(vertex);
+                var graphRes = new ChapterLayoutGraph(chapter);
+                Proceed(graphRes, pagesSet, byPage, null, pagesInBook);
+                
+                Uncycle(graphRes);
+                result.Add(graphRes);
+            }
             
             return result;
         }
 
-        private static void Proceed(ChapterLayoutGraph result, IPage byPage)
+
+        /*
+         * Правила: 
+         * если страница пустая - добавляем
+         * если страница только в данной главе - добавляем
+         * если страница еще и в соседней: если она уже добавлена, то связь добавляем в removed
+         *  иначе добавляем
+         * если страница еще в где-то в книге: если она уже добавлена, то связь добавляем в removed
+         *  иначе добавляем
+         * если страница в другой книге - добавляем, но по связям не идем         
+         */
+
+        private static void Proceed(ChapterLayoutGraph result, HashSet<IPage> remainingPages, 
+            IPage addingPage, PageEdge addingEdge, HashSet<IPage> pagesInBook)
         {
-            result._vertexes.Add(byPage);
+            if (result._edges.Contains(addingEdge) || result._removedEdge.Contains(addingEdge)) return;
 
-            if (byPage.IsBlockRel)
+            if (addingPage.MyChapter != null && addingPage.MyChapter != result._myChapter)
             {
-                var edgeFirst = new PageEdge(byPage, byPage.RelationFirst);
-                if (!result._edges.Contains(edgeFirst))
+                result._removedEdge.Add(addingEdge);
+                return;
+            }
+
+            if (addingPage.MySources == BlockQuoteParticleSources.NeightborChapter ||
+                addingPage.MySources == BlockQuoteParticleSources.MyBook)
+            {
+                if (pagesInBook.Contains(addingPage))
                 {
-                    result._edges.Add(edgeFirst);
-                    Proceed(result, byPage.RelationFirst);
+                    result._removedEdge.Add(addingEdge);
+                    remainingPages.Remove(addingPage);
+                    return;
                 }
+                pagesInBook.Add(addingPage);
+            }
+
+            if (addingEdge != null)
+                result._edges.Add(addingEdge);
+
+            if (addingPage.MySources == BlockQuoteParticleSources.MyChapterOnly
+                || addingPage.MySources == BlockQuoteParticleSources.NoSources
+                || addingPage.MySources == BlockQuoteParticleSources.OtherBook)
+            {
+                result._vertexes.Add(addingPage);
+                remainingPages.Remove(addingPage);
+                if (addingPage.MySources == BlockQuoteParticleSources.OtherBook) return;
+            }
+
+            if (addingPage.IsBlockRel)
+            {
+                var edgeFirst = new PageEdge(addingPage, addingPage.RelationFirst);
+                Proceed(result, remainingPages, addingPage.RelationFirst, edgeFirst, pagesInBook);
                 
-                var edgeSecond = new PageEdge(byPage, byPage.RelationSecond);
-                if (!result._edges.Contains(edgeSecond))
-                {
-                    result._edges.Add(edgeSecond);
-                    Proceed(result, byPage.RelationSecond);
-                }
+                var edgeSecond = new PageEdge(addingPage, addingPage.RelationSecond);
+                Proceed(result, remainingPages, addingPage.RelationSecond, edgeSecond, pagesInBook);
             }
 
-            foreach (var rel in byPage.RelatedBy)
+            foreach (var rel in addingPage.RelatedBy)
             {
-                var edge = new PageEdge(byPage, rel);
-                if (result._edges.Contains(edge)) continue;
-
-                result._edges.Add(edge);
-                Proceed(result, rel);
+                var edge = new PageEdge(addingPage, rel);
+                Proceed(result, remainingPages, rel, edge, pagesInBook);
             }
 
-            foreach (var refer in byPage.ReferencedBy)
+            foreach (var refer in addingPage.ReferencedBy)
             {
-                result._vertexes.Add(refer);
-                var edge = new PageEdge(byPage, refer);
-                if (result._edges.Contains(edge)) continue;
-
-                result._edges.Add(edge);
-                Proceed(result, refer);
+                var edge = new PageEdge(addingPage, refer);
+                Proceed(result, remainingPages, refer, edge, pagesInBook);
             }
         }
-
-        public static IEnumerable<ChapterLayoutGraph> GetGraphsFromChapter(IChapter chapter)
+        
+        public static IEnumerable<ChapterLayoutGraph> GetGraphsFromBook(IBook book)
         {
             var result = new List<ChapterLayoutGraph>();
-            var pagesSet = new HashSet<IPage>(chapter.PagesBlocks);
-            //desert out pagesSet
-            while (pagesSet.Count > 0)
-            {
-                var graph = ExtractGraph(pagesSet);
-                Uncycle(graph);
-                result.Add(graph);
-            }
+
+            var pagesInBook = new HashSet<IPage>();
+
+            foreach (var chapter in book.Chapters)
+                result.AddRange(ExtractGraph(chapter, pagesInBook));
+            
             return result;
         }
     }

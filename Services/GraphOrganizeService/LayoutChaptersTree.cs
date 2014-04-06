@@ -90,14 +90,8 @@ namespace GraphOrganizeService
             IOrgGrid grid = new OrgGrid();
             
             var bundles = new List<ChapterLayoutBundle>();
-            foreach (var book in _graph.Books)
-                foreach (var chapter in book.Chapters)
-                {
-                    var graphs = ChapterLayoutGraph.GetGraphsFromChapter(chapter);
-                    
-                    bundles.AddRange(graphs.Select(graph =>
-                            ChapterLayoutBundle.ExtractBundlesFromGraph(graph, chapter)));
-                }
+            foreach (var graphs in _graph.Books.Select(ChapterLayoutGraph.GetGraphsFromBook))
+                bundles.AddRange(graphs.Select(ChapterLayoutBundle.ExtractBundlesFromGraph));
 
             var allocator = new RawSquareGridElemAllocator(bundles.Count);
 

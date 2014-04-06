@@ -23,31 +23,25 @@ namespace GraphOrganizeService.LayoutCamomile
             //page organize
             foreach (var book in _graph.Books)
             {
-                int left = 0;
-                foreach (var chapter in book.Chapters)
-                {
-                    var graphs = ChapterLayoutGraph.GetGraphsFromChapter(chapter);
-                 
-                    //let's turn graphs into bundles
-                    var bundles = graphs
-                        .Select(graph => 
-                            ChapterLayoutBundle.ExtractBundlesFromGraph(graph, chapter)).ToList();
 
-                    //rows.ForEach(ApplyLayout);
-                    //rows.ForEach(ProvideReferences);
+                var bundles = new List<ChapterLayoutBundle>();
+                foreach (var graphs in _graph.Books.Select(ChapterLayoutGraph.GetGraphsFromBook))
+                    bundles.AddRange(graphs.Select(ChapterLayoutBundle.ExtractBundlesFromGraph));
 
-                    //var layout = new ChapterLayout { Rows = rows, ChapterBlock = chapter.ChapterBlock };
+                //rows.ForEach(ApplyLayout);
+                //rows.ForEach(ProvideReferences);
 
-                    //int chapterColumnLeft = left + (rows.Max(r => r.GridInfo.MaxCol) - rows.Min(r => r.GridInfo.MinCol) + 1);
+                //var layout = new ChapterLayout { Rows = rows, ChapterBlock = chapter.ChapterBlock };
 
-                    //DoChapterLayout(layout, grid, chapterColumnLeft);
+                //int chapterColumnLeft = left + (rows.Max(r => r.GridInfo.MaxCol) - rows.Min(r => r.GridInfo.MinCol) + 1);
 
-                    //int chapterLayoutWidth =
-                    //    rows.Max(r => r.GridInfo.MaxCol) -
-                    //    rows.Min(r => r.GridInfo.MinCol);
+                //DoChapterLayout(layout, grid, chapterColumnLeft);
 
-                    //left += chapterLayoutWidth;
-                }
+                //int chapterLayoutWidth =
+                //    rows.Max(r => r.GridInfo.MaxCol) -
+                //    rows.Min(r => r.GridInfo.MinCol);
+
+                //left += chapterLayoutWidth;
             }
             
             return grid;
