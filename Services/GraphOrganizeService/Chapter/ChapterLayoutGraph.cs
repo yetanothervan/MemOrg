@@ -11,11 +11,11 @@ namespace GraphOrganizeService.Chapter
         private readonly HashSet<PageEdge> _edges;
         private readonly HashSet<IPage> _vertexes;
         private readonly HashSet<PageEdge> _removedEdge;
-        private readonly IChapter _myChapter;
+        public readonly IChapter MyChapter;
 
         private ChapterLayoutGraph(IChapter myChapter)
         {
-            _myChapter = myChapter;
+            MyChapter = myChapter;
             _edges = new HashSet<PageEdge>();
             _vertexes = new HashSet<IPage>();
             _removedEdge = new HashSet<PageEdge>();
@@ -146,7 +146,7 @@ namespace GraphOrganizeService.Chapter
         {
             if (result._edges.Contains(addingEdge) || result._removedEdge.Contains(addingEdge)) return;
 
-            if (addingPage.MyChapter != null && addingPage.MyChapter != result._myChapter)
+            if (addingPage.MyChapter != null && addingPage.MyChapter != result.MyChapter)
             {
                 result._removedEdge.Add(addingEdge);
                 return;

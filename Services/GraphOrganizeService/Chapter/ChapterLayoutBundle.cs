@@ -12,10 +12,11 @@ namespace GraphOrganizeService.Chapter
         private IPage _myElem;
         private ChapterLayoutBundle _parent;
         private BundleDirection _direction;
+        public IChapter MyChapter;
         
         public IPage MyElem { get { return _myElem; }}
-        public IReadOnlyCollection<ChapterLayoutBundle> Bundles { get { return _bundles; }}
-        public IReadOnlyCollection<PageEdge> Ones { get { return _ones; } }
+        public IEnumerable<ChapterLayoutBundle> Bundles { get { return _bundles; }}
+        public IEnumerable<PageEdge> Ones { get { return _ones; } }
         public BundleDirection Direction { get { return _direction; } }
 
         private ChapterLayoutBundle()
@@ -32,6 +33,7 @@ namespace GraphOrganizeService.Chapter
             //let's find vertex with the most count of edges
             var root = graph.GetMostLargestNumberOfEdgeVertex();
             var result = ExtractBundlesByEdge(graph, null, root, BundleDirection.Root);
+            result.MyChapter = graph.MyChapter;
 
             //mark up direction
             MarkUpDirections(result);
@@ -83,7 +85,7 @@ namespace GraphOrganizeService.Chapter
                 if (Equals(edge, myEdge)) continue;
 
                 var other = edge.First == my ? edge.Second : edge.First;
-                if (!graph.GetEdgesForVertex(other).Any(e => !Equals(e, edge)))
+                if (graph.GetEdgesForVertex(other).All(e => Equals(e, edge)))
                 {
                     result._ones.Add(edge);
                     continue;
@@ -99,6 +101,18 @@ namespace GraphOrganizeService.Chapter
         {
             return _bundles.Count + _bundles.Sum(bundle => bundle.GetBundlePower());
         }
-        
+
+        public IGrid Render()
+        {
+            return null;
+
+            /* Отрендерить корень
+             * Найти в корне верхний бандл
+             * 
+             * 
+             * 
+             * 
+             */
+        }
     }
 }
