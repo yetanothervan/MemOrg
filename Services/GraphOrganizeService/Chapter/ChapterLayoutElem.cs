@@ -3,7 +3,7 @@ using System.Linq;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.OrgUnits;
 
-namespace GraphOrganizeService.LayoutCamomile
+namespace GraphOrganizeService.Chapter
 {
     public class ChapterLayoutElem
     {
@@ -27,6 +27,12 @@ namespace GraphOrganizeService.LayoutCamomile
         private List<GridLinkPart> _gridLinkParts;
         public bool IsGridLinkPart { get { return _gridLinkParts != null && _gridLinkParts.Count != 0; }}
         public IReadOnlyList<GridLinkPart> GridLinkParts { get { return _gridLinkParts; }}
+
+        public void AddCon(NESW dir)
+        {
+            if (ConnectionPoints == null) ConnectionPoints = new List<NESW>();
+            if (!ConnectionPoints.Contains(dir)) ConnectionPoints.Add(dir);
+        }
 
         public void AddGridLink(GridLinkPart part)
         {

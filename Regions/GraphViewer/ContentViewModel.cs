@@ -55,8 +55,8 @@ namespace GraphViewer
 
         private void UpdateGrid(IVisualizeOptions options)
         {
-            var rawVisGrid = _graphVizualizeService.VisualizeGrid(_rawGrid, options, _drawer);
             var camoVisGrid = _graphVizualizeService.VisualizeGrid(_camoGrid, options, _drawer);
+            var rawVisGrid = _graphVizualizeService.VisualizeGrid(_rawGrid, options, _drawer);
             var tagVisTree = _graphVizualizeService.VisualizeGrid(_tagTrees, options, _drawer);
             var blockVisTree = _graphVizualizeService.VisualizeGrid(_blockTrees, options, _drawer);
 

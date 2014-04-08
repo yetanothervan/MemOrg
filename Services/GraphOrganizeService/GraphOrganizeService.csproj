@@ -48,12 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chapter\BundleDirection.cs" />
-    <Compile Include="LayoutCamomile\ChapterLayout.cs" />
     <Compile Include="Chapter\ChapterLayoutBundle.cs" />
-    <Compile Include="LayoutCamomile\ChapterLayoutElem.cs" />
+    <Compile Include="Chapter\ChapterLayoutElem.cs" />
     <Compile Include="Chapter\ChapterLayoutGraph.cs" />
-    <Compile Include="LayoutCamomile\ChapterLayoutRow.cs" />
-    <Compile Include="LayoutCamomile\ChapterLayoutRowTriplet.cs" />
     <Compile Include="Chapter\PageEdge.cs" />
     <Compile Include="LayoutChaptersTree.cs" />
     <Compile Include="OrgUnits\OrgBlockUserText.cs" />
@@ -65,7 +62,7 @@
     <Compile Include="OrgGrid.cs" />
     <Compile Include="OrgUnits\OrgBlock.cs" />
     <Compile Include="OrgUnits\OrgTag.cs" />
-    <Compile Include="LayoutCamomile\LayoutCamomile.cs" />
+    <Compile Include="LayoutCamomile.cs" />
     <Compile Include="LayoutRawSquare.cs" />
     <Compile Include="ModuleDefinition\GraphOrganizeServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
