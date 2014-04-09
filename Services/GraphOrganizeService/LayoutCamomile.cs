@@ -35,9 +35,11 @@ namespace GraphOrganizeService
             foreach (var bundle in order)
             {
                 var ta = bundle.Render();
+                int bundleIce = 0 - ta.Min(b => b.Row);
+
                 foreach (var el in ta)
                 {
-                    el.Row += resHeight;
+                    el.Row += (resHeight + bundleIce);
                     if (el.Page != null && el.Page.Block != null)
                         el.Page.Block.Caption += " " + el.Row + ", " + el.Col;
                 }

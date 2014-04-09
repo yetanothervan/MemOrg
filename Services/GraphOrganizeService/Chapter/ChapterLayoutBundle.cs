@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.OrgUnits;
 
@@ -14,12 +15,27 @@ namespace GraphOrganizeService.Chapter
         private ChapterLayoutBundle _parent;
         private BundleDirection _direction;
         public IChapter MyChapter;
-        
-        public IPage MyElem { get { return _myElem; }}
-        public IEnumerable<ChapterLayoutBundle> Bundles { get { return _bundles; }}
-        public IEnumerable<PageEdge> Ones { get { return _ones; } }
-        public BundleDirection Direction { get { return _direction; } }
-        
+
+        public IPage MyElem
+        {
+            get { return _myElem; }
+        }
+
+        public IEnumerable<ChapterLayoutBundle> Bundles
+        {
+            get { return _bundles; }
+        }
+
+        public IEnumerable<PageEdge> Ones
+        {
+            get { return _ones; }
+        }
+
+        public BundleDirection Direction
+        {
+            get { return _direction; }
+        }
+
         private ChapterLayoutBundle()
         {
             _direction = BundleDirection.Root;
@@ -44,14 +60,14 @@ namespace GraphOrganizeService.Chapter
         private static void MarkUpDirections(ChapterLayoutBundle bundle)
         {
             var bundleOrderedByPower
-                            = bundle._bundles.OrderByDescending(b => b.GetBundlePower()).ToList();
+                = bundle._bundles.OrderByDescending(b => b.GetBundlePower()).ToList();
 
             if (bundleOrderedByPower.Count == 0) return;
-            
+
             if (bundleOrderedByPower.Count > 0)
             {
                 var upper = bundleOrderedByPower[0];
-                if (upper._parent._direction == BundleDirection.Root 
+                if (upper._parent._direction == BundleDirection.Root
                     || upper._parent._direction == BundleDirection.OuterRoot
                     || upper._parent._direction == BundleDirection.Upper)
                     upper._direction = BundleDirection.Upper;
@@ -65,6 +81,8 @@ namespace GraphOrganizeService.Chapter
                         || lower._parent._direction == BundleDirection.OuterRoot
                         || lower._parent._direction == BundleDirection.Lower)
                         lower._direction = BundleDirection.Lower;
+                    else if (lower._parent._direction == BundleDirection.Upper)
+                        lower._direction = BundleDirection.Middle;
                     else
                         lower._direction = BundleDirection.OuterRoot;
                 }
@@ -97,7 +115,7 @@ namespace GraphOrganizeService.Chapter
             }
             return result;
         }
-        
+
         private int GetBundlePower()
         {
             return _bundles.Count + _bundles.Sum(bundle => bundle.GetBundlePower());
@@ -105,183 +123,178 @@ namespace GraphOrganizeService.Chapter
 
         public List<ChapterLayoutElem> Render()
         {
-            var elems = GetElemsForBundle();
+            var elems = RenderRoot(0, 0, true);
             return elems;
         }
 
-        private List<ChapterLayoutElem> GetElemsForBundle()
-        {
-            /* Отрендерить корень
-             * Найти в корне верхний бандл
-             * Он может быть:
-             *   бендл с релблоком
-             *     рендер релблока, затем конечный блок
-             *   бендл без рел блока
-             *     рендер стрелки с названием рела, затем конечный блок
-             *       рендер бандлов аппера
-             *          рендер мидлов 
-             *             если миддл релблок с релом 
-             *               - рел вверх-влево, конечный блок - влево
-             *             если миддл без релблока, тоже, но вместо релблока 
-             *               - стрелка с названием рела
-             *             аутеры - пропустить.
-             *          рендер аппера
-             *             аналогично в другую стророну.
-             *      рендер миддлов рута
-             *      рендер лоуэра
-             */
-
-            var result = new List<ChapterLayoutElem>();
-            
-            var root = new ChapterLayoutElem()
-            {
-                Col = 0,
-                Row = 0,
-                HorizontalAligment = HorizontalAligment.Right,
-                Page = MyElem
-            };
-            result.Add(root);
-
-            var upper = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
-            
-            if (upper != null)
-            {
-                root.AddCon(NESW.East);
-                result.AddRange(upper.RenderUpper(0, 1));
-            }
-
-            return result;
-        }
-
-        private IEnumerable<ChapterLayoutElem> RenderUpper(int row, int col)
+        private List<ChapterLayoutElem> RenderRoot(int row, int col, bool right)
         {
             var result = new List<ChapterLayoutElem>();
-            
-            if (MyElem.IsBlockRel)
-            {
-                var midRel = RenderMidRel(row, col);
-                result.AddRange(midRel);
-                
-                var other = MyElem.RelationFirst == _parent.MyElem
-                    ? MyElem.RelationSecond
-                    : MyElem.RelationFirst;
-                var endRel = Bundles.FirstOrDefault(b => b.MyElem == other);
+            result.AddRange(RenderElem(row, col, false));
 
-                if (endRel != null || Ones.Contains(new PageEdge(_parent.MyElem, other)))
+            col = right ? col + 1 : col - 1;
+
+            if (this._direction == BundleDirection.Root)
+            {
+                var upper = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
+                if (upper != null)
                 {
-                    var end = new ChapterLayoutElem
-                    {
-                        Col = col + 1,
-                        Row = row,
-                        HorizontalAligment = HorizontalAligment.Left,
-                        ConnectionPoints = new List<NESW> { NESW.West },
-                        Page = other
-                    };
-                    result.Add(end);
+                    var upperElems = upper.RenderUpper(row, col, right).ToList();
+                    result.AddRange(upperElems);
+                    row = GetLowerRow(upperElems, row);
+                }
+
+                foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
+                {
+                    var midElems = bundle.RenderElem(row + 1, col, false).ToList();
+                    result.AddRange(midElems);
+                    row = GetLowerRow(midElems, row + 2);
+                }
+
+                var lower = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
+                if (lower != null)
+                {
+                    var lowerElems = lower.RenderLower(row + 1, col, right).ToList();
+                    result.AddRange(lowerElems);
                 }
             }
-            else
+
+            if (this._direction == BundleDirection.Upper)
             {
-                var arrow = new ChapterLayoutElem
+                foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
                 {
-                    Row = row,
-                    Col = col
-                };
-                arrow.AddGridLink(new GridLinkPart
+                    var midElems = bundle.RenderElem(row - 1, col, true).ToList();
+                    result.AddRange(midElems);
+                    row = GetUpperRow(midElems, row - 2);
+                }
+
+                var upper = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
+                if (upper != null)
                 {
-                    Direction = GridLinkPartDirection.WestEast,
-                    Type = GridLinkPartType.Relation
-                });
-                result.Add(arrow);
-                var end = new ChapterLayoutElem
-                {
-                    Col = col + 1,
-                    Row = row,
-                    HorizontalAligment = HorizontalAligment.Left,
-                    ConnectionPoints = new List<NESW> { NESW.West },
-                    Page = MyElem
-                };
-                result.Add(end);
+                    var upperElems = upper.RenderUpper(row, col, right).ToList();
+                    result.AddRange(upperElems);
+                    row = GetLowerRow(upperElems, row);
+                }
             }
+
+            if (this._direction == BundleDirection.Lower)
+            {
+                foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
+                {
+                    var midElems = bundle.RenderElem(row + 1, col, true).ToList();
+                    result.AddRange(midElems);
+                    row = GetLowerRow(midElems, row + 2);
+                }
+
+                var lower = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
+                if (lower != null)
+                {
+                    var lowerElems = lower.RenderUpper(row, col, right).ToList();
+                    result.AddRange(lowerElems);
+                }
+            }
+
             return result;
         }
 
-        private IEnumerable<ChapterLayoutElem> RenderMidRel(int row, int col)
+        private IEnumerable<ChapterLayoutElem> RenderUpper(int row, int col, bool right)
         {
             var result = new List<ChapterLayoutElem>();
 
-            var cps = _ones.Any()
-                ? new List<NESW> {NESW.West, NESW.East, NESW.South}
-                : new List<NESW> {NESW.West, NESW.East};
+            result.AddRange(RenderElem(row, col, false));
             
-            var rel = new ChapterLayoutElem
+            var upperRoot = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
+            if (upperRoot != null)
             {
-                Col = _ones.Any() ? col + 1 : col,
-                Row = row,
-                HorizontalAligment = HorizontalAligment.Center,
-                ConnectionPoints = cps,
-                Page = MyElem
-            };
-            result.Add(rel);
+                var upperRootElem = upperRoot.RenderRoot(row - 1, right ? col + 1 : col - 1, !right);
+                result.AddRange(upperRootElem);
+            }
 
+            //TODO outer
+            return result;
+        }
+
+        private IEnumerable<ChapterLayoutElem> RenderLower(int row, int col, bool right)
+        {
+            var result = new List<ChapterLayoutElem>();
+            var lems = RenderElem(row, col, false);
+            result.AddRange(lems);
+            
+            var lowerRoot = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
+            if (lowerRoot != null)
+            {
+                var lowerRootElem = lowerRoot.RenderRoot(GetLowerRow(result, row + 1), 
+                    right ? col + 1 : col - 1, !right);
+                result.AddRange(lowerRootElem);
+            }
+
+            //TODO outer
+            return result;
+        }
+        
+        private IEnumerable<ChapterLayoutElem> RenderOnes(int row, int col, bool up)
+        {
+            var result = new List<ChapterLayoutElem>();
             if (!_ones.Any()) return result;
-
-            var left = new ChapterLayoutElem
-            {
-                HorizontalAligment = HorizontalAligment.Center,
-                Col = col,
-                Row = row 
-            };
-            left.AddGridLink(new GridLinkPart() { Direction = GridLinkPartDirection.WestEast });
-            result.Add(left);
-
-            var down = new ChapterLayoutElem
-            {
-                HorizontalAligment = HorizontalAligment.Center,
-                Col = col + 1,
-                Row = row + 1
-            };
-            down.AddGridLink(new GridLinkPart() {Direction = GridLinkPartDirection.NorthWest});
-            result.Add(down);
-
-            var seconddown = new ChapterLayoutElem
-            {
-                HorizontalAligment = HorizontalAligment.Center,
-                Col = col,
-                Row = row + 1
-            };
-            seconddown.AddGridLink(new GridLinkPart() {Direction = GridLinkPartDirection.SouthEast});
-            result.Add(seconddown);
-
-            int onesIndex = 2;
+            int onesIndex = 0;
             foreach (var pageEdge in _ones)
             {
                 var other = pageEdge.First == MyElem ? pageEdge.Second : pageEdge.First;
-                var otherElem = new ChapterLayoutElem
-                {
-                    Col = col + 1,
-                    Row = row + onesIndex,
-                    HorizontalAligment = HorizontalAligment.Center,
-                    ConnectionPoints = new List<NESW> {NESW.West},
-                    Page = other
-                };
+                var otherElem = other.MakeElem(row + onesIndex, col);
                 result.Add(otherElem);
-
-                var leftArrow = new ChapterLayoutElem
-                {
-                    HorizontalAligment = HorizontalAligment.Center,
-                    Col = col,
-                    Row = row + onesIndex
-                };
-                leftArrow.AddGridLink(new GridLinkPart() {Direction = GridLinkPartDirection.NorthEast});
-
-                if (!Equals(pageEdge, _ones.Last()))
-                    leftArrow.AddGridLink(new GridLinkPart() {Direction = GridLinkPartDirection.NorthSouth});
-                result.Add(leftArrow);
-
-                ++onesIndex;
+                onesIndex = up ? onesIndex - 1 : onesIndex + 1;
             }
             return result;
+        }
+
+        private int GetLowerRow(IEnumerable<ChapterLayoutElem> elems, int row)
+        {
+            var rowLow = elems.OrderByDescending(e => e.Row).FirstOrDefault();
+            if (rowLow == null) return row;
+            if (row < rowLow.Row) return row;
+            return rowLow.Row;
+        }
+
+        private int GetUpperRow(IEnumerable<ChapterLayoutElem> elems, int row)
+        {
+            var rowUp = elems.OrderBy(e => e.Row).FirstOrDefault();
+            if (rowUp == null) return row;
+            if (row > rowUp.Row) return row;
+            return rowUp.Row;
+        }
+
+        private IEnumerable<ChapterLayoutElem> RenderElem(int row, int col, bool up)
+        {
+            var result = new List<ChapterLayoutElem>();
+            var rel = MakeElem(row, col);
+            result.Add(rel);
+            result.AddRange(RenderOnes(up ? row - 1 : row + 1, col, up));
+            return result;
+        }
+
+        private ChapterLayoutElem MakeElem(int row, int col)
+        {
+            var rel = new ChapterLayoutElem
+            {
+                Col = col,
+                Row = row,
+                Page = MyElem
+            };
+            return rel;
+        }
+    }
+
+    public static class PageExtension
+    {
+        public static ChapterLayoutElem MakeElem(this IPage page, int row, int col)
+        {
+            var rel = new ChapterLayoutElem
+            {
+                Col = col,
+                Row = row,
+                Page = page
+            };
+            return rel;
         }
     }
 }
