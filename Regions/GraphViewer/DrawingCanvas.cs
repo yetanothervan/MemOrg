@@ -51,7 +51,7 @@ namespace GraphViewer
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            if ((e.Property.Name == "DataContext" || e.Property.Name == "Source") && DataContext is ContentViewModel)
+            if ((e.Property.Name == "DataContext" /*|| e.Property.Name == "Source"*/) && DataContext is ContentViewModel)
                 Refresh();
         }
 

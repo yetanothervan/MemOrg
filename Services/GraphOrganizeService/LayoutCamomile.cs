@@ -37,10 +37,12 @@ namespace GraphOrganizeService
                 var ta = bundle.Render();
                 foreach (var el in ta)
                 {
-                    el.Row += resHeight + 1;
+                    el.Row += resHeight;
+                    if (el.Page != null && el.Page.Block != null)
+                        el.Page.Block.Caption += " " + el.Row + ", " + el.Col;
                 }
                 result.AddRange(ta);
-                resHeight = result.Max(e => e.Row);
+                resHeight = result.Max(e => e.Row) + 1;
             }
 
             foreach (var elem in result)
