@@ -14,6 +14,7 @@ namespace GraphOrganizeService.Chapter
         private IPage _myElem;
         private ChapterLayoutBundle _parent;
         private BundleDirection _direction;
+        private ChapterLayoutGraph _graph;
         public IChapter MyChapter;
 
         public IPage MyElem
@@ -51,6 +52,7 @@ namespace GraphOrganizeService.Chapter
             var root = graph.GetMostLargestNumberOfEdgeVertex();
             var result = ExtractBundlesByEdge(graph, null, root, BundleDirection.Root);
             result.MyChapter = graph.MyChapter;
+            result._graph = graph;
 
             //mark up direction
             MarkUpDirections(result);
@@ -150,7 +152,7 @@ namespace GraphOrganizeService.Chapter
         public List<ChapterLayoutElem> Render(int row, int col, bool right)
         {
             _outerRoots = new List<OuterRoot>();
-            var elems = RenderRoot(0, 0, true);
+            var elems = RenderRoot(row, col, right);
             foreach (var outerRoot in _outerRoots)
             {
                 int resHeight = elems.Max(e => e.Row) + 1;
@@ -160,7 +162,23 @@ namespace GraphOrganizeService.Chapter
                     elem.Row += (resHeight + outIce);
                 elems.AddRange(outElems);
             }
+            SupplyByArrows(elems);
             return elems;
+        }
+
+        private void SupplyByArrows(List<ChapterLayoutElem> elems)
+        {
+            if (_graph == null) return;
+            foreach (var edges in _graph.GetEdges())
+            {
+                var f = elems.FirstOrDefault(e => e.Page == edges.First);
+                var s = elems.FirstOrDefault(e => e.Page == edges.Second);
+                if (s != null && f != null && (f.Row == s.Row && Math.Abs(f.Col - s.Col) == 1))
+                {
+                    f.AddCon(f.Col > s.Col ? NESW.West : NESW.East); 
+                    s.AddCon(f.Col > s.Col ? NESW.East : NESW.West);
+                }
+            }
         }
 
         private List<ChapterLayoutElem> RenderRoot(int row, int col, bool right)

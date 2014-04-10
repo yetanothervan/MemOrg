@@ -12,6 +12,16 @@ namespace GraphOrganizeService.Chapter
         private readonly HashSet<PageEdge> _removedEdge;
         public readonly IChapter MyChapter;
 
+        public IEnumerable<PageEdge> GetEdges()
+        {
+            return _edges;
+        }
+
+        public IEnumerable<PageEdge> GetRemovedEdges()
+        {
+            return _removedEdge;
+        }
+
         private ChapterLayoutGraph(IChapter myChapter)
         {
             MyChapter = myChapter;

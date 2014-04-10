@@ -44,6 +44,7 @@ namespace GraphOrganizeService
                         el.Page.Block.Caption += " " + el.Row + ", " + el.Col;
                 }
                 result.AddRange(ta);
+                
                 resHeight = result.Max(e => e.Row) + 1;
             }
 
