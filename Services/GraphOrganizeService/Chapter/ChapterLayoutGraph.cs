@@ -20,6 +20,31 @@ namespace GraphOrganizeService.Chapter
             _removedEdge = new HashSet<PageEdge>();
         }
 
+        private Dictionary<IPage, int> _vertexChildCount = null;
+
+        private void CalculateVertexChildCount()
+        {
+            _vertexChildCount = new Dictionary<IPage, int>();
+            var root = GetMostLargestNumberOfEdgeVertex();
+            CalculateVertexChildCount(root, null);
+
+        }
+
+        private void CalculateVertexChildCount(IPage vertex, PageEdge parentEdge)
+        {
+            var childs = GetEdgesForVertex(vertex).Where(e => !e.Equals(parentEdge)).ToList();
+            _vertexChildCount[vertex] = childs.Count();
+            foreach (var pageEdge in childs)
+                CalculateVertexChildCount(pageEdge.GetOther(vertex), pageEdge);
+        }
+
+        public int GetChildCountForVertex(IPage vertex)
+        {
+            if (_vertexChildCount == null)
+                throw new ArgumentException("Graph is non uncycled yet");
+            return _vertexChildCount[vertex];
+        }
+
         public IEnumerable<PageEdge> GetEdgesForVertex(IPage vertex)
         {
             return _edges.Where(e => e.First == vertex || e.Second == vertex);
@@ -69,6 +94,7 @@ namespace GraphOrganizeService.Chapter
 
                 cycPars = new CyclingParams(graph);
             }
+            graph.CalculateVertexChildCount();
         }
 
         struct CyclingParams
@@ -96,7 +122,7 @@ namespace GraphOrganizeService.Chapter
             foreach (var edge in cycPars.Graph._edges
                 .Where(e => (!cycPars.EdgesVisited.Contains(e) && (e.First == vertex || e.Second == vertex))))
             {
-                var other = (edge.First == vertex) ? edge.Second : edge.First;
+                var other = edge.GetOther(vertex);
                 cycPars.EdgesVisited.Add(edge);
                 cycPars.Path.Push(edge);
                 var c = UncycleProceed(cycPars, other);

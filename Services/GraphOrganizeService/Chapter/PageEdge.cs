@@ -11,6 +11,11 @@ namespace GraphOrganizeService.Chapter
                    || Equals(Second, other.First) && Equals(First, other.Second);
         }
 
+        public IPage GetOther(IPage my)
+        {
+            return First == my ? Second : First;
+        }
+
         public override int GetHashCode()
         {
             unchecked

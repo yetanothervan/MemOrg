@@ -34,7 +34,7 @@ namespace GraphOrganizeService
             int resHeight = 0;
             foreach (var bundle in order)
             {
-                var ta = bundle.Render();
+                var ta = bundle.Render(0, 0, true);
                 int bundleIce = 0 - ta.Min(b => b.Row);
 
                 foreach (var el in ta)

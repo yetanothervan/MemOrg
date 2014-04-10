@@ -33,8 +33,11 @@ namespace GraphOrganizeService
                     case BundleDirection.Root:
                     pre = "root";
                     break;
-                   case BundleDirection.Upper:
+                    case BundleDirection.Upper:
                     pre = "up";
+                    break;
+                    case BundleDirection.EndRel:
+                    pre = "end";
                     break;
                 default:
                     pre = "o_0";
@@ -49,7 +52,7 @@ namespace GraphOrganizeService
 
             foreach (var child in root.Ones)
             {
-                var other = child.First == root.MyElem ? child.Second : child.First;
+                var other = child.GetOther(root.MyElem);
                 tree.Subtrees.Add(CreateTree(other));
             }
 

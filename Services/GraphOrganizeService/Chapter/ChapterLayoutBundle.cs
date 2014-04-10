@@ -67,7 +67,9 @@ namespace GraphOrganizeService.Chapter
             if (bundleOrderedByPower.Count > 0)
             {
                 var upper = bundleOrderedByPower[0];
-                if (upper._parent._direction == BundleDirection.Root
+                if (upper.Direction == BundleDirection.EndRel)
+                    ;
+                else if (upper._parent._direction == BundleDirection.Root
                     || upper._parent._direction == BundleDirection.OuterRoot
                     || upper._parent._direction == BundleDirection.Upper)
                     upper._direction = BundleDirection.Upper;
@@ -77,7 +79,9 @@ namespace GraphOrganizeService.Chapter
                 if (bundleOrderedByPower.Count > 1)
                 {
                     var lower = bundleOrderedByPower[1];
-                    if (lower._parent._direction == BundleDirection.Root
+                    if (lower.Direction == BundleDirection.EndRel)
+                        ;
+                    else if (lower._parent._direction == BundleDirection.Root
                         || lower._parent._direction == BundleDirection.OuterRoot
                         || lower._parent._direction == BundleDirection.Lower)
                         lower._direction = BundleDirection.Lower;
@@ -103,12 +107,26 @@ namespace GraphOrganizeService.Chapter
             {
                 if (Equals(edge, myEdge)) continue;
 
-                var other = edge.First == my ? edge.Second : edge.First;
+                var other = edge.GetOther(my);
+                if (my.IsBlockRel && my.RelationFirst == other || my.RelationSecond == other)
+                {
+                    if (graph.GetChildCountForVertex(other) == 0
+                        || graph.GetEdgesForVertex(other)
+                            .All(e => !e.Equals(edge) && graph.GetChildCountForVertex(e.GetOther(other)) == 0))
+                    {
+                        var relEnd = ExtractBundlesByEdge(graph, edge, other, BundleDirection.EndRel);
+                        relEnd._parent = result;
+                        result._bundles.Add(relEnd);
+                        continue;
+                    }
+                }
+                
                 if (graph.GetEdgesForVertex(other).All(e => Equals(e, edge)))
                 {
                     result._ones.Add(edge);
                     continue;
                 }
+
                 var bundle = ExtractBundlesByEdge(graph, edge, other, BundleDirection.Middle);
                 bundle._parent = result;
                 result._bundles.Add(bundle);
@@ -121,87 +139,108 @@ namespace GraphOrganizeService.Chapter
             return _bundles.Count + _bundles.Sum(bundle => bundle.GetBundlePower());
         }
 
-        public List<ChapterLayoutElem> Render()
+
+        struct OuterRoot
         {
+            public ChapterLayoutBundle Body;
+            public bool Direction;
+        }
+
+        private List<OuterRoot> _outerRoots;
+        public List<ChapterLayoutElem> Render(int row, int col, bool right)
+        {
+            _outerRoots = new List<OuterRoot>();
             var elems = RenderRoot(0, 0, true);
+            foreach (var outerRoot in _outerRoots)
+            {
+                int resHeight = elems.Max(e => e.Row) + 1;
+                var outElems = outerRoot.Body.Render(0, outerRoot.Direction ? 2 : 0, !outerRoot.Direction);
+                int outIce = 0 - outElems.Min(b => b.Row);
+                foreach (var elem in outElems)
+                    elem.Row += (resHeight + outIce);
+                elems.AddRange(outElems);
+            }
             return elems;
         }
 
         private List<ChapterLayoutElem> RenderRoot(int row, int col, bool right)
         {
             var result = new List<ChapterLayoutElem>();
-            result.AddRange(RenderElem(row, col, false));
 
+            result.AddRange(RenderElem(row, col, _direction == BundleDirection.Upper, right));
             col = right ? col + 1 : col - 1;
 
             if (this._direction == BundleDirection.Root)
             {
-                var upper = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
-                if (upper != null)
-                {
-                    var upperElems = upper.RenderUpper(row, col, right).ToList();
-                    result.AddRange(upperElems);
-                    row = GetLowerRow(upperElems, row);
-                }
-
-                foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
-                {
-                    var midElems = bundle.RenderElem(row + 1, col, false).ToList();
-                    result.AddRange(midElems);
-                    row = GetLowerRow(midElems, row + 2);
-                }
-
-                var lower = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
-                if (lower != null)
-                {
-                    var lowerElems = lower.RenderLower(row + 1, col, right).ToList();
-                    result.AddRange(lowerElems);
-                }
+                row = RenderUpperElems(row, col, right, result);
+                row = RenderMiddleElems(row, col, result, false, right);
+                RenderLowerElems(row, col, right, result);
             }
 
             if (this._direction == BundleDirection.Upper)
             {
-                foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
-                {
-                    var midElems = bundle.RenderElem(row - 1, col, true).ToList();
-                    result.AddRange(midElems);
-                    row = GetUpperRow(midElems, row - 2);
-                }
-
-                var upper = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
-                if (upper != null)
-                {
-                    var upperElems = upper.RenderUpper(row, col, right).ToList();
-                    result.AddRange(upperElems);
-                    row = GetLowerRow(upperElems, row);
-                }
+                row = RenderMiddleElems(row, col, result, true, right);
+                RenderUpperElems(row, col, right, result);
             }
 
             if (this._direction == BundleDirection.Lower)
             {
-                foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
-                {
-                    var midElems = bundle.RenderElem(row + 1, col, true).ToList();
-                    result.AddRange(midElems);
-                    row = GetLowerRow(midElems, row + 2);
-                }
-
-                var lower = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
-                if (lower != null)
-                {
-                    var lowerElems = lower.RenderUpper(row, col, right).ToList();
-                    result.AddRange(lowerElems);
-                }
+                row = RenderMiddleElems(row, col, result, false, right);
+                RenderLowerElems(row, col, right, result);
             }
 
             return result;
+        }
+
+        private void RenderLowerElems(int row, int col, bool right, List<ChapterLayoutElem> result)
+        {
+            var lower = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
+            if (lower != null)
+            {
+                var lowerElems = lower.RenderLower(row + 1, col, right).ToList();
+                result.AddRange(lowerElems);
+            }
+        }
+
+        private int RenderUpperElems(int row, int col, bool right, List<ChapterLayoutElem> result)
+        {
+            var upper = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
+            if (upper != null)
+            {
+                var upperElems = upper.RenderUpper(row, col, right).ToList();
+                result.AddRange(upperElems);
+                row = GetLowerRow(upperElems, row);
+            }
+            return row;
+        }
+
+        private int RenderMiddleElems(int row, int col, List<ChapterLayoutElem> result, bool onesToUp, bool right)
+        {
+            foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
+            {
+                var midElems = bundle.RenderElem(onesToUp ? row - 1: row + 1, col, onesToUp, right).ToList();
+                result.AddRange(midElems);
+
+                row = onesToUp
+                    ? GetUpperRow(midElems, row - 2)
+                    : GetLowerRow(midElems, row + 2);
+            }
+
+            return row;
         }
 
         private IEnumerable<ChapterLayoutElem> RenderUpper(int row, int col, bool right)
         {
             var result = new List<ChapterLayoutElem>();
 
-            result.AddRange(RenderElem(row, col, false));
+            if (this.MyElem.IsBlockRel)
+                result.AddRange(RenderElem(row, col, true, right));
+            else
+            {
+                var upperRootElem = RenderRoot(row - 1, right ? col + 1 : col - 1, !right);
+                result.AddRange(upperRootElem);
+                return result;
+            }
             
             var upperRoot = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
             if (upperRoot != null)
@@ -209,16 +248,23 @@ namespace GraphOrganizeService.Chapter
                 var upperRootElem = upperRoot.RenderRoot(row - 1, right ? col + 1 : col - 1, !right);
                 result.AddRange(upperRootElem);
             }
-
-            //TODO outer
+            
             return result;
         }
 
         private IEnumerable<ChapterLayoutElem> RenderLower(int row, int col, bool right)
         {
             var result = new List<ChapterLayoutElem>();
-            var lems = RenderElem(row, col, false);
-            result.AddRange(lems);
+
+            if (this.MyElem.IsBlockRel)
+                result.AddRange(RenderElem(row, col, false, right));
+            else
+            {
+                var lowerRootElem = RenderRoot(GetLowerRow(result, row + 1),
+                    right ? col + 1 : col - 1, !right);
+                result.AddRange(lowerRootElem);
+                return result;
+            }
             
             var lowerRoot = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
             if (lowerRoot != null)
@@ -228,7 +274,6 @@ namespace GraphOrganizeService.Chapter
                 result.AddRange(lowerRootElem);
             }
 
-            //TODO outer
             return result;
         }
         
@@ -239,7 +284,7 @@ namespace GraphOrganizeService.Chapter
             int onesIndex = 0;
             foreach (var pageEdge in _ones)
             {
-                var other = pageEdge.First == MyElem ? pageEdge.Second : pageEdge.First;
+                var other = pageEdge.GetOther(MyElem);
                 var otherElem = other.MakeElem(row + onesIndex, col);
                 result.Add(otherElem);
                 onesIndex = up ? onesIndex - 1 : onesIndex + 1;
@@ -259,17 +304,33 @@ namespace GraphOrganizeService.Chapter
         {
             var rowUp = elems.OrderBy(e => e.Row).FirstOrDefault();
             if (rowUp == null) return row;
-            if (row > rowUp.Row) return row;
+            if (row < rowUp.Row) return row;
             return rowUp.Row;
         }
 
-        private IEnumerable<ChapterLayoutElem> RenderElem(int row, int col, bool up)
+        private IEnumerable<ChapterLayoutElem> RenderElem(int row, int col, bool up, bool right)
         {
             var result = new List<ChapterLayoutElem>();
             var rel = MakeElem(row, col);
+
             result.Add(rel);
             result.AddRange(RenderOnes(up ? row - 1 : row + 1, col, up));
+
+            var endRel = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.EndRel);
+            if (endRel != null)
+                result.AddRange(endRel.RenderElem(row, right ? col + 1 : col - 1, up, right));
+
+            foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.OuterRoot))
+                GetRoot()._outerRoots.Add(new OuterRoot {Body = bundle, Direction = right});
+
             return result;
+        }
+
+        ChapterLayoutBundle GetRoot()
+        {
+            if (Direction == BundleDirection.Root || this.Direction == BundleDirection.OuterRoot || _parent == null)
+                return this;
+            return _parent.GetRoot();
         }
 
         private ChapterLayoutElem MakeElem(int row, int col)
