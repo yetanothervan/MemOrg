@@ -14,7 +14,6 @@ namespace GraphOrganizeService.Chapter
         private IPage _myElem;
         private ChapterLayoutBundle _parent;
         private BundleDirection _direction;
-        private ChapterLayoutGraph _graph;
         public IChapter MyChapter;
 
         public IPage MyElem
@@ -52,7 +51,6 @@ namespace GraphOrganizeService.Chapter
             var root = graph.GetMostLargestNumberOfEdgeVertex();
             var result = ExtractBundlesByEdge(graph, null, root, BundleDirection.Root);
             result.MyChapter = graph.MyChapter;
-            result._graph = graph;
 
             //mark up direction
             MarkUpDirections(result);
@@ -145,7 +143,6 @@ namespace GraphOrganizeService.Chapter
             return _bundles.Count + _bundles.Sum(bundle => bundle.GetBundlePower());
         }
 
-
         struct OuterRoot
         {
             public ChapterLayoutBundle Body;
@@ -159,29 +156,14 @@ namespace GraphOrganizeService.Chapter
             var elems = RenderRoot(row, col, right);
             foreach (var outerRoot in _outerRoots)
             {
-                int resHeight = elems.Max(e => e.Row) + 1;
-                var outElems = outerRoot.Body.Render(0, outerRoot.Direction ? 2 : 0, !outerRoot.Direction);
+                int resHeight = elems.Max(e => e.Row) + 2;
+                var outElems = outerRoot.Body.Render(0, outerRoot.Direction ? 4 : 0, !outerRoot.Direction);
                 int outIce = 0 - outElems.Min(b => b.Row);
                 foreach (var elem in outElems)
                     elem.Row += (resHeight + outIce);
                 elems.AddRange(outElems);
             }
-            SupplyByArrows(elems);
-            return elems;
-        }
-        
-        private void SupplyByArrows(List<ChapterLayoutElem> elems)
-        {
-            if (_graph == null) return;
-        
-            int min = elems.Min(e => e.Row);
             foreach (var elem in elems)
-            {
-                //insert 2 cols
-                if (elem.Col == 1) elem.Col = 2;
-                else if (elem.Col == 2) elem.Col = 4;
-                //interlace elems
-                elem.Row = (elem.Row - min) * 2 + min;
                 switch (elem.Col)
                 {
                     case 0:
@@ -194,148 +176,151 @@ namespace GraphOrganizeService.Chapter
                         elem.HorizontalAligment = HorizontalAligment.Left;
                         break;
                 }
-            }
+            return elems;
+        }
 
-            foreach (var edges in _graph.GetEdges())
+        private void DrawArrow(List<ChapterLayoutElem> elems, ChapterLayoutElem f, ChapterLayoutElem s)
+        {
+            if (s != null && f != null)
             {
-                var f = elems.FirstOrDefault(e => e.Page == edges.First);
-                var s = elems.FirstOrDefault(e => e.Page == edges.Second);
-
-                if (s != null && f != null)
+                if (f.Row == s.Row)
                 {
-                    if (f.Row == s.Row)
-                    {
-                        f.AddCon(f.Col > s.Col ? NESW.West : NESW.East);
-                        s.AddCon(f.Col > s.Col ? NESW.East : NESW.West);
-                        AddLink(elems, f.Row, Math.Min(f.Col, s.Col) + 1, GridLinkPartDirection.WestEast);
-                        continue;
-                    }
-                    if (f.Col == s.Col)
-                    {
-                        var col = f.Col == 4 ? f.Col + 1 : f.Col - 1;
-                        var dir = col == 5 ? NESW.East : NESW.West;
-                        f.AddCon(dir);
-                        s.AddCon(dir);
-                        AddLink(elems, Math.Min(f.Row, s.Row), col, 
-                            col == 5 ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast);
-                        AddLink(elems, Math.Max(f.Row, s.Row), col, 
-                            col == 5 ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
-                        for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
-                            AddLink(elems, i, col, GridLinkPartDirection.NorthSouth);
-                        continue;
-                    }
+                    f.AddCon(f.Col > s.Col ? NESW.West : NESW.East);
+                    s.AddCon(f.Col > s.Col ? NESW.East : NESW.West);
+                    AddLink(elems, f.Row, Math.Min(f.Col, s.Col) + 1, GridLinkPartDirection.WestEast);
+                    return;
+                }
+                if (f.Col == s.Col)
+                {
+                    var col = f.Col == 4 ? f.Col + 1 : f.Col - 1;
+                    var dir = col == 5 ? NESW.East : NESW.West;
+                    f.AddCon(dir);
+                    s.AddCon(dir);
+                    AddLink(elems, Math.Min(f.Row, s.Row), col,
+                        col == 5 ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast);
+                    AddLink(elems, Math.Max(f.Row, s.Row), col,
+                        col == 5 ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
+                    for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
+                        AddLink(elems, i, col, GridLinkPartDirection.NorthSouth);
+                    return;
+                }
 
-                    if (Math.Abs(f.Col - s.Col) == 2)
-                    {
-                        var c = Math.Min(f.Col, s.Col) + 1;
-                        f.AddCon(f.Col < c ? NESW.East : NESW.West);
-                        s.AddCon(s.Col < c ? NESW.East : NESW.West);
+                if (Math.Abs(f.Col - s.Col) == 2)
+                {
+                    var c = Math.Min(f.Col, s.Col) + 1;
+                    f.AddCon(f.Col < c ? NESW.East : NESW.West);
+                    s.AddCon(s.Col < c ? NESW.East : NESW.West);
 
-                        var mindir = f.Row > s.Row
-                            ? (f.Col > s.Col ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast)
-                            : (f.Col > s.Col ? GridLinkPartDirection.SouthEast : GridLinkPartDirection.WestSouth);
+                    var mindir = f.Row > s.Row
+                        ? (f.Col > s.Col ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast)
+                        : (f.Col > s.Col ? GridLinkPartDirection.SouthEast : GridLinkPartDirection.WestSouth);
 
-                        var maxdir = f.Row > s.Row
-                            ? (f.Col > s.Col ? GridLinkPartDirection.NorthEast : GridLinkPartDirection.NorthWest)
-                            : (f.Col > s.Col ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
+                    var maxdir = f.Row > s.Row
+                        ? (f.Col > s.Col ? GridLinkPartDirection.NorthEast : GridLinkPartDirection.NorthWest)
+                        : (f.Col > s.Col ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
 
-                        AddLink(elems, Math.Min(f.Row, s.Row), c, mindir);
-                        AddLink(elems, Math.Max(f.Row, s.Row), c, maxdir);
-                        for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
-                            AddLink(elems, i, c, GridLinkPartDirection.NorthSouth);
-                        continue;
-                    }
+                    AddLink(elems, Math.Min(f.Row, s.Row), c, mindir);
+                    AddLink(elems, Math.Max(f.Row, s.Row), c, maxdir);
+                    for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
+                        AddLink(elems, i, c, GridLinkPartDirection.NorthSouth);
                 }
             }
         }
 
         private static void AddLink(List<ChapterLayoutElem> elems, int row, int col, GridLinkPartDirection dir)
         {
-            var l = elems.FirstOrDefault(e => e.Col == col && e.Row == row);
-            bool found = l != null;
-            if (l == null)
-                l = new ChapterLayoutElem {Col = col, Row = row};
+            var l = new ChapterLayoutElem {Col = col, Row = row};
             l.AddGridLink(new GridLinkPart {Direction = dir});
-            if (!found) elems.Add(l);
+            elems.Add(l);
         }
 
         private List<ChapterLayoutElem> RenderRoot(int row, int col, bool right)
         {
             var result = new List<ChapterLayoutElem>();
 
-            result.AddRange(RenderElem(row, col, _direction == BundleDirection.Upper, right));
-            col = right ? col + 1 : col - 1;
-
+            ChapterLayoutElem mainElem;
+            result.AddRange(RenderElem(row, col, _direction == BundleDirection.Upper, right, 
+                null, out mainElem));
+            col = right ? col + 2 : col - 2;
+            
             if (this._direction == BundleDirection.Root)
             {
-                row = RenderUpperElems(row, col, right, result);
-                row = RenderMiddleElems(row, col, result, false, right);
-                RenderLowerElems(row, col, right, result);
+                row = RenderUpperElems(row, col, right, result, mainElem);
+                row = RenderMiddleElems(row, col, result, false, right, mainElem);
+                RenderLowerElems(row, col, right, result, mainElem);
             }
 
             if (this._direction == BundleDirection.Upper)
             {
-                row = RenderMiddleElems(row, col, result, true, right);
-                RenderUpperElems(row, col, right, result);
+                row = RenderMiddleElems(row, col, result, true, right, mainElem);
+                RenderUpperElems(row, col, right, result, mainElem);
             }
 
             if (this._direction == BundleDirection.Lower)
             {
-                row = RenderMiddleElems(row, col, result, false, right);
-                RenderLowerElems(row, col, right, result);
+                row = RenderMiddleElems(row, col, result, false, right, mainElem);
+                RenderLowerElems(row, col, right, result, mainElem);
             }
 
             return result;
         }
 
-        private void RenderLowerElems(int row, int col, bool right, List<ChapterLayoutElem> result)
+        private void RenderLowerElems(int row, int col, bool right, 
+            List<ChapterLayoutElem> result, ChapterLayoutElem parent)
         {
             var lower = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
             if (lower != null)
             {
-                var lowerElems = lower.RenderLower(row + 1, col, right).ToList();
+                var lowerElems = lower.RenderLower(row + 2, col, right, parent).ToList();
                 result.AddRange(lowerElems);
             }
         }
 
-        private int RenderUpperElems(int row, int col, bool right, List<ChapterLayoutElem> result)
+        private int RenderUpperElems(int row, int col, bool right,
+            List<ChapterLayoutElem> result, ChapterLayoutElem parent)
         {
             var upper = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
             if (upper != null)
             {
-                var upperElems = upper.RenderUpper(row, col, right).ToList();
+                var upperElems = upper.RenderUpper(row, col, right, parent).ToList();
                 result.AddRange(upperElems);
                 row = GetLowerRow(upperElems, row);
             }
             return row;
         }
 
-        private int RenderMiddleElems(int row, int col, List<ChapterLayoutElem> result, bool onesToUp, bool right)
+        private int RenderMiddleElems(int row, int col, List<ChapterLayoutElem> result, bool onesToUp, bool right, ChapterLayoutElem parent)
         {
             int d = 0;
-            if (Bundles.Any(b => b.Direction == BundleDirection.Upper)) d = 1;
+            if (Bundles.Any(b => b.Direction == BundleDirection.Upper)) d = 2;
             foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
             {
-                var midElems = bundle.RenderElem(onesToUp ? row: row + d, col, onesToUp, right).ToList();
+                ChapterLayoutElem mainElem;
+                var midElems = bundle
+                    .RenderElem(onesToUp ? row: row + d, col, onesToUp, right, parent, out mainElem).ToList();
                 result.AddRange(midElems);
 
                 row = onesToUp
-                    ? GetUpperRow(midElems, row - 1)
-                    : GetLowerRow(midElems, row + 1 + d);
+                    ? GetUpperRow(midElems, row - 2)
+                    : GetLowerRow(midElems, row + 2 + d);
             }
 
             return row;
         }
 
-        private IEnumerable<ChapterLayoutElem> RenderUpper(int row, int col, bool right)
+        private IEnumerable<ChapterLayoutElem> RenderUpper(int row, int col, bool right,
+            ChapterLayoutElem parent)
         {
             var result = new List<ChapterLayoutElem>();
 
             if (this.MyElem.IsBlockRel)
-                result.AddRange(RenderElem(row, col, true, right));
+            {
+                ChapterLayoutElem mainElem;
+                result.AddRange(RenderElem(row, col, true, right, parent, out mainElem));
+            }
             else
             {
-                var upperRootElem = RenderRoot(row - 1, right ? col + 1 : col - 1, !right);
+                var upperRootElem = RenderRoot(row - 2, right ? col + 2 : col - 2, !right);
                 result.AddRange(upperRootElem);
                 return result;
             }
@@ -343,23 +328,24 @@ namespace GraphOrganizeService.Chapter
             var upperRoot = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Upper);
             if (upperRoot != null)
             {
-                var upperRootElem = upperRoot.RenderRoot(row - 1, right ? col + 1 : col - 1, !right);
+                var upperRootElem = upperRoot.RenderRoot(row - 2, right ? col + 2 : col - 2, !right);
                 result.AddRange(upperRootElem);
             }
             
             return result;
         }
 
-        private IEnumerable<ChapterLayoutElem> RenderLower(int row, int col, bool right)
+        private IEnumerable<ChapterLayoutElem> RenderLower(int row, int col, bool right, 
+            ChapterLayoutElem parent)
         {
             var result = new List<ChapterLayoutElem>();
-
+            ChapterLayoutElem mainElem;
             if (this.MyElem.IsBlockRel)
-                result.AddRange(RenderElem(row, col, false, right));
+                result.AddRange(RenderElem(row, col, false, right, parent, out mainElem));
             else
             {
-                var lowerRootElem = RenderRoot(GetLowerRow(result, row + 1),
-                    right ? col + 1 : col - 1, !right);
+                var lowerRootElem = RenderRoot(GetLowerRow(result, row + 2),
+                    right ? col + 2 : col - 2, !right);
                 result.AddRange(lowerRootElem);
                 return result;
             }
@@ -367,8 +353,8 @@ namespace GraphOrganizeService.Chapter
             var lowerRoot = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.Lower);
             if (lowerRoot != null)
             {
-                var lowerRootElem = lowerRoot.RenderRoot(GetLowerRow(result, row + 1), 
-                    right ? col + 1 : col - 1, !right);
+                var lowerRootElem = lowerRoot.RenderRoot(GetLowerRow(result, row + 2), 
+                    right ? col + 2 : col - 2, !right);
                 result.AddRange(lowerRootElem);
             }
 
@@ -385,7 +371,7 @@ namespace GraphOrganizeService.Chapter
                 var other = pageEdge.GetOther(MyElem);
                 var otherElem = other.MakeElem(row + onesIndex, col);
                 result.Add(otherElem);
-                onesIndex = up ? onesIndex - 1 : onesIndex + 1;
+                onesIndex = up ? onesIndex - 2 : onesIndex + 2;
             }
             return result;
         }
@@ -406,17 +392,27 @@ namespace GraphOrganizeService.Chapter
             return rowUp.Row;
         }
 
-        private IEnumerable<ChapterLayoutElem> RenderElem(int row, int col, bool up, bool right)
+        private IEnumerable<ChapterLayoutElem> RenderElem(int row, int col, bool up, bool right, ChapterLayoutElem parent, out ChapterLayoutElem mainElem)
         {
             var result = new List<ChapterLayoutElem>();
-            var rel = MakeElem(row, col);
+            mainElem = MakeElem(row, col);
+            result.Add(mainElem);
 
-            result.Add(rel);
-            result.AddRange(RenderOnes(up ? row - 1 : row + 1, col, up));
+            if (parent != null)
+                DrawArrow(result, mainElem, parent);
 
+            var ones = RenderOnes(up ? row - 2 : row + 2, col, up);
+
+            foreach (var elem in ones)
+            {
+                DrawArrow(result, mainElem, elem);
+                result.Add(elem);
+            }
+
+            ChapterLayoutElem endRelElem;
             var endRel = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.EndRel);
             if (endRel != null)
-                result.AddRange(endRel.RenderElem(row, right ? col + 1 : col - 1, up, right));
+                result.AddRange(endRel.RenderElem(row, right ? col + 2 : col - 2, up, right, mainElem, out endRelElem));
 
             foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.OuterRoot))
                 GetRoot()._outerRoots.Add(new OuterRoot {Body = bundle, Direction = right});

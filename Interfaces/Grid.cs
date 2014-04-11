@@ -11,11 +11,11 @@ namespace MemOrg.Interfaces
 {
     public class Grid : IGrid
     {
-        private readonly Dictionary<IntIntPair, IGridElem> _elems;
+        private readonly SortedDictionary<IntIntPair, IGridElem> _elems;
 
         protected Grid()
         {
-            _elems = new Dictionary<IntIntPair, IGridElem>();
+            _elems = new SortedDictionary<IntIntPair, IGridElem>();
         }
         
         public IEnumerator<IGridElem> GetEnumerator()

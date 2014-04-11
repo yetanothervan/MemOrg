@@ -8,10 +8,10 @@ namespace MemOrg.Interfaces
 {
     public class GridEnumerator<T> : IEnumerator<T> where T : IGridElem
     {
-        private readonly Dictionary<IntIntPair, T> _elems;
+        private readonly SortedDictionary<IntIntPair, T> _elems;
         private readonly List<IntIntPair> _pairs;
 
-        public GridEnumerator(Dictionary<IntIntPair, T> elems)
+        public GridEnumerator(SortedDictionary<IntIntPair, T> elems)
         {
             _elems = elems;
             _pairs = _elems.Keys.OrderBy(o => o.Row).ThenBy(o => o.Col).ToList();

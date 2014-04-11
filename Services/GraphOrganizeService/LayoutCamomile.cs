@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GraphOrganizeService.Chapter;
 using GraphOrganizeService.OrgUnits;
@@ -89,11 +90,27 @@ namespace GraphOrganizeService
 
             if (page.IsGridLinkPart)
             {
+                var cell = orgGrid.GetElem(page.Row, page.Col);
+                if (cell != null && cell.Content != null)
+                {
+                    var list = cell.Content as IReadOnlyList<GridLinkPart>;
+                    if (list == null) throw new ArgumentException();
+                    var newList = new List<GridLinkPart>();
+                    newList.AddRange(list);
+                    foreach (var part in page.GridLinkParts.Where(part => !newList.Contains(part)))
+                        newList.Add(part);
+                    cell.Content = newList;
+                    page.Placed = true;
+                    return;
+                }
+
                 ge.Content = page.GridLinkParts;
                 ge.VerticalContentAligment = VerticalAligment.Top;
             }
             else if (page.Page.IsBlockTag)
                 ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag, page.ConnectionPoints);
+            else if (page.Page.IsBlockUserText)
+                ge.Content = new OrgBlockUserText(page.Page.Block, page.ConnectionPoints);
             else if (page.Page.IsBlockRel)
                 ge.Content = new OrgBlockRel(page.Page.Block, page.ConnectionPoints);
             else

@@ -47,7 +47,7 @@ namespace GraphDrawService.Draw
 
                 foreach (var part in _gridLinkParts)
                 {
-                    if (part.Direction == GridLinkPartDirection.NorthEast
+                    /*if (part.Direction == GridLinkPartDirection.NorthEast
                         || part.Direction == GridLinkPartDirection.NorthWest
                         || part.Direction == GridLinkPartDirection.NorthSouth)
                         dc.DrawLine(_pen, n, c);
@@ -62,16 +62,54 @@ namespace GraphDrawService.Draw
                     if (part.Direction == GridLinkPartDirection.NorthEast
                         || part.Direction == GridLinkPartDirection.SouthEast
                         || part.Direction == GridLinkPartDirection.WestEast)
-                        dc.DrawLine(_pen, c, e);
+                        dc.DrawLine(_pen, c, e);*/
+
+                    switch (part.Direction)
+                    {
+                        case GridLinkPartDirection.NorthSouth:
+                            dc.DrawLine(_pen, n, s);
+                            break;
+                        case GridLinkPartDirection.WestEast:
+                            dc.DrawLine(_pen, w, e);
+                            break;
+                        case GridLinkPartDirection.NorthWest:
+                            dc.DrawGeometry(Brushes.Transparent, _pen, 
+                                GetArc(n, w, SweepDirection.Clockwise));
+                            break;
+                        case GridLinkPartDirection.NorthEast:
+                            dc.DrawGeometry(Brushes.Transparent, _pen, 
+                                GetArc(n, e, SweepDirection.Counterclockwise));
+                            break;
+                        case GridLinkPartDirection.SouthEast:
+                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                                GetArc(s, e, SweepDirection.Clockwise));
+                            break;
+                        case GridLinkPartDirection.WestSouth:
+                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                                GetArc(w, s, SweepDirection.Clockwise));
+                            break;
+                    }
                 }
             }
             result.Add(dv);
             return result;
         }
+
+        private Geometry GetArc(Point p1, Point p2, SweepDirection dir)
+        {
+            return new PathGeometry(new List<PathFigure>
+                    {
+                        new PathFigure(p1, new List<PathSegment>
+                        {
+                            new ArcSegment(p2, new Size(Math.Abs(p2.X - p1.X), Math.Abs(p2.Y - p1.Y)), 0,
+                                false, dir, true)
+                        }, false)
+                    });
+        }
         
         public override Size GetActualSize()
         {
-            return new Size(10, 10);
+            return new Size(20, 15);
         }
     }
 }
