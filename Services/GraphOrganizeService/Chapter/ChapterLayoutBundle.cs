@@ -70,7 +70,9 @@ namespace GraphOrganizeService.Chapter
             {
                 var upper = bundleOrderedByPower[0];
                 if (upper.Direction == BundleDirection.EndRel)
+#pragma warning disable 642
                     ;
+#pragma warning restore 642
                 else if (upper._parent._direction == BundleDirection.Root
                     || upper._parent._direction == BundleDirection.OuterRoot
                     || upper._parent._direction == BundleDirection.Upper)
@@ -82,7 +84,9 @@ namespace GraphOrganizeService.Chapter
                 {
                     var lower = bundleOrderedByPower[1];
                     if (lower.Direction == BundleDirection.EndRel)
+#pragma warning disable 642
                         ;
+#pragma warning restore 642
                     else if (lower._parent._direction == BundleDirection.Root
                         || lower._parent._direction == BundleDirection.OuterRoot
                         || lower._parent._direction == BundleDirection.Lower)
@@ -165,20 +169,94 @@ namespace GraphOrganizeService.Chapter
             SupplyByArrows(elems);
             return elems;
         }
-
+        
         private void SupplyByArrows(List<ChapterLayoutElem> elems)
         {
             if (_graph == null) return;
+        
+            int min = elems.Min(e => e.Row);
+            foreach (var elem in elems)
+            {
+                //insert 2 cols
+                if (elem.Col == 1) elem.Col = 2;
+                else if (elem.Col == 2) elem.Col = 4;
+                //interlace elems
+                elem.Row = (elem.Row - min) * 2 + min;
+                switch (elem.Col)
+                {
+                    case 0:
+                        elem.HorizontalAligment = HorizontalAligment.Right;
+                        break;
+                    case 2:
+                        elem.HorizontalAligment = HorizontalAligment.Center;
+                        break;
+                    case 4:
+                        elem.HorizontalAligment = HorizontalAligment.Left;
+                        break;
+                }
+            }
+
             foreach (var edges in _graph.GetEdges())
             {
                 var f = elems.FirstOrDefault(e => e.Page == edges.First);
                 var s = elems.FirstOrDefault(e => e.Page == edges.Second);
-                if (s != null && f != null && (f.Row == s.Row && Math.Abs(f.Col - s.Col) == 1))
+
+                if (s != null && f != null)
                 {
-                    f.AddCon(f.Col > s.Col ? NESW.West : NESW.East); 
-                    s.AddCon(f.Col > s.Col ? NESW.East : NESW.West);
+                    if (f.Row == s.Row)
+                    {
+                        f.AddCon(f.Col > s.Col ? NESW.West : NESW.East);
+                        s.AddCon(f.Col > s.Col ? NESW.East : NESW.West);
+                        AddLink(elems, f.Row, Math.Min(f.Col, s.Col) + 1, GridLinkPartDirection.WestEast);
+                        continue;
+                    }
+                    if (f.Col == s.Col)
+                    {
+                        var col = f.Col == 4 ? f.Col + 1 : f.Col - 1;
+                        var dir = col == 5 ? NESW.East : NESW.West;
+                        f.AddCon(dir);
+                        s.AddCon(dir);
+                        AddLink(elems, Math.Min(f.Row, s.Row), col, 
+                            col == 5 ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast);
+                        AddLink(elems, Math.Max(f.Row, s.Row), col, 
+                            col == 5 ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
+                        for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
+                            AddLink(elems, i, col, GridLinkPartDirection.NorthSouth);
+                        continue;
+                    }
+
+                    if (Math.Abs(f.Col - s.Col) == 2)
+                    {
+                        var c = Math.Min(f.Col, s.Col) + 1;
+                        f.AddCon(f.Col < c ? NESW.East : NESW.West);
+                        s.AddCon(s.Col < c ? NESW.East : NESW.West);
+
+                        var mindir = f.Row > s.Row
+                            ? (f.Col > s.Col ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast)
+                            : (f.Col > s.Col ? GridLinkPartDirection.SouthEast : GridLinkPartDirection.WestSouth);
+
+                        var maxdir = f.Row > s.Row
+                            ? (f.Col > s.Col ? GridLinkPartDirection.NorthEast : GridLinkPartDirection.NorthWest)
+                            : (f.Col > s.Col ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
+
+                        AddLink(elems, Math.Min(f.Row, s.Row), c, mindir);
+                        AddLink(elems, Math.Max(f.Row, s.Row), c, maxdir);
+                        for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
+                            AddLink(elems, i, c, GridLinkPartDirection.NorthSouth);
+                        continue;
+                    }
                 }
             }
+        }
+
+        private static void AddLink(List<ChapterLayoutElem> elems, int row, int col, GridLinkPartDirection dir)
+        {
+            var l = elems.FirstOrDefault(e => e.Col == col && e.Row == row);
+            bool found = l != null;
+            if (l == null)
+                l = new ChapterLayoutElem {Col = col, Row = row};
+            l.AddGridLink(new GridLinkPart {Direction = dir});
+            if (!found) elems.Add(l);
         }
 
         private List<ChapterLayoutElem> RenderRoot(int row, int col, bool right)
@@ -234,14 +312,16 @@ namespace GraphOrganizeService.Chapter
 
         private int RenderMiddleElems(int row, int col, List<ChapterLayoutElem> result, bool onesToUp, bool right)
         {
+            int d = 0;
+            if (Bundles.Any(b => b.Direction == BundleDirection.Upper)) d = 1;
             foreach (var bundle in _bundles.Where(b => b.Direction == BundleDirection.Middle))
             {
-                var midElems = bundle.RenderElem(onesToUp ? row - 1: row + 1, col, onesToUp, right).ToList();
+                var midElems = bundle.RenderElem(onesToUp ? row: row + d, col, onesToUp, right).ToList();
                 result.AddRange(midElems);
 
                 row = onesToUp
-                    ? GetUpperRow(midElems, row - 2)
-                    : GetLowerRow(midElems, row + 2);
+                    ? GetUpperRow(midElems, row - 1)
+                    : GetLowerRow(midElems, row + 1 + d);
             }
 
             return row;
