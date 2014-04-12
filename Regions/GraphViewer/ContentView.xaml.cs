@@ -39,7 +39,7 @@ namespace GraphViewer
                 {
                     var curPosition = new Vector(e.GetPosition(this).X, e.GetPosition(this).Y);
                     vm.Offset = _startOffset - _startPosition + curPosition;
-                    vm.MyText = String.Format("{0}, {1}", vm.Offset.X, vm.Offset.Y);
+                    //vm.MyText = String.Format("{0}, {1}", vm.Offset.X, vm.Offset.Y);
                 }
             }
         }

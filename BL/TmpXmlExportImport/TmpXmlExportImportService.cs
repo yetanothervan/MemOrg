@@ -142,8 +142,11 @@ namespace TmpXmlExportImportService
             graphService.SaveChanges();
         }
 
+#if testbase
+        const string GraphPath = "..\\..\\..\\BL\\TmpXmlExportImport\\graphtest.xml";
+#else
         const string GraphPath = "..\\..\\..\\BL\\TmpXmlExportImport\\graph.xml";
-        
+#endif
         public static void SerializeGraph(XmlGraph s)
         {
             var xmlSerializer = new XmlSerializer(typeof (XmlGraph));

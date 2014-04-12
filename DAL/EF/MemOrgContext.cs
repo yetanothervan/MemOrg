@@ -12,8 +12,14 @@ namespace EF
 {
     public class MemOrgContext : DbContext, IMemOrgContext
     {
+
+#if testbase
+        public MemOrgContext() : base("MemOrgTest")
+        {
+#else
         public MemOrgContext()
         {
+#endif
             Database.SetInitializer(new Configuration());
         }
         public DbSet<Block> Blocks { get; set; }

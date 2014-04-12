@@ -26,8 +26,11 @@ namespace GraphVizualizeService
             {
                 IComponent component;
                 if (gridElem.Content is IReadOnlyList<GridLinkPart>)
+                {
+                    gridElem.HorizontalContentAligment = HorizontalAligment.Left;
                     component = drawer.DrawLink(gridElem.Content as IReadOnlyList<GridLinkPart>);
-                else 
+                }
+                else
                     component = CreateLinkedBoxWithBlock(gridElem, drawer, options);
                 var ge = drawer.DrawGridElem(gridElem);
                 ge.AddChild(component);
@@ -80,16 +83,17 @@ namespace GraphVizualizeService
 
                 if (left && elem.HorizontalContentAligment != HorizontalAligment.Left) colsWidths.Add(0, 1);
                 if (right && elem.HorizontalContentAligment != HorizontalAligment.Right ) colsWidths.Add(2, 1);
-                if (up && elem.VerticalContentAligment != VerticalAligment.Top) rowsHeights.Add(0, 1);
-                if (down && elem.VerticalContentAligment != VerticalAligment.Bottom) rowsHeights.Add(2, 1);
+                //if (up && elem.VerticalContentAligment != VerticalAligment.Top) rowsHeights.Add(0, 1);
+                //if (down && elem.VerticalContentAligment != VerticalAligment.Bottom) rowsHeights.Add(2, 1);
 
                 grid = drawer.DrawGrid(colsWidths, rowsHeights);
                 grid.AddChild(gridcenter);
                 
                 if (left) AddBoxLink(drawer, grid, 1, 0, false);
                 if (right) AddBoxLink(drawer, grid, 1, 2, false);
-                if (up) AddBoxLink(drawer, grid, 0, 1, true);
-                if (down) AddBoxLink(drawer, grid, 2, 0, true);
+                //if (up) AddBoxLink(drawer, grid, 0, 1, true);
+                //if (down) AddBoxLink(drawer, grid, 2, 1, true);
+
                 return grid;
             }
 
@@ -112,7 +116,7 @@ namespace GraphVizualizeService
             gridElem.AddChild(drawer.DrawLink(parts));
             grid.AddChild(gridElem);
         }
-
+        
         public IEnumerator<IGridElem> GetEnumerator()
         {
             throw new NotImplementedException();

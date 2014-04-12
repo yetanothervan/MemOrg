@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,10 @@ using System.Windows.Media;
 using GraphDrawService.Layouts;
 using MemOrg.Interfaces;
 using MemOrg.Interfaces.OrgUnits;
+using Brushes = System.Windows.Media.Brushes;
+using Pen = System.Windows.Media.Pen;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace GraphDrawService.Draw
 {
@@ -22,6 +27,8 @@ namespace GraphDrawService.Draw
             _gridLinkParts = gridLinkParts;
         }
 
+        private const int halfsize = 7;
+
         public override List<Visual> Render(Point p)
         {
             var result = new List<Visual>();
@@ -34,8 +41,8 @@ namespace GraphDrawService.Draw
                 if (PreferSize == null)
                     return result;
 
-                var halfWidth = (PreferSize != null ? PreferSize.Value.Width/2 : 5);
-                var halfHeight = (PreferSize != null ? PreferSize.Value.Height/2 : 5);
+                var halfWidth = (PreferSize != null ? PreferSize.Value.Width / 2 : halfsize);
+                var halfHeight = (PreferSize != null ? PreferSize.Value.Height / 2 : halfsize);
 
                 var c = new Point(p.X + halfWidth, p.Y + halfHeight);
 
@@ -45,6 +52,11 @@ namespace GraphDrawService.Draw
                 var n = new Point(c.X, p.Y);
                 var s = new Point(c.X, c.Y + halfHeight);
 
+                var cn = new Point(c.X, c.Y - halfsize);
+                var cs = new Point(c.X, c.Y + halfsize);
+                var cw = new Point(c.X - halfsize, c.Y);
+                var ce = new Point(c.X + halfsize, c.Y);
+                
                 foreach (var part in _gridLinkParts)
                 {
                     /*if (part.Direction == GridLinkPartDirection.NorthEast
@@ -73,20 +85,40 @@ namespace GraphDrawService.Draw
                             dc.DrawLine(_pen, w, e);
                             break;
                         case GridLinkPartDirection.NorthWest:
-                            dc.DrawGeometry(Brushes.Transparent, _pen, 
-                                GetArc(n, w, SweepDirection.Clockwise));
+                        {
+                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                                GetArc(cn, cw, SweepDirection.Clockwise));
+                            if (n != cn) 
+                                dc.DrawLine(_pen, n, cn);
+                            if (w != cw) 
+                                dc.DrawLine(_pen, w, cw);
+                        }
                             break;
                         case GridLinkPartDirection.NorthEast:
-                            dc.DrawGeometry(Brushes.Transparent, _pen, 
-                                GetArc(n, e, SweepDirection.Counterclockwise));
+                        {
+                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                                GetArc(cn, ce, SweepDirection.Counterclockwise));
+                            if (n != cn) 
+                                dc.DrawLine(_pen, n, cn);
+                            if (e != ce) 
+                                dc.DrawLine(_pen, e, ce);
+                        }
                             break;
                         case GridLinkPartDirection.SouthEast:
                             dc.DrawGeometry(Brushes.Transparent, _pen,
-                                GetArc(s, e, SweepDirection.Clockwise));
+                                GetArc(cs, ce, SweepDirection.Clockwise));
+                            if (s != cs)
+                                dc.DrawLine(_pen, s, cs);
+                            if (e != ce)
+                                dc.DrawLine(_pen, e, ce);
                             break;
                         case GridLinkPartDirection.WestSouth:
                             dc.DrawGeometry(Brushes.Transparent, _pen,
-                                GetArc(w, s, SweepDirection.Clockwise));
+                                GetArc(cw, cs, SweepDirection.Clockwise));
+                            if (w != cw) 
+                                dc.DrawLine(_pen, w, cw);
+                            if (s != cs)
+                                dc.DrawLine(_pen, s, cs);
                             break;
                     }
                 }
@@ -106,10 +138,10 @@ namespace GraphDrawService.Draw
                         }, false)
                     });
         }
-        
+
         public override Size GetActualSize()
         {
-            return new Size(20, 15);
+            return new Size(halfsize*2, halfsize*2);
         }
     }
 }

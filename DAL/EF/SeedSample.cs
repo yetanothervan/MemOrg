@@ -3,8 +3,8 @@ using DAL.Entity;
 
 namespace EF
 {
-//    static internal class SeedSample
-//    {
+    static internal class SeedSample
+    {
 //        public static void Seed(MemOrgContext context)
 //        {
 //            var p1 = new SourceTextParticle
@@ -104,33 +104,31 @@ namespace EF
 //                Order = 11
 //            };
 
-//            var b1 = new Block {Caption = "Креативный класс, дельфины и анчоусы"};
-//            var b2 = new Block {Caption = "ЮАР"};
+//            var b1 = new Block { Caption = "Креативный класс, дельфины и анчоусы" };
+//            var b2 = new Block { Caption = "ЮАР" };
 //            ;
-//            var b3 = new Block {Caption = "Христос остановился в Эболи"};
+//            var b3 = new Block { Caption = "Христос остановился в Эболи" };
 
 //            b1 = context.Blocks.Add(b1);
 //            b2 = context.Blocks.Add(b2);
 //            b3 = context.Blocks.Add(b3);
 
-//            var r1 = context.References.Add(new Reference {Caption = "Креативный класс", Block = b1});
-//            var r2 = context.References.Add(new Reference {Caption = "дельфины", Block = b1});
-//            var r3 = context.References.Add(new Reference {Caption = "ЮАР", Block = b2});
-//            var r4 = context.References.Add(new Reference {Caption = "Христос остановился в Эболи", Block = b3});
+//            var r1 = context.References.Add(new Reference { ReferencedBlock = b1 });
+//            var r2 = context.References.Add(new Reference { ReferencedBlock = b1 });
+//            var r3 = context.References.Add(new Reference { ReferencedBlock = b2 });
+//            var r4 = context.References.Add(new Reference { ReferencedBlock = b3 });
 
 //            context.Blocks.Add(
 //                new Block
 //                {
 //                    Caption = "От Поклонной до Колонного - 4",
-//                    Particles = new List<Particle> {p1, p2, p3, p8, p9, p10, p4, p5, p12, p6, p7, p11},
-//                    References = new List<Reference>
-//                    {r1, r2, r3, r4}
+//                    Particles = new List<Particle> { p1, p2, p3, p8, p9, p10, p4, p5, p12, p6, p7, p11 },
+//                    References = new List<Reference> { r1, r2, r3, r4 }
 //                });
 //            context.Blocks.Add(new Block
 //            {
 //                Caption = "Сирия",
-//                Particles = new List<Particle>
-//                {new QuoteSourceParticle {SourceTextParticle = p1, Order = 0}, new QuoteSourceParticle {SourceTextParticle = p2, Order = 1}}
+//                Particles = new List<Particle> { new QuoteSourceParticle { SourceTextParticle = p1, Order = 0 }, new QuoteSourceParticle { SourceTextParticle = p2, Order = 1 } }
 //            });
 //            context.Blocks.Add(new Block
 //            {
@@ -145,7 +143,7 @@ namespace EF
 //            context.Blocks.Add(new Block
 //            {
 //                Caption = "Алавиты",
-//                Particles = new List<Particle> {new QuoteSourceParticle {SourceTextParticle = p2, Order = 0}}
+//                Particles = new List<Particle> { new QuoteSourceParticle { SourceTextParticle = p2, Order = 0 } }
 //            });
 //            context.Blocks.Add(new Block
 //            {
@@ -164,12 +162,12 @@ namespace EF
 //            context.Blocks.Add(new Block
 //            {
 //                Caption = "Архаизированное общество",
-//                Particles = new List<Particle> {new QuoteSourceParticle {SourceTextParticle = p8, Order = 0}}
+//                Particles = new List<Particle> { new QuoteSourceParticle { SourceTextParticle = p8, Order = 0 } }
 //            });
 //            context.Blocks.Add(new Block
 //            {
 //                Caption = "Гетто",
-//                Particles = new List<Particle> {new QuoteSourceParticle {SourceTextParticle = p10, Order = 0}}
+//                Particles = new List<Particle> { new QuoteSourceParticle { SourceTextParticle = p10, Order = 0 } }
 //            });
 //            context.Blocks.Add(new Block
 //            {
@@ -199,5 +197,5 @@ namespace EF
 //            });
 //            context.SaveChanges();
 //        }
-//    }
+    }
 }
