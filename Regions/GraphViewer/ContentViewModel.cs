@@ -12,45 +12,55 @@ namespace GraphViewer
 {
     public class ContentViewModel : ViewModelBase
     {
+        private readonly IGraphOrganizeService _graphOrganizeService;
         private readonly IGraphDrawService _graphDrawService;
         private readonly IGraphVizualizeService _graphVizualizeService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IDrawer _drawer;
         private IVisualizeOptions _options;
 
-        readonly IOrgGrid _rawGrid;
-        readonly IOrgGrid _camoGrid;
-        readonly IOrgGrid _tagTrees;
-        readonly IOrgGrid _blockTrees;
+        IOrgGrid _rawGrid;
+        IOrgGrid _camoGrid;
+        IOrgGrid _tagTrees;
+        IOrgGrid _blockTrees;
 
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
             IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService,
             IEventAggregator eventAggregator)
         {
+            _graphOrganizeService = graphOrganizeService;
             _graphDrawService = graphDrawService;
             _graphVizualizeService = graphVizualizeService;
             _eventAggregator = eventAggregator;
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
+            var refreshGraphCommand = new DelegateCommand(RefreshGraph, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
-
+            GlobalCommands.RefreshGraphViewCompositeCommand.RegisterCommand(refreshGraphCommand);
+            
             MyText = "Some of my texts";
-            IGraph graph = graphOrganizeService.GetGraph(null);
-            IGridLayout rawLayout = graphOrganizeService.GetFullLayout(graph);
-            IGridLayout camoLayout = graphOrganizeService.GetLayout(graph);
-            ITreeLayout tagLayout = graphOrganizeService.GetTagLayout(graph);
-            ITreeLayout blockLayout = graphOrganizeService.GetChapterTreeLayout(graph);
+            IDrawStyle style = _graphDrawService.GetStyle();
+            _drawer = _graphDrawService.GetDrawer(style);
+            _options = _graphVizualizeService.GetVisualizeOptions();
+            
+            RefreshGraph();
+            
+            Offset = new Vector(0, 400-Grid.GetActualSize().Height);
+        }
+
+        private void RefreshGraph()
+        {
+            IGraph graph = _graphOrganizeService.GetGraph(null);
+            IGridLayout rawLayout = _graphOrganizeService.GetFullLayout(graph);
+            IGridLayout camoLayout = _graphOrganizeService.GetLayout(graph);
+            ITreeLayout tagLayout = _graphOrganizeService.GetTagLayout(graph);
+            ITreeLayout blockLayout = _graphOrganizeService.GetChapterTreeLayout(graph);
 
             _camoGrid = camoLayout.CreateGrid();
             _rawGrid = rawLayout.CreateGrid();
             _tagTrees = tagLayout.CreateTreesGrid();
             _blockTrees = blockLayout.CreateTreesGrid();
-
-            IDrawStyle style = graphDrawService.GetStyle();
-            _drawer = graphDrawService.GetDrawer(style);
-
-            _options = _graphVizualizeService.GetVisualizeOptions();
+            
             UpdateGrid(_options);
-            Offset = new Vector(0, -300);
         }
 
         private void UpdateGrid(IVisualizeOptions options)

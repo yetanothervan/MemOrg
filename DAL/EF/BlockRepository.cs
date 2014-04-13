@@ -92,6 +92,12 @@ where TagId is null and RelationId is null and t1.ParticleId is null";*/
             _context.SaveChanges();
         }
 
+        public void RemoveAllBlocks()
+        {
+            _context.Blocks.RemoveRange(Tracking);
+            _context.SaveChanges();
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

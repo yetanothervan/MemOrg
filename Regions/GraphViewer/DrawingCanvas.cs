@@ -51,7 +51,7 @@ namespace GraphViewer
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            if ((e.Property.Name == "DataContext" /*|| e.Property.Name == "Source"*/) && DataContext is ContentViewModel)
+            if ((/*e.Property.Name == "DataContext" || */e.Property.Name == "Source") && DataContext is ContentViewModel)
                 Refresh();
         }
 
@@ -74,7 +74,7 @@ namespace GraphViewer
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
-                var elems = dc.Grid.Render(new Point(Offset.X, Offset.Y));
+                var elems = dc.Grid.Render(new Point(0, 0));
                 foreach (var elem in elems)
                 {
                     _visuals.Add(elem);

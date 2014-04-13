@@ -13,6 +13,7 @@ namespace MemOrg.Interfaces
         bool IsBlockTag { get; }
         bool IsBlockRel { get; }
         bool IsBlockUserText { get; set; }
+        bool IsBlockSource { get; set; }
         
         BlockQuoteParticleSources MySources { get; set; }
         IPage RelationFirst { get; set; }

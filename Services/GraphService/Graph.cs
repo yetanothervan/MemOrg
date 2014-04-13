@@ -43,7 +43,7 @@ namespace GraphService
                         _graphService.BlockSources
                             .Where(b => b.ParamName == book.CaptionInternal)
                             .OrderBy(b => b.ParamName)
-                            .Select(c => new Chapter {ChapterBlock = c})).ToList();
+                            .Select(c => new Chapter {ChapterPage = new Page{Block = c, IsBlockSource = true}})).ToList();
                 
                 foreach (var chapter in book.ChaptersInternal.Cast<Chapter>())
                     chapter.MyBookInternal = book;
@@ -123,7 +123,7 @@ namespace GraphService
                 .Where(block => block.Particles
                     .Any(p => p is QuoteSourceParticle
                               && (p as QuoteSourceParticle).SourceTextParticle.Block.BlockId
-                              == chapter.ChapterBlock.BlockId)).ToList();
+                              == chapter.ChapterPage.Block.BlockId)).ToList();
 
             foreach (var block in chaptersBlocks)
             {
@@ -216,18 +216,18 @@ namespace GraphService
 
         private bool IsQuoteInBook(IBook book, QuoteSourceParticle qp)
         {
-            return book.Chapters.Any(c => c.ChapterBlock.BlockId == qp.SourceTextParticle.Block.BlockId);
+            return book.Chapters.Any(c => c.ChapterPage.Block.BlockId == qp.SourceTextParticle.Block.BlockId);
         }
 
         private static bool IsQuoteInMyNeghtborChapter(Chapter chapter, QuoteSourceParticle qp)
         {
             if ((chapter.PrevChapter != null &&
                  qp.SourceTextParticle.Block.BlockId
-                 == chapter.PrevChapter.ChapterBlock.BlockId)
+                 == chapter.PrevChapter.ChapterPage.Block.BlockId)
                 ||
                 (chapter.NextChapter != null &&
                  qp.SourceTextParticle.Block.BlockId
-                 == chapter.NextChapter.ChapterBlock.BlockId))
+                 == chapter.NextChapter.ChapterPage.Block.BlockId))
                 return true;
             return false;
         }
@@ -235,7 +235,7 @@ namespace GraphService
         private static bool IsQuoteInMyChapter(QuoteSourceParticle qp, Chapter chapter)
         {
             if (qp.SourceTextParticle.Block.BlockId
-                == chapter.ChapterBlock.BlockId) return true;
+                == chapter.ChapterPage.Block.BlockId) return true;
             return false;
         }
     }

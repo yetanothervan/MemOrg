@@ -19,6 +19,8 @@
             <MenuItem Header="File">
                 <MenuItem Header="Import" Command="{Binding ImportCommand}"/>
                 <MenuItem Header="Export" Command="{Binding ExportCommand}"/>
+                <MenuItem Header="Clear" Command="{Binding ClearCommand}"/>
+                <MenuItem Header="Refresh" Command="{x:Static intr:GlobalCommands.RefreshGraphViewCompositeCommand}" />
                 <Separator/>
                 <MenuItem Header="Exit"/>
             </MenuItem>

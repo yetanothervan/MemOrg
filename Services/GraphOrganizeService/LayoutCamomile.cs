@@ -26,36 +26,51 @@ namespace GraphOrganizeService
             foreach (var graphs in _graph.Books.Select(ChapterLayoutGraph.GetGraphsFromBook))
                 bundles.AddRange(graphs.Select(ChapterLayoutBundle.ExtractBundlesFromGraph));
 
-            var order = (from book in _graph.Books 
-                         from chapter in book.Chapters 
-                         from bundle in bundles.Where(b => b.MyChapter == chapter)
-                         select bundle).ToList();
-
-            var result = new List<ChapterLayoutElem>();
-            int resHeight = 0;
-            foreach (var bundle in order)
-            {
-                var ta = bundle.Render(0, 0, true);
-                int bundleIce = 0 - ta.Min(b => b.Row);
-
-                foreach (var el in ta)
+            int left = 0;
+            foreach (var book in _graph.Books)
+                foreach (var chapter in book.Chapters)
                 {
-                    el.Row += (resHeight + bundleIce);
-                    if (el.Page != null && el.Page.Block != null)
-                        el.Page.Block.Caption += " " + el.Row + ", " + el.Col;
-                }
-                result.AddRange(ta);
-                
-                resHeight = result.Max(e => e.Row) + 1;
-            }
+                    var chl = chapter;
+                    var chps = bundles.Where(b => b.MyChapter == chl);
 
-            foreach (var elem in result)
-                PlaceElemInGrid(elem, grid);
+                    var result = new List<ChapterLayoutElem>();
+                    
+                    int resHeight = 0;
+                    foreach (var bundle in chps)
+                    {
+                        var ta = bundle.Render(0, left, true);
+                        int min = ta.Min(b => b.Row);
+                        int max = ta.Max(b => b.Row);
+
+                        foreach (var el in ta)
+                        {
+                            el.Row -= (resHeight + max + 1);
+                            if (el.Page != null && el.Page.Block != null)
+                                el.Page.Block.Caption += " " + el.Row + ", " + el.Col;
+                        }
+                        result.AddRange(ta);
+
+                        resHeight = -result.Min(e => e.Row);
+                    }
+                    
+                    result.Add(new ChapterLayoutElem
+                    {
+                        Col = left + 2,
+                        Row = 0,
+                        HorizontalAligment = HorizontalAligment.Center,
+                        Page = chapter.ChapterPage
+                    });
+
+                    foreach (var elem in result)
+                        PlaceElemInGrid(elem, grid);
+
+                    left += 8;
+                }
 
             return grid;
         }
-       
-     
+
+
         private static ChapterLayoutElem NewGridLink(IEnumerable<GridLinkPartDirection> directions)
         {
             var res = new ChapterLayoutElem();
@@ -109,6 +124,8 @@ namespace GraphOrganizeService
             }
             else if (page.Page.IsBlockTag)
                 ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag, page.ConnectionPoints);
+            else if (page.Page.IsBlockSource)
+                ge.Content = new OrgBlockSource(page.Page.Block, page.ConnectionPoints);
             else if (page.Page.IsBlockUserText)
                 ge.Content = new OrgBlockUserText(page.Page.Block, page.ConnectionPoints);
             else if (page.Page.IsBlockRel)

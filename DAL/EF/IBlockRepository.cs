@@ -16,6 +16,7 @@ namespace EF
         IQueryable<Block> BlockRels { get; }
         IQueryable<Block> Tracking { get; }
         void AddBlock(Block block);
+        void RemoveAllBlocks();
         void SaveChanges();
     }
 }

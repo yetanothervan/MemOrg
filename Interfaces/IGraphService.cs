@@ -79,5 +79,6 @@ namespace MemOrg.Interfaces
         void AddTag(Tag tag);
         IQueryable<Tag> TrackingTags { get; }
         void SaveChanges();
+        void ClearGraph();
     }
 }

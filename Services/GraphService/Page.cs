@@ -10,6 +10,8 @@ namespace GraphService
         {
             RelatedBy = new List<IPage>();
             ReferencedBy = new List<IPage>();
+            IsBlockUserText = false;
+            IsBlockSource = false;
         }
         public Block Block { get; set; }
         public Tag Tag { get; set; }
@@ -26,6 +28,7 @@ namespace GraphService
         }
 
         public bool IsBlockUserText { get; set; }
+        public bool IsBlockSource { get; set; }
 
         public BlockQuoteParticleSources MySources { get; set; }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.ServiceLocation;
 
 namespace WinApp.MainView
 {
@@ -18,17 +19,25 @@ namespace WinApp.MainView
             _exportImportService = exportImportService;
             ExportCommand = new DelegateCommand(ExecuteExportCommand, () => true);
             ImportCommand = new DelegateCommand(ExecuteImportCommand, () => true);
+            ClearCommand = new DelegateCommand(ExecuteClearCommand, () => true);
         }
 
         public DelegateCommand ExportCommand { get; set; }
         public DelegateCommand ImportCommand { get; set; }
+        public DelegateCommand ClearCommand { get; set; }
 
-        public void ExecuteExportCommand()
+        private void ExecuteExportCommand()
         {
            _exportImportService.SaveGraph(); 
         }
 
-        public void ExecuteImportCommand()
+        private void ExecuteClearCommand()
+        {
+            var graphService = (IGraphService)ServiceLocator.Current.GetService(typeof(IGraphService));
+            graphService.ClearGraph();
+        }
+        
+        private void ExecuteImportCommand()
         {
             _exportImportService.LoadGraph();
         }

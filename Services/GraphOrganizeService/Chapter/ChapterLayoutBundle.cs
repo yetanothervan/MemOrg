@@ -158,7 +158,7 @@ namespace GraphOrganizeService.Chapter
             foreach (var outerRoot in _outerRoots)
             {
                 int resHeight = elems.Max(e => e.Row) + 2;
-                var outElems = outerRoot.Body.Render(0, outerRoot.Direction ? 4 : 0, !outerRoot.Direction);
+                var outElems = outerRoot.Body.Render(0, outerRoot.Direction ? col + 4 : col, !outerRoot.Direction);
                 int outIce = 0 - outElems.Min(b => b.Row);
                 foreach (var elem in outElems)
                     elem.Row += (resHeight + outIce);

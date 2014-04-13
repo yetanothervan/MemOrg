@@ -10,7 +10,7 @@ namespace GraphService
         {
             PagesBlocks = new List<IPage>();
         }
-        public Block ChapterBlock { get; set; }
+        public IPage ChapterPage { get; set; }
         public List<IPage> PagesBlocks { get; set; }
         public IChapter NextChapter { get; set; }
         public IChapter PrevChapter { get; set; }

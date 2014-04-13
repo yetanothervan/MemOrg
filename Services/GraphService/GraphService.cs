@@ -116,5 +116,10 @@ namespace GraphService
         {
             _blockRepository.SaveChanges();
         }
+
+        public void ClearGraph()
+        {
+            _blockRepository.RemoveAllBlocks();
+        }
     }
 }

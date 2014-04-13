@@ -10,5 +10,6 @@ namespace MemOrg.Interfaces
     public static class GlobalCommands
     {
         public static CompositeCommand ToggleHeadersCompositeCommand = new CompositeCommand();
+        public static CompositeCommand RefreshGraphViewCompositeCommand = new CompositeCommand();
     }
 }
