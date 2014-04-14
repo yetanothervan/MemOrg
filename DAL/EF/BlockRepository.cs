@@ -94,8 +94,27 @@ where TagId is null and RelationId is null and t1.ParticleId is null";*/
 
         public void RemoveAllBlocks()
         {
-            _context.Blocks.RemoveRange(Tracking);
+            foreach (var b in  _context.Blocks)
+                b.Tags.Clear();
             _context.SaveChanges();
+            _context.References.RemoveRange(_context.References);
+            _context.SaveChanges();
+            foreach (var b in _context.Blocks)
+                b.References.Clear();
+            _context.SaveChanges();
+            _context.Relations.RemoveRange(_context.Relations);
+            _context.SaveChanges();
+            _context.RelationTypes.RemoveRange(_context.RelationTypes);
+            _context.SaveChanges();
+            _context.Particles.RemoveRange(_context.Particles);
+            _context.SaveChanges();
+            _context.Tags.RemoveRange(_context.Tags);
+            _context.SaveChanges();
+            _context.Blocks.RemoveRange(_context.Blocks);
+            _context.SaveChanges();
+
+            //_context.Blocks.RemoveRange(Tracking);
+            //_context.SaveChanges();
         }
 
         public void SaveChanges()
