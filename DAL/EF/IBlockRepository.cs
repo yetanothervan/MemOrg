@@ -18,5 +18,6 @@ namespace EF
         void AddBlock(Block block);
         void RemoveAllBlocks();
         void SaveChanges();
+        IMemOrgContext GetContext();
     }
 }

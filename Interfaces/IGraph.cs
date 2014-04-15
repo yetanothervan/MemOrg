@@ -6,6 +6,6 @@ namespace MemOrg.Interfaces
     public interface IGraph
     {
         IGraphService GraphService { get; }
-        IList<IBook> Books { get; }
+        IEnumerable<IBook> Books { get; }
     }
 }

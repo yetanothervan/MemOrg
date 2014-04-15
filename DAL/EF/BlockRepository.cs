@@ -121,5 +121,10 @@ where TagId is null and RelationId is null and t1.ParticleId is null";*/
         {
             _context.SaveChanges();
         }
+
+        public IMemOrgContext GetContext()
+        {
+            return _context;
+        }
     }
 }

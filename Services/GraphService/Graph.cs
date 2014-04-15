@@ -23,7 +23,7 @@ namespace GraphService
             get { return _graphService; }
         }
 
-        public IList<IBook> Books
+        public IEnumerable<IBook> Books
         {
             get { return _books ?? (_books = GetBooks()); }
         }

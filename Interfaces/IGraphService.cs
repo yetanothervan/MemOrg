@@ -66,11 +66,11 @@ namespace MemOrg.Interfaces
         /// Типы реляций
         /// </summary>
         IQueryable<RelationType> RelationTypes { get; }
-        
+
         /// <summary>
         /// Собственно, граф
         /// </summary>
-        IGraph Graph { get; }
+        IGraph GetGraph();
         
         void AddRelationType(RelationType relationType);
         void AddRelation(Relation relation);

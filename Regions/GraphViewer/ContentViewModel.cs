@@ -43,8 +43,6 @@ namespace GraphViewer
             _options = _graphVizualizeService.GetVisualizeOptions();
             
             RefreshGraph();
-            
-            Offset = new Vector(0, 400-Grid.GetActualSize().Height);
         }
 
         private void RefreshGraph()
@@ -61,6 +59,7 @@ namespace GraphViewer
             _blockTrees = blockLayout.CreateTreesGrid();
             
             UpdateGrid(_options);
+            Offset = new Vector(0, 400 - Grid.GetActualSize().Height);
         }
 
         private void UpdateGrid(IVisualizeOptions options)

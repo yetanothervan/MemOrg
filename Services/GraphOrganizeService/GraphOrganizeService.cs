@@ -20,7 +20,7 @@ namespace GraphOrganizeService
 
         public IGraph GetGraph(IGraphFilter filter)
         {
-            return _graphService.Graph;
+            return _graphService.GetGraph();
         }
 
         public IGridLayout GetFullLayout(IGraph graph)

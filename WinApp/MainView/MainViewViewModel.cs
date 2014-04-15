@@ -35,11 +35,13 @@ namespace WinApp.MainView
         {
             var graphService = (IGraphService)ServiceLocator.Current.GetService(typeof(IGraphService));
             graphService.ClearGraph();
+            GlobalCommands.RefreshGraphViewCompositeCommand.Execute(null);
         }
         
         private void ExecuteImportCommand()
         {
             _exportImportService.LoadGraph();
+            GlobalCommands.RefreshGraphViewCompositeCommand.Execute(null);
         }
     }
 }

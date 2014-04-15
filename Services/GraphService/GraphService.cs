@@ -74,12 +74,11 @@ namespace GraphService
             get { return _relationRepository.All.Where(rel => rel.RelationBlock == null); }
         }
 
-        private IGraph _graph;
-        public IGraph Graph
+        public IGraph GetGraph()
         {
-            get { return _graph ?? (_graph = new Graph(this)); }
+            return new Graph(this);
         }
-        
+
         public IQueryable<RelationType> RelationTypes
         {
             get { return _relationRepository.RelationTypes; }
