@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="WinApp.MainView.MainView"
+﻿<UserControl x:Class="MemOrg.WinApp.MainView.MainView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,10 +6,10 @@
              xmlns:layout="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:intr="clr-namespace:MemOrg.Interfaces;assembly=MemOrg.Interfaces"
              xmlns:local="clr-namespace:MemOrg.WinApp.Avalon"
-             xmlns:vm="clr-namespace:WinApp.MainView"
+             xmlns:mainView="clr-namespace:MemOrg.WinApp.MainView"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600">
 
-    <Grid d:DataContext="{d:DesignInstance vm:MainViewViewModel}">
+    <Grid d:DataContext="{d:DesignInstance mainView:MainViewViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>

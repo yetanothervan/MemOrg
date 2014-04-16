@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using MemOrg.Interfaces;
+﻿using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.ServiceLocation;
 
-namespace WinApp.MainView
+namespace MemOrg.WinApp.MainView
 {
     public class MainViewViewModel : ViewModelBase
     {

@@ -23,7 +23,7 @@ namespace ChapterViewer
         public ContentView(ContentViewModel viewModel)
         {
             InitializeComponent();
-            Loaded += (sender, args) => { DataContext = viewModel; };
+            Loaded += (sender, args) => { DataContext = viewModel; }; 
         }
     }
 }

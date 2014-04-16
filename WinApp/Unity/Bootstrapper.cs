@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using ChapterViewer.ModuleDefinition;
 using GraphDrawService.ModuleDefinition;
+using GraphManagementService.ModuleDefinition;
 using GraphVizualizeService.ModuleDefinition;
 using TempToolbar.ModuleDefinition;
 using GraphOrganizeService.ModuleDefinition;
@@ -20,7 +21,6 @@ using Microsoft.Practices.Prism.UnityExtensions;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using MemOrg.WinApp.Avalon;
-using WinApp.MainView;
 using WinApp.Shell;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -32,7 +32,7 @@ namespace MemOrg.WinApp.Unity
         protected override DependencyObject CreateShell()
         {
             var regionManager = Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion(Interfaces.RegionNames.MainViewRegion, typeof(MainView));
+            regionManager.RegisterViewWithRegion(Interfaces.RegionNames.MainViewRegion, typeof(MainView.MainView));
             regionManager.RegisterViewWithRegion(Interfaces.RegionNames.TempToolbarRegion, typeof(TempToolbar.ContentView));
             
             Container.RegisterType<ITmpXmlExportImportService, TmpXmlExportImportService.TmpXmlExportImportService>();
@@ -73,6 +73,7 @@ namespace MemOrg.WinApp.Unity
             AddModule<GraphOrganizeServiceModule>();
             AddModule<GraphVisualizeServiceModule>();
             AddModule<GraphViewerModule>();
+            AddModule<GraphManagementServiceModule>();
             AddModule<TempToolbarModule>();
             AddModule<ChapterViewerModule>();
         }

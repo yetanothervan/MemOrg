@@ -19,9 +19,10 @@ namespace TempToolbar
     /// </summary>
     public partial class ContentView : UserControl
     {
-        public ContentView()
+        public ContentView(ContentViewModel viewModel)
         {
             InitializeComponent();
+            Loaded += (sender, args) => { DataContext = viewModel; };
         }
     }
 }

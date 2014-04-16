@@ -169,6 +169,10 @@
       <Project>{54e15fca-48f8-4f1a-ac45-5000e4ca3208}</Project>
       <Name>GraphDrawService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Services\GraphManagementService\GraphManagementService.csproj">
+      <Project>{FE95B316-8049-4124-BF2B-BBC4131B8D0B}</Project>
+      <Name>GraphManagementService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Services\GraphOrganizeService\GraphOrganizeService.csproj">
       <Project>{ef60d379-d2fd-41b7-9cf9-0bde55a5f1da}</Project>
       <Name>GraphOrganizeService</Name>

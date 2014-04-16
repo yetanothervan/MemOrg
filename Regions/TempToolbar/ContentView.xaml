@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:gc="clr-namespace:MemOrg.Interfaces;assembly=MemOrg.Interfaces"
+             xmlns:tempToolbar="clr-namespace:TempToolbar"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <WrapPanel>
+    <WrapPanel d:DataContext="{d:DesignInstance tempToolbar:ContentViewModel}">
         <Button Margin="5,5,0,5" Command="{x:Static gc:GlobalCommands.ToggleHeadersCompositeCommand}" >Headers</Button>
-        <Button Margin="5,5,0,5">Second</Button>
+        <Button Margin="5,5,0,5" Command="{Binding AddNewChapterCommand}">Add new chapter...</Button>
     </WrapPanel>
 </UserControl>
