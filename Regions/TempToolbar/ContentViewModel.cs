@@ -14,7 +14,6 @@ namespace TempToolbar
     {
         public ContentViewModel()
         {
-           
             AddNewChapterCommand = new DelegateCommand(AddNewChapter, () => true);
         }
      

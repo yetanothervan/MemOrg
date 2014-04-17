@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MemOrg.Interfaces.OrgUnits;
-using Microsoft.Practices.Unity.Utility;
 
 namespace MemOrg.Interfaces
 {

@@ -7,6 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
     <Grid d:DataContext="{d:DesignInstance chapterViewer:ContentViewModel}">
-        <FlowDocumentScrollViewer Document="{Binding Document}"/>
+    <ScrollViewer>
+        <RichTextBox Name="Rtf" x:FieldModifier="private" />
+    </ScrollViewer>
     </Grid>
 </UserControl>

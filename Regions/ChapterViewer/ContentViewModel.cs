@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
 using DAL.Entity;
 using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Events;
@@ -37,8 +38,23 @@ namespace ChapterViewer
                 else
                     throw new NotImplementedException();
 
+                paragraph.BorderThickness = new Thickness(1);
+
+                paragraph.MouseMove += (sender, args) =>
+                {
+                    var p = sender as Paragraph;
+                    if (p != null) p.BorderBrush = Brushes.LightCoral;
+                };
+
+                paragraph.MouseLeave += (sender, args) =>
+                {
+                    var p = sender as Paragraph;
+                    if (p != null) p.BorderBrush = Brushes.Transparent;
+                };
+
                 doc.Blocks.Add(paragraph);
             }
+            
             Document = doc;
         }
 

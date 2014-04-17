@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ChapterViewer
 {
@@ -23,7 +12,22 @@ namespace ChapterViewer
         public ContentView(ContentViewModel viewModel)
         {
             InitializeComponent();
-            Loaded += (sender, args) => { DataContext = viewModel; }; 
+            Loaded += (sender, args) =>
+            {
+                viewModel.PropertyChanged += (o, eventArgs) =>
+                {
+                    var dc = DataContext as ContentViewModel;
+                    if (dc != null && eventArgs.PropertyName == "Document")
+                        Rtf.Document = dc.Document;
+                };
+                DataContext = viewModel; 
+            };
+            Rtf.SelectionChanged += RtfOnSelectionChanged;
+        }
+
+        private void RtfOnSelectionChanged(object sender, RoutedEventArgs routedEventArgs)
+        {
+            //Rtf.CaretPosition.Paragraph
         }
     }
 }
