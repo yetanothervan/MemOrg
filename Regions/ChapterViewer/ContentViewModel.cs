@@ -23,40 +23,37 @@ namespace ChapterViewer
         private void OnBlockSelected(Block block)
         {
             var doc = new FlowDocument();
-            var captionParagraph = new Paragraph(new Bold(new Run(block.Caption)));
+            var captionParagraph = new ParticleParagraph(new Bold(new Run(block.Caption)));
             doc.Blocks.Add(captionParagraph);
             foreach (var part in block.Particles.OrderBy(b => b.Order))
             {
-                Paragraph paragraph;
+                ParticleParagraph paragraph;
                 if (part is UserTextParticle)
-                    paragraph = new Paragraph(new Run((part as UserTextParticle).Content));
+                    paragraph = new ParticleParagraph(new Run((part as UserTextParticle).Content));
                 else if (part is SourceTextParticle)
-                    paragraph = new Paragraph(new Run((part as SourceTextParticle).Content));
+                    paragraph = new ParticleParagraph(new Run((part as SourceTextParticle).Content));
                 else if (part is QuoteSourceParticle)
-                    paragraph = new Paragraph(new Run((part as QuoteSourceParticle)
+                    paragraph = new ParticleParagraph(new Run((part as QuoteSourceParticle)
                         .SourceTextParticle.Content));
                 else
                     throw new NotImplementedException();
-
-                paragraph.BorderThickness = new Thickness(1);
-
-                paragraph.MouseMove += (sender, args) =>
-                {
-                    var p = sender as Paragraph;
-                    if (p != null) p.BorderBrush = Brushes.LightCoral;
-                };
-
-                paragraph.MouseLeave += (sender, args) =>
-                {
-                    var p = sender as Paragraph;
-                    if (p != null) p.BorderBrush = Brushes.Transparent;
-                };
-
+                
                 doc.Blocks.Add(paragraph);
             }
             
             Document = doc;
+            doc.MouseDown += (sender, args) =>
+            {
+                if (Equals(args.Source, Document))
+                    foreach (var b in doc.Blocks.OfType<ParticleParagraph>())
+                        b.IsSelected = false;
+                else
+                    foreach (var b in doc.Blocks.OfType<ParticleParagraph>())
+                        b.IsSelected = b.Over;
+            };
         }
+
+        public ParticleParagraph CurrentParagpaph { get; set; }
 
         private FlowDocument _document;
         public FlowDocument Document

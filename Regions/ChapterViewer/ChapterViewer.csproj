@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="ContentViewModel.cs" />
     <Compile Include="ModuleDefinition\GraphViewerModule.cs" />
+    <Compile Include="ParticleParagraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
