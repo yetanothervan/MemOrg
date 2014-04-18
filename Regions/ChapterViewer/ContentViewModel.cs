@@ -49,7 +49,10 @@ namespace ChapterViewer
                         b.IsSelected = false;
                 else
                     foreach (var b in doc.Blocks.OfType<ParticleParagraph>())
+                    {
                         b.IsSelected = b.Over;
+                        if (b.Over) CurrentParagpaph = b;
+                    }
             };
         }
 

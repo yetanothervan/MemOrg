@@ -27,7 +27,12 @@ namespace ChapterViewer
 
         private void RtfOnSelectionChanged(object sender, RoutedEventArgs routedEventArgs)
         {
-            //Rtf.CaretPosition.Paragraph
+            var dc = DataContext as ContentViewModel;
+            if (dc != null)
+            {
+                if (!Equals(Rtf.CaretPosition.Paragraph, dc.CurrentParagpaph))
+                    Rtf.IsReadOnly = true;
+            }
         }
     }
 }

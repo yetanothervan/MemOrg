@@ -8,7 +8,7 @@
              d:DesignHeight="400" d:DesignWidth="600">
     <Grid d:DataContext="{d:DesignInstance chapterViewer:ContentViewModel}">
     <ScrollViewer>
-        <RichTextBox Name="Rtf" x:FieldModifier="private" />
+        <RichTextBox Name="Rtf" IsReadOnly="True" IsReadOnlyCaretVisible="True" x:FieldModifier="private" />
     </ScrollViewer>
     </Grid>
 </UserControl>
