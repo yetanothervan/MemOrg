@@ -4,16 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ChapterViewer
 {
-    public class ParticleParagraph : Paragraph
+    public class ParticleParagraph : Table
     {
-        public ParticleParagraph(Inline content) : base(content)
+        public ParticleParagraph(Inline content)
         {
+            Columns.Add(new TableColumn {Name = "Content", Width = new GridLength(1, GridUnitType.Star)});
+            Columns.Add(new TableColumn { Name = "Toolbar", Width = new GridLength(20, GridUnitType.Pixel) });
+            RowGroups.Add(new TableRowGroup());
+            var currentRow = new TableRow();
+            RowGroups[0].Rows.Add(currentRow);
+
+            var toolbar = new BlockUIContainer();
+            var editButton = new Button {Content = "Edit..."};
+            toolbar.Child = editButton;
+
+            currentRow.Cells.Add(new TableCell(toolbar));
+            currentRow.Cells.Add(new TableCell(new Paragraph(content)));
+            
             IsSelected = false;
             Over = false;
             this.BorderThickness = new Thickness(1);
@@ -27,10 +41,12 @@ namespace ChapterViewer
         {
             Over = over;
             if (IsSelected)
+            {
                 this.BorderBrush = Brushes.Red;
+            }
             else
-                this.BorderBrush = over 
-                    ? Brushes.LightCoral 
+                this.BorderBrush = over
+                    ? Brushes.LightCoral
                     : Brushes.Transparent;
         }
 
