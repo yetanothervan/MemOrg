@@ -51,12 +51,18 @@ namespace ChapterViewer
                     foreach (var b in doc.Blocks.OfType<ParticleParagraph>())
                     {
                         b.IsSelected = b.Over;
-                        if (b.Over) CurrentParagpaph = b;
+                        if (b.Over)
+                        {
+                            CurrentParagpaph = b;
+                            CurrentParagraphContent = b.MyContent;
+                        }
                     }
             };
         }
 
         public ParticleParagraph CurrentParagpaph { get; set; }
+        public Paragraph CurrentParagraphContent { get; set; }
+
 
         private FlowDocument _document;
         public FlowDocument Document

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace ChapterViewer
 {
@@ -30,7 +31,7 @@ namespace ChapterViewer
             var dc = DataContext as ContentViewModel;
             if (dc != null)
             {
-                if (!Equals(Rtf.CaretPosition.Paragraph, dc.CurrentParagpaph))
+                if (!Equals(Rtf.CaretPosition.Paragraph, dc.CurrentParagraphContent))
                     Rtf.IsReadOnly = true;
             }
         }
