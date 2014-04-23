@@ -42,13 +42,13 @@ namespace ChapterViewer
             }
             
             Document = doc;
-            doc.MouseDown += (sender, args) =>
+            Document.MouseDown += (sender, args) =>
             {
                 if (Equals(args.Source, Document))
-                    foreach (var b in doc.Blocks.OfType<ParticleParagraph>())
+                    foreach (var b in Document.Blocks.OfType<ParticleParagraph>())
                         b.IsSelected = false;
                 else
-                    foreach (var b in doc.Blocks.OfType<ParticleParagraph>())
+                    foreach (var b in Document.Blocks.OfType<ParticleParagraph>())
                     {
                         b.IsSelected = b.Over;
                         if (b.Over)
@@ -58,6 +58,12 @@ namespace ChapterViewer
                         }
                     }
             };
+        }
+
+        public void ParagraphBlur()
+        {
+            foreach (var b in Document.Blocks.OfType<ParticleParagraph>())
+                b.IsSelected = false;
         }
 
         public ParticleParagraph CurrentParagpaph { get; set; }
