@@ -37,27 +37,19 @@ namespace ChapterViewer
                         .SourceTextParticle.Content));
                 else
                     throw new NotImplementedException();
-                
+
+                paragraph.MouseDown += (sender, args) =>
+                {
+                    ParagraphBlur();
+                    paragraph.IsSelected = true;
+                    CurrentParagpaph = paragraph;
+                    CurrentParagraphContent = paragraph.MyContent;
+                };
+
                 doc.Blocks.Add(paragraph);
             }
             
             Document = doc;
-            Document.MouseDown += (sender, args) =>
-            {
-                if (Equals(args.Source, Document))
-                    foreach (var b in Document.Blocks.OfType<ParticleParagraph>())
-                        b.IsSelected = false;
-                else
-                    foreach (var b in Document.Blocks.OfType<ParticleParagraph>())
-                    {
-                        b.IsSelected = b.Over;
-                        if (b.Over)
-                        {
-                            CurrentParagpaph = b;
-                            CurrentParagraphContent = b.MyContent;
-                        }
-                    }
-            };
         }
 
         public void ParagraphBlur()

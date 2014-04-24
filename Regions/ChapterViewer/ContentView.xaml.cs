@@ -30,7 +30,8 @@ namespace ChapterViewer
         private void RtfOnTextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
         {
             var dc = DataContext as ContentViewModel;
-            if (dc == null || dc.CurrentParagpaph == null) return;
+            if (dc == null || dc.CurrentParagpaph == null || textChangedEventArgs.Changes.Count == 0) return;
+
             dc.CurrentParagpaph.TextChanged();
         }
 

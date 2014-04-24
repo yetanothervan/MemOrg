@@ -15,8 +15,6 @@ namespace ChapterViewer
     public class ParticleParagraph : Table
     {
         public readonly Paragraph MyContent;
-        private readonly TableCell _toolbarCell;
-        private BlockUIContainer _toolbar;
 
         private bool _isEditing;
         private readonly DelegateCommand _editCommand;
@@ -29,6 +27,7 @@ namespace ChapterViewer
         public ParticleParagraph(Inline content)
         {
             Over = false;
+            _isSelected = false;
             _isEditing = false;
             _editCommand = new DelegateCommand(() => Edit(true), () => !_isEditing);
 
@@ -36,30 +35,24 @@ namespace ChapterViewer
             _saveCommand = new DelegateCommand(Save, () => _isChanged);
 
             _discardCommand = new DelegateCommand(Discard, () => _isChanged);
-
-            Columns.Add(new TableColumn {Name = "Toolbar", Width = new GridLength(40, GridUnitType.Pixel)});
-            Columns.Add(new TableColumn {Name = "Content"});
-
-            RowGroups.Add(new TableRowGroup());
-            var currentRow = new TableRow();
-            RowGroups[0].Rows.Add(currentRow);
-
-            _toolbarCell = new TableCell();
-            
             MyContent = new Paragraph(content);
-            currentRow.Cells.Add(_toolbarCell);
-            currentRow.Cells.Add(new TableCell(MyContent));
+            CreateToolbar();
 
-            IsSelected = false;
+            Selected(false);
             Over = false;
+            
             this.BorderThickness = new Thickness(1);
+            
             this.MouseEnter += (sender, args) =>
             {
+                if (Over) return;
                 Over = true;
                 UpdateView();
             };
+            
             this.MouseLeave += (sender, args) =>
             {
+                if (Over == false) return;
                 Over = false;
                 UpdateView();
             };
@@ -122,9 +115,6 @@ namespace ChapterViewer
 
         void Selected(bool isSelected)
         {
-            if (_toolbar == null)
-                CreateToolbar();
-            
             this.Columns.First(c => c.Name == "Toolbar").Width = isSelected 
                 ? new GridLength(40, GridUnitType.Pixel) 
                 : new GridLength(0, GridUnitType.Pixel);
@@ -137,7 +127,18 @@ namespace ChapterViewer
 
         private void CreateToolbar()
         {
-            _toolbar = new BlockUIContainer();
+            Columns.Add(new TableColumn { Name = "Toolbar", Width = new GridLength(40, GridUnitType.Pixel) });
+            Columns.Add(new TableColumn { Name = "Content" });
+
+            RowGroups.Add(new TableRowGroup());
+            var currentRow = new TableRow();
+            RowGroups[0].Rows.Add(currentRow);
+            
+            var toolbarCell = new TableCell();
+            currentRow.Cells.Add(toolbarCell);
+            currentRow.Cells.Add(new TableCell(MyContent));
+
+            var toolbar = new BlockUIContainer();
 
             var stackPanel = new StackPanel();
 
@@ -149,8 +150,8 @@ namespace ChapterViewer
             stackPanel.Children.Add(saveButton);
             stackPanel.Children.Add(disButton);
 
-            _toolbar.Child = stackPanel;
-            _toolbarCell.Blocks.Add(_toolbar);
+            toolbar.Child = stackPanel;
+            toolbarCell.Blocks.Add(toolbar);
         }
 
         public void TextChanged()
