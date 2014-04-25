@@ -43,7 +43,6 @@ namespace ChapterViewer
                     ParagraphBlur();
                     paragraph.IsSelected = true;
                     CurrentParagpaph = paragraph;
-                    CurrentParagraphContent = paragraph.MyContent;
                 };
 
                 doc.Blocks.Add(paragraph);
@@ -58,9 +57,30 @@ namespace ChapterViewer
                 b.IsSelected = false;
         }
 
-        public ParticleParagraph CurrentParagpaph { get; set; }
-        public Paragraph CurrentParagraphContent { get; set; }
+        private ParticleParagraph _currentParagpaph;
+        public ParticleParagraph CurrentParagpaph
+        {
+            get { return _currentParagpaph; }
+            set
+            {
+                _currentParagpaph = value;
+                RaisePropertyChangedEvent("CurrentParagpaph");
+                RaisePropertyChangedEvent("SelectedParagpaphText");
+            }
+        }
 
+        public string SelectedParagpaphText
+        {
+            get
+            {
+                if (CurrentParagpaph == null) return null;
+                
+                var text = 
+                    new TextRange(CurrentParagpaph.ContentStart, CurrentParagpaph.ContentEnd).Text;
+                return text;
+            }
+            set { return; }
+        }
 
         private FlowDocument _document;
         public FlowDocument Document

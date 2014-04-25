@@ -7,11 +7,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
     <Grid d:DataContext="{d:DesignInstance chapterViewer:ContentViewModel}">
-    <ScrollViewer>
-        <RichTextBox Name="Rtf" IsReadOnly="True" 
-                     IsReadOnlyCaretVisible="True" 
-                     IsDocumentEnabled="True"
-                     x:FieldModifier="private" />
-    </ScrollViewer>
+        <RichTextBox Name="Rtf" IsReadOnly="True"/>
+        <TextBox Margin="100"
+                 TextWrapping="Wrap" AcceptsReturn="True"
+                 Background="CornflowerBlue" Visibility="Visible"
+                 HorizontalAlignment="Stretch" 
+                 VerticalAlignment="Stretch"
+                 Text="{Binding SelectedParagpaphText}"/>
+        <StackPanel Orientation="Horizontal" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Bottom" Margin="15,0,0,15" Background="CornflowerBlue">
+            <Button Margin="5">Edit</Button>
+            <Button Margin="5">Save</Button>
+            <Button Margin="5">Discard</Button>
+        </StackPanel>
     </Grid>
 </UserControl>
