@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="BlockRepository.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="IParticlesRepository.cs" />
+    <Compile Include="ParticlesRepository.cs" />
     <Compile Include="RelationRepository.cs" />
     <Compile Include="IRelationRepository.cs" />
     <Compile Include="IBlockRepository.cs" />

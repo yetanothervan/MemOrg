@@ -78,6 +78,7 @@ namespace MemOrg.Interfaces
         IQueryable<Block> TrackingBlocks { get; }
         void AddTag(Tag tag);
         IQueryable<Tag> TrackingTags { get; }
+        IQueryable<Particle> TrackingParticles { get; }
         void SaveChanges();
         void ClearGraph();
     }

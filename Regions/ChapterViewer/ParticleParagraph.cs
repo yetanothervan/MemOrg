@@ -8,35 +8,62 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using DAL.Entity;
 using Microsoft.Practices.Prism.Commands;
 
 namespace ChapterViewer
 {
     public class ParticleParagraph : Paragraph
     {
-        private bool _isEditing;
-        private readonly DelegateCommand _editCommand;
+        private readonly Particle _particle;
+        private readonly string _text;
 
-        private bool _isChanged;
-        private readonly DelegateCommand _saveCommand;
-
-        private readonly DelegateCommand _discardCommand;
-
-        public ParticleParagraph(Inline content) : base(content)
+        public ParticleParagraph(Particle particle)
         {
+            _particle = particle;
+
             Over = false;
             _isSelected = false;
+
+            if (particle is UserTextParticle)
+                _text = (particle as UserTextParticle).Content;
+            else if (particle is SourceTextParticle)
+                _text = (particle as SourceTextParticle).Content;
+            else if (particle is QuoteSourceParticle)
+                _text = (particle as QuoteSourceParticle).SourceTextParticle.Content;
+            else
+                throw new NotImplementedException();
+
+            Editible = (particle is SourceTextParticle) || (particle is UserTextParticle);
+
+            Init();
+        }
+        
+        public ParticleParagraph(string caption)
+        {
+            Editible = false;
+            _text = caption;
+            Over = false;
+            _isSelected = false;
+            Init();
+        }
+
+        public bool Editible { get; private set; }
+
+        private void Init()
+        {
+            Inlines.Add(new Run(_text));
             UpdateView();
 
             this.BorderThickness = new Thickness(1);
-            
+
             this.MouseEnter += (sender, args) =>
             {
                 if (Over) return;
                 Over = true;
                 UpdateView();
             };
-            
+
             this.MouseLeave += (sender, args) =>
             {
                 if (Over == false) return;
@@ -44,7 +71,19 @@ namespace ChapterViewer
                 UpdateView();
             };
         }
-        
+
+        public Particle MyParticle
+        {
+            get
+            {
+                return _particle;
+            }
+        }
+
+        public string GetText()
+        {
+            return _text;
+        }
 
         public bool Over { get; private set; }
 

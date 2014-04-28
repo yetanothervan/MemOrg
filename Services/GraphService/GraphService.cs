@@ -11,12 +11,15 @@ namespace GraphService
         readonly IBlockRepository _blockRepository;
         readonly ITagRepository _tagRepository;
         readonly IRelationRepository _relationRepository;
-        
-        public GraphService(IBlockRepository blockRepository, ITagRepository tagRepository, IRelationRepository relationRepository)
+        readonly IParticlesRepository _particlesRepository;
+
+        public GraphService(IBlockRepository blockRepository, ITagRepository tagRepository, 
+            IRelationRepository relationRepository, IParticlesRepository particlesRepository)
         {
             _blockRepository = blockRepository;
             _tagRepository = tagRepository;
             _relationRepository = relationRepository;
+            _particlesRepository = particlesRepository;
         }
 
         public IQueryable<Block> BlockTags
@@ -109,6 +112,10 @@ namespace GraphService
 
         public IQueryable<Tag> TrackingTags {
             get { return _tagRepository.Tracking; }
+        }
+
+        public IQueryable<Particle> TrackingParticles {
+            get { return _particlesRepository.Tracking; }
         }
 
         public void SaveChanges()

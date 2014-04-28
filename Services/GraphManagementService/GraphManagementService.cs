@@ -32,5 +32,17 @@ namespace GraphManagementService
 
             _graphService.AddBlock(chapter);
         }
+
+        public void UpdateParticleText(int particleId, string newText)
+        {
+            var particle = _graphService.TrackingParticles
+                .FirstOrDefault(p => p.ParticleId == particleId);
+            if (particle == null) return;
+            if (particle is SourceTextParticle)
+                (particle as SourceTextParticle).Content = newText;
+            else if (particle is UserTextParticle)
+                (particle as UserTextParticle).Content = newText;
+            _graphService.SaveChanges();
+        }
     }
 }

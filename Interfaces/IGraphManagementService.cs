@@ -6,5 +6,6 @@ namespace MemOrg.Interfaces
     public interface IGraphManagementService
     {
         void AddNewChapter(string caption, string bookName, int chapterNumber);
+        void UpdateParticleText(int particleId, string newText);
     }
 }

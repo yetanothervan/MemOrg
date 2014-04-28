@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace ChapterViewer
 {
@@ -22,6 +23,19 @@ namespace ChapterViewer
                         Rtf.Document = dc.Document;
                 };
                 DataContext = viewModel; 
+            };
+            CurParticleTextBox.TextChanged += (sender, args) =>
+            {
+                var dc = DataContext as ContentViewModel;
+                if (dc != null) dc.TextChanged = true;
+            };
+            CurParticleTextBox.KeyDown += (sender, args) =>
+            {
+                if (Keyboard.Modifiers == ModifierKeys.Control && args.Key == Key.S)
+                {
+                    var dc = DataContext as ContentViewModel;
+                    if (dc != null) dc.SaveCommand.Execute();
+                }
             };
         }
     }

@@ -26,6 +26,7 @@ namespace GraphService.ModuleDefinition
             _container.RegisterType<IBlockRepository, BlockRepository>();
             _container.RegisterType<IRelationRepository, RelationRepository>();
             _container.RegisterType<ITagRepository, TagRepository>();
+            _container.RegisterType<IParticlesRepository, ParticlesRepository>();
         }
     }
 }

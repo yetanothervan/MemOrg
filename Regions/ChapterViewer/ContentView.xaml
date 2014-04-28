@@ -6,20 +6,57 @@
              xmlns:chapterViewer="clr-namespace:ChapterViewer"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
+    <UserControl.Resources>
+        <chapterViewer:VisibilityInverseConvertor x:Key="VisibilityInverseConvertor" />
+    </UserControl.Resources>
     <Grid d:DataContext="{d:DesignInstance chapterViewer:ContentViewModel}">
         <RichTextBox Name="Rtf" IsReadOnly="True"/>
-        <TextBox Margin="100"
-                 TextWrapping="Wrap" AcceptsReturn="True"
-                 Background="CornflowerBlue" Visibility="Visible"
+        <TextBox Name="CurParticleTextBox" 
+                TextWrapping="Wrap" AcceptsReturn="True"
+                 Background="White" Visibility="{Binding EditWindowVisible}"
                  HorizontalAlignment="Stretch" 
                  VerticalAlignment="Stretch"
-                 Text="{Binding SelectedParagpaphText}"/>
+                 Text="{Binding SelectedParagpaphText}" />
         <StackPanel Orientation="Horizontal" 
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Bottom" Margin="15,0,0,15" Background="CornflowerBlue">
-            <Button Margin="5">Edit</Button>
-            <Button Margin="5">Save</Button>
-            <Button Margin="5">Discard</Button>
+            <Button Margin="5" 
+                    Visibility="{Binding Path=EditWindowVisible, Converter={StaticResource VisibilityInverseConvertor}}"
+                    Command="{Binding EditCommand}">Edit</Button>
+            <Button Margin="5" 
+                    Visibility="{Binding EditWindowVisible}"
+                    Command="{Binding SaveCommand}">Save</Button>
+            <Button Margin="5" 
+                    Command="{Binding DiscardCommand}"
+                    Visibility="{Binding EditWindowVisible}">Discard</Button>
         </StackPanel>
+        <Button Command="{Binding CloseEditingCommand}"
+            Visibility="{Binding EditWindowVisible}"
+            Width="25" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="7">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Ellipse Stroke="Black" StrokeThickness="0.5">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Offset="0" Color="LightGray" />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Rectangle Width="17" Height="4" Fill="DimGray">
+                            <Rectangle.LayoutTransform>
+                                <RotateTransform Angle="45"></RotateTransform>
+                            </Rectangle.LayoutTransform>
+                        </Rectangle>
+                        <Rectangle Width="17" Height="4" Fill="DimGray">
+                            <Rectangle.LayoutTransform>
+                                <RotateTransform Angle="-45"></RotateTransform>
+                            </Rectangle.LayoutTransform>
+                        </Rectangle>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
 </UserControl>
