@@ -5,16 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
 using MemOrg.Interfaces;
+using Microsoft.Practices.Prism.Events;
 
 namespace GraphManagementService
 {
     public class GraphManagementService : IGraphManagementService
     {
         private readonly IGraphService _graphService;
+        private readonly IEventAggregator _eventAggregator;
 
-        public GraphManagementService(IGraphService graphService)
+        public GraphManagementService(IGraphService graphService, IEventAggregator eventAggregator)
         {
             _graphService = graphService;
+            _eventAggregator = eventAggregator;
         }
 
         public void AddNewChapter( string caption, string bookName, int chapterNumber)
@@ -43,6 +46,7 @@ namespace GraphManagementService
             else if (particle is UserTextParticle)
                 (particle as UserTextParticle).Content = newText;
             _graphService.SaveChanges();
+            _eventAggregator.GetEvent<ParticleChanged>().Publish(particleId);
         }
     }
 }

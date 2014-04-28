@@ -11,4 +11,8 @@ namespace MemOrg.Interfaces
     public class BlockSelected : CompositePresentationEvent<Block>
     {
     }
+
+    public class ParticleChanged : CompositePresentationEvent<int>
+    {
+    }
 }

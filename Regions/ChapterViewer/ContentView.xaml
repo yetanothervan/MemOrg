@@ -16,7 +16,7 @@
                  Background="White" Visibility="{Binding EditWindowVisible}"
                  HorizontalAlignment="Stretch" 
                  VerticalAlignment="Stretch"
-                 Text="{Binding SelectedParagpaphText}" />
+                 Text="{Binding SelectedParagpaphText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <StackPanel Orientation="Horizontal" 
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Bottom" Margin="15,0,0,15" Background="CornflowerBlue">

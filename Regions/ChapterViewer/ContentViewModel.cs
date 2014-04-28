@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,8 +108,7 @@ namespace ChapterViewer
                 if (value != null)
                 {
                     value.IsSelected = true;
-                    SelectedParagpaphText =
-                        new TextRange(value.ContentStart, value.ContentEnd).Text;
+                    SelectedParagpaphText = new TextRange(value.ContentStart, value.ContentEnd).Text;
                 }
 
                 _currentParagpaph = value;
