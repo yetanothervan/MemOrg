@@ -7,17 +7,9 @@ namespace GraphOrganizeService.OrgUnits
 {
     public class OrgBlockTag : OrgBlock, IOrgBlockTag
     {
-        private readonly Tag _tag;
-
-        public OrgBlockTag(Block block, Tag tag, List<NESW> conPoints)
-            : base(block, conPoints)
+        public OrgBlockTag(IPage page, List<NESW> conPoints)
+            : base(page, conPoints)
         {
-            _tag = tag;
-        }
-
-        public Tag Tag
-        {
-            get { return _tag; }
         }
     }
 }

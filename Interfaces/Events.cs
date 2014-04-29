@@ -8,11 +8,15 @@ using Microsoft.Practices.Prism.Events;
 
 namespace MemOrg.Interfaces
 {
-    public class BlockSelected : CompositePresentationEvent<Block>
+    public class PageSelected : CompositePresentationEvent<IPage>
     {
     }
 
     public class ParticleChanged : CompositePresentationEvent<Particle>
+    {
+    }
+
+    public class ParticleDeleted : CompositePresentationEvent<Particle>
     {
     }
 }

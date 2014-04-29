@@ -20,14 +20,28 @@ namespace ChapterViewer
     {
         public ContentViewModel(IEventAggregator eventAggregator)
         {
-            eventAggregator.GetEvent<BlockSelected>().Subscribe(OnBlockSelected);
+            _curPage = null;
+            eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
             eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
+            eventAggregator.GetEvent<ParticleDeleted>().Subscribe(OnParticleDeleted);
             EditCommand = new DelegateCommand(Edit, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             SaveCommand = new DelegateCommand(Save, () => TextChanged);
             DiscardCommand = new DelegateCommand(Discard, () => TextChanged);
             CloseEditingCommand = new DelegateCommand(CloseEditing);
+            AddSourceCommand = new DelegateCommand(AddSource, () => _curPage != null && _curPage.IsBlockSource);
+            DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             
             EditWindowVisible = Visibility.Collapsed;
+        }
+
+        private void OnParticleDeleted(Particle obj)
+        {
+            var part =
+                Document.Blocks.OfType<ParticleParagraph>()
+                    .FirstOrDefault(p => p.MyParticle != null && p.MyParticle.ParticleId == obj.ParticleId);
+
+            if (part != null)
+                Document.Blocks.Remove(part);
         }
 
         private void OnParticleChanged(Particle obj)
@@ -46,21 +60,33 @@ namespace ChapterViewer
                 Document.Blocks.InsertAfter(part, paragraph);
                 Document.Blocks.Remove(part);
             }
+            else
+            {
+                var paragraph = CreateParagraph(obj);
+                Document.Blocks.Add(paragraph);
+            }
         }
 
-        private void OnBlockSelected(Block block)
+        private IPage _curPage;
+        private void OnPageSelected(IPage curPage)
         {
+            _curPage = curPage;
+            Discard();
+            CloseEditing();
+            CurrentParagpaph = null;
+            
             var doc = new FlowDocument();
-            var captionParagraph = new ParticleParagraph(block.Caption);
+            var captionParagraph = new ParticleParagraph(curPage.Block.Caption);
             doc.Blocks.Add(captionParagraph);
             
-            foreach (var part in block.Particles.OrderBy(b => b.Order))
+            foreach (var part in curPage.Block.Particles.OrderBy(b => b.Order))
             {
                 var paragraph = CreateParagraph(part);
                 doc.Blocks.Add(paragraph);
             }
             
             Document = doc;
+            AddSourceCommand.RaiseCanExecuteChanged();
         }
 
         private ParticleParagraph CreateParagraph(Particle p)
@@ -103,11 +129,26 @@ namespace ChapterViewer
             EditWindowVisible = Visibility.Collapsed;
         }
 
+        public DelegateCommand AddSourceCommand { get; set; }
+        private void AddSource()
+        {
+            if (_curPage != null && _curPage.Block != null && _curPage.IsBlockSource)
+                ManagementService.AddSourceParticle(_curPage.Block);
+        }
+
+        public DelegateCommand DeleteCommand { get; set; }
+        private void Delete()
+        {
+            if (CurrentParagpaph != null && CurrentParagpaph.MyParticle != null)
+                ManagementService.RemoveSourceParticle(CurrentParagpaph.MyParticle);
+        }
+
+
+
         public void ParagraphBlur()
         {
             foreach (var b in Document.Blocks.OfType<ParticleParagraph>())
             {
-
                 b.IsSelected = false;
             }
         }
@@ -134,6 +175,7 @@ namespace ChapterViewer
                 _currentParagpaph = value;
                 RaisePropertyChangedEvent("CurrentParagpaph");
                 EditCommand.RaiseCanExecuteChanged();
+                DeleteCommand.RaiseCanExecuteChanged();
             }
         }
 

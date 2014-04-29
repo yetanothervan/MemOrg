@@ -17,12 +17,12 @@ namespace GraphVizualizeService.VisualElems
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
             var res = drawer.DrawBlockTag();
-            res.Logical = _org.Block;
-            var caption = drawer.DrawCaption(_org.Tag.Caption);
+            res.Logical = _org.Page;
+            var caption = drawer.DrawCaption(_org.Page.Tag.Caption);
             res.AddChild(caption);
             if (options.HeadersOnly) return res;
 
-            foreach (var part in _org.Block.Particles.OrderBy(o => o.Order))
+            foreach (var part in _org.Page.Block.Particles.OrderBy(o => o.Order))
             {
                 if (part is UserTextParticle)
                     res.AddChild(VisualFuncs.UserText(part as UserTextParticle, drawer));

@@ -35,22 +35,25 @@ namespace GraphOrganizeService
             {
 // ReSharper disable once AccessToForEachVariableInClosure
                 var tag = graphService.TagsBlock.First(o => o.TagBlock.BlockId == blockTag.BlockId);
-                var ge = new OrgGridElem(grid) { Content = new OrgBlockTag(blockTag, tag, null) };
+                var page = graphService.CreateStumpPage(blockTag, tag);
+                var ge = new OrgGridElem(grid) { Content = new OrgBlockTag(page, null) };
                 _allocator.PlaceNextGridElem(ge);
             }
             foreach (var blockRel in graphService.BlockRels)
             {
-                var ge = new OrgGridElem(grid) { Content = new OrgBlockRel(blockRel, null) };
+                var page = graphService.CreateStumpPage(blockRel, null);
+                var ge = new OrgGridElem(grid) { Content = new OrgBlockRel(page, null) };
                 _allocator.PlaceNextGridElem(ge);
             }
             foreach (var block in graphService.BlockOthers)
             {
+                var page = graphService.CreateStumpPage(block, null);
                 var ge = new OrgGridElem(grid);
                 if (block.Particles.Count == block.Particles.OfType<UserTextParticle>().Count()
                     && block.Particles.Count != 0)
-                    ge.Content = new OrgBlockUserText(block, null);
+                    ge.Content = new OrgBlockUserText(page, null);
                 else
-                    ge.Content = new OrgBlockOthers(block, null);
+                    ge.Content = new OrgBlockOthers(page, null);
                 _allocator.PlaceNextGridElem(ge);
             }
 

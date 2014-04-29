@@ -111,12 +111,22 @@ namespace GraphService
             _tagRepository.AddTag(tag);
         }
 
+        public void RemoveSourceParticle(Particle particle)
+        {
+            _particlesRepository.RemoveParticle(particle);
+        }
+
         public IQueryable<Tag> TrackingTags {
             get { return _tagRepository.Tracking; }
         }
 
         public IQueryable<Particle> TrackingParticles {
             get { return _particlesRepository.Tracking; }
+        }
+
+        public IPage CreateStumpPage(Block block, Tag tag)
+        {
+            return new Page {Block = block, Tag = tag};
         }
 
         public void SaveChanges()

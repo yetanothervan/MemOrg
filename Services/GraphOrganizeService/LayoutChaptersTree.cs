@@ -77,15 +77,15 @@ namespace GraphOrganizeService
             page.Block.Caption = dir + " " + page.Block.Caption;
 
             if (page.IsBlockTag)
-                return new OrgBlockTag(page.Block, page.Tag, null);
+                return new OrgBlockTag(page, null);
             
             if (page.IsBlockRel)
-                return new OrgBlockRel(page.Block, null);
+                return new OrgBlockRel(page, null);
 
             if (page.IsBlockUserText)
-                return new OrgBlockUserText(page.Block, null);
+                return new OrgBlockUserText(page, null);
             
-            return new OrgBlockOthers(page.Block, null);
+            return new OrgBlockOthers(page, null);
         }
 
         public IOrgGrid CreateTreesGrid()

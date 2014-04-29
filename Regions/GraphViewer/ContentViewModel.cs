@@ -30,11 +30,13 @@ namespace GraphViewer
             IEventAggregator eventAggregator)
         {
             _modifyedParticles = new HashSet<Particle>();
+            _deletedParticles = new HashSet<Particle>();
             _graphOrganizeService = graphOrganizeService;
             _graphDrawService = graphDrawService;
             _graphVizualizeService = graphVizualizeService;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
+            _eventAggregator.GetEvent<ParticleDeleted>().Subscribe(OnParticleDeleted);
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             var refreshGraphCommand = new DelegateCommand(RefreshGraph, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
@@ -46,6 +48,14 @@ namespace GraphViewer
             _options = _graphVizualizeService.GetVisualizeOptions();
             
             RefreshGraph();
+        }
+
+        private readonly HashSet<Particle> _deletedParticles;
+        private void OnParticleDeleted(Particle obj)
+        {
+            var pt = _deletedParticles.FirstOrDefault(p => p.ParticleId == obj.ParticleId);
+            if (pt == null)
+                _deletedParticles.Add(obj);
         }
 
         private void RefreshGraph()
@@ -84,22 +94,31 @@ namespace GraphViewer
 
         public void VisualMouseDown(Visual vis)
         {
-            var block = _graphDrawService.GetByVisual(vis) as Block;
+            var page = _graphDrawService.GetByVisual(vis) as IPage;
 
-            if (block != null)
+            if (page != null)
             {
-                var mPart = _modifyedParticles.FirstOrDefault(p => p.Block.BlockId == block.BlockId);
-                if (mPart != null)
+                var mParts = _modifyedParticles.Where(p => p.Block.BlockId == page.Block.BlockId).ToList();
+                foreach (var mPart in mParts)
                 {
-                    var part = block.Particles.FirstOrDefault(p => p.ParticleId == mPart.ParticleId);
+                    var part = page.Block.Particles.FirstOrDefault(p => p.ParticleId == mPart.ParticleId);
+
                     if (part != null)
-                    {
-                        block.Particles.Remove(part);
-                        block.Particles.Add(mPart);
-                        _modifyedParticles.Remove(mPart);
-                    }
+                        page.Block.Particles.Remove(part);
+
+                    page.Block.Particles.Add(mPart);
+                    _modifyedParticles.Remove(mPart);
                 }
-                _eventAggregator.GetEvent<BlockSelected>().Publish(block);
+                var dParts = _deletedParticles.Where(p => p.Block.BlockId == page.Block.BlockId).ToList();
+                foreach (var dPart in dParts)
+                {
+                    var part = page.Block.Particles.FirstOrDefault(p => p.ParticleId == dPart.ParticleId);
+
+                    if (part != null)
+                        page.Block.Particles.Remove(part);
+                    _modifyedParticles.Remove(dPart);
+                }
+                _eventAggregator.GetEvent<PageSelected>().Publish(page);
             }
         }
 

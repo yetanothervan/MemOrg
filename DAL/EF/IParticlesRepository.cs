@@ -10,5 +10,6 @@ namespace EF
     public interface IParticlesRepository
     {
         IQueryable<Particle> Tracking { get; }
+        void RemoveParticle(Particle particle);
     }
 }

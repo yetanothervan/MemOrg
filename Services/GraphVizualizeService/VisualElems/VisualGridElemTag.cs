@@ -14,7 +14,7 @@ namespace GraphVizualizeService.VisualElems
         public IComponent Visualize(IDrawer drawer, IVisualizeOptions options)
         {
             var res = drawer.DrawTag();
-            res.Logical = _org.Tag;
+            res.Logical = _org;
             var caption = drawer.DrawCaption(_org.Tag.Caption);
             res.AddChild(caption);
             return res;

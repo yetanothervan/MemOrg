@@ -17,18 +17,26 @@
                  HorizontalAlignment="Stretch" 
                  VerticalAlignment="Stretch"
                  Text="{Binding SelectedParagpaphText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        <StackPanel Orientation="Horizontal" 
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Bottom" Margin="15,0,0,15" Background="CornflowerBlue">
-            <Button Margin="5" 
-                    Visibility="{Binding Path=EditWindowVisible, Converter={StaticResource VisibilityInverseConvertor}}"
-                    Command="{Binding EditCommand}">Edit</Button>
-            <Button Margin="5" 
-                    Visibility="{Binding EditWindowVisible}"
-                    Command="{Binding SaveCommand}">Save</Button>
-            <Button Margin="5" 
-                    Command="{Binding DiscardCommand}"
-                    Visibility="{Binding EditWindowVisible}">Discard</Button>
+        <StackPanel Orientation="Horizontal"  Margin="15,0,0,15" 
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <!--Operation with selected particle-->
+            <StackPanel Orientation="Horizontal" Margin="10,0,0,0" 
+                        Visibility="{Binding Path=EditWindowVisible, Converter={StaticResource VisibilityInverseConvertor}}"
+                        Background="CornflowerBlue">
+                <Button Margin="5" Command="{Binding EditCommand}">Edit</Button>
+                <Button Margin="5" Command="{Binding DeleteCommand}">Delete</Button>
+            </StackPanel>
+            <!--Edit mode-->
+            <StackPanel Orientation="Horizontal" Visibility="{Binding EditWindowVisible}"
+                         Background="CornflowerBlue">
+                <Button Margin="5" Command="{Binding SaveCommand}">Save</Button>
+                <Button Margin="5" Command="{Binding DiscardCommand}">Discard</Button>
+            </StackPanel>
+            <!--Operations with chapter content-->
+            <StackPanel Visibility="{Binding Path=EditWindowVisible, Converter={StaticResource VisibilityInverseConvertor}}"
+                        Orientation="Horizontal" Margin="10,0,0,0" Background="CornflowerBlue">
+                <Button Margin="5" Command="{Binding AddSourceCommand}">Add source</Button>
+            </StackPanel>
         </StackPanel>
         <Button Command="{Binding CloseEditingCommand}"
             Visibility="{Binding EditWindowVisible}"

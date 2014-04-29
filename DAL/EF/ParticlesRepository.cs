@@ -20,5 +20,13 @@ namespace EF
         {
             get { return _context.Particles; }
         }
+
+        public void RemoveParticle(Particle particle)
+        {
+            if (particle == null) return;
+            var exist = _context.Particles.FirstOrDefault(p => p.ParticleId == particle.ParticleId);
+            if (exist == null) return;
+            _context.Particles.Remove(exist);
+        }
     }
 }

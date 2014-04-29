@@ -123,15 +123,15 @@ namespace GraphOrganizeService
                 ge.VerticalContentAligment = VerticalAligment.Top;
             }
             else if (page.Page.IsBlockTag)
-                ge.Content = new OrgBlockTag(page.Page.Block, page.Page.Tag, page.ConnectionPoints);
+                ge.Content = new OrgBlockTag(page.Page, page.ConnectionPoints);
             else if (page.Page.IsBlockSource)
-                ge.Content = new OrgBlockSource(page.Page.Block, page.ConnectionPoints);
+                ge.Content = new OrgBlockSource(page.Page, page.ConnectionPoints);
             else if (page.Page.IsBlockUserText)
-                ge.Content = new OrgBlockUserText(page.Page.Block, page.ConnectionPoints);
+                ge.Content = new OrgBlockUserText(page.Page, page.ConnectionPoints);
             else if (page.Page.IsBlockRel)
-                ge.Content = new OrgBlockRel(page.Page.Block, page.ConnectionPoints);
+                ge.Content = new OrgBlockRel(page.Page, page.ConnectionPoints);
             else
-                ge.Content = new OrgBlockOthers(page.Page.Block, page.ConnectionPoints);
+                ge.Content = new OrgBlockOthers(page.Page, page.ConnectionPoints);
 
             ge.PlaceOn(page.Row, page.Col);
             page.Placed = true;

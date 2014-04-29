@@ -5,7 +5,7 @@ namespace MemOrg.Interfaces.OrgUnits
 {
     public interface IOrgBlock : IOrg
     {
-        Block Block { get; }
+        IPage Page { get; }
         IEnumerable<NESW> ConnectionPoints { get; }
     }
 }

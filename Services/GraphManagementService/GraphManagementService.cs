@@ -27,10 +27,7 @@ namespace GraphManagementService
                 Caption = caption,
                 ParamName = bookName,
                 ParamValue = chapterNumber,
-                Particles = new List<Particle>
-                {
-                    new SourceTextParticle {Content = ""}
-                }
+                Particles = new List<Particle>()
             };
 
             _graphService.AddBlock(chapter);
@@ -47,6 +44,24 @@ namespace GraphManagementService
                 (particle as UserTextParticle).Content = newText;
             _graphService.SaveChanges();
             _eventAggregator.GetEvent<ParticleChanged>().Publish(particle);
+        }
+
+        public void AddSourceParticle(Block sourceBlock)
+        {
+            var block = _graphService.TrackingBlocks.FirstOrDefault(b => b.BlockId == sourceBlock.BlockId);
+            if (block == null) return;
+            var max = block.Particles.Count > 0 ? block.Particles.Max(o => o.Order) : 0;
+            var particle = new SourceTextParticle {Block = block, Order = ++max};
+            block.Particles.Add(particle);
+            _graphService.SaveChanges();
+            _eventAggregator.GetEvent<ParticleChanged>().Publish(particle);
+        }
+
+        public void RemoveSourceParticle(Particle particle)
+        {
+            _graphService.RemoveSourceParticle(particle);
+            _graphService.SaveChanges();
+            _eventAggregator.GetEvent<ParticleDeleted>().Publish(particle);
         }
     }
 }
