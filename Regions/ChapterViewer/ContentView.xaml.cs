@@ -23,6 +23,7 @@ namespace ChapterViewer
                         Rtf.Document = dc.Document;
                 };
                 DataContext = viewModel; 
+                Rtf.SelectionChanged += RtfOnSelectionChanged;
             };
             CurParticleTextBox.TextChanged += (sender, args) =>
             {
@@ -46,6 +47,19 @@ namespace ChapterViewer
                     }
                 }
             };
+        }
+
+        private void RtfOnSelectionChanged(object sender, RoutedEventArgs args)
+        {
+            var dc = DataContext as ContentViewModel;
+            if (dc == null) return;
+            
+            if (Rtf.Selection == null || Rtf.Selection.IsEmpty ||
+                Rtf.Selection.Start.Paragraph == null || Rtf.Selection.End.Paragraph == null
+                || !Equals(Rtf.Selection.Start.Paragraph, Rtf.Selection.End.Paragraph))
+                dc.SetParagraphSelection(null);
+            else
+                dc.SetParagraphSelection(Rtf.Selection);
         }
     }
 }

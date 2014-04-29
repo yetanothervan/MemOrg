@@ -20,7 +20,6 @@ namespace ChapterViewer
     {
         public ContentViewModel(IEventAggregator eventAggregator)
         {
-            _curPage = null;
             eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
             eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
             eventAggregator.GetEvent<ParticleDeleted>().Subscribe(OnParticleDeleted);
@@ -29,6 +28,8 @@ namespace ChapterViewer
             DiscardCommand = new DelegateCommand(Discard, () => TextChanged);
             CloseEditingCommand = new DelegateCommand(CloseEditing);
             AddSourceCommand = new DelegateCommand(AddSource, () => _curPage != null && _curPage.IsBlockSource);
+            ToBlockCommand = new DelegateCommand(ToBlock, () => _paragraphSelection != null && _curPage.IsBlockSource);
+            ToRelCommand = new DelegateCommand(ToRel, () => false);
             DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             
             EditWindowVisible = Visibility.Collapsed;
@@ -143,6 +144,16 @@ namespace ChapterViewer
                 ManagementService.RemoveSourceParticle(CurrentParagpaph.MyParticle);
         }
 
+        public DelegateCommand ToBlockCommand { get; set; }
+        private void ToBlock()
+        {
+        }
+
+        public DelegateCommand ToRelCommand { get; set; }
+        private void ToRel()
+        {
+        }
+
 
 
         public void ParagraphBlur()
@@ -244,6 +255,19 @@ namespace ChapterViewer
                 TextChanged = false;
                 RaisePropertyChangedEvent("EditWindowVisible");
             }
+        }
+
+        private TextSelection _paragraphSelection;
+        public void SetParagraphSelection(TextSelection selection)
+        {
+            _paragraphSelection = selection;
+            if (selection != null)
+            {
+                var par = selection.Start.Paragraph as ParticleParagraph;
+                if (par != null && par.MyParticle == null)
+                    _paragraphSelection = null;
+            }
+            ToBlockCommand.RaiseCanExecuteChanged();
         }
     }
 }
