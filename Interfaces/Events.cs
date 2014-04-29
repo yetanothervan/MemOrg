@@ -12,7 +12,7 @@ namespace MemOrg.Interfaces
     {
     }
 
-    public class ParticleChanged : CompositePresentationEvent<int>
+    public class ParticleChanged : CompositePresentationEvent<Particle>
     {
     }
 }

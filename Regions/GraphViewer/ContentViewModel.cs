@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Navigation;
@@ -28,10 +29,12 @@ namespace GraphViewer
             IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService,
             IEventAggregator eventAggregator)
         {
+            _modifyedParticles = new HashSet<Particle>();
             _graphOrganizeService = graphOrganizeService;
             _graphDrawService = graphDrawService;
             _graphVizualizeService = graphVizualizeService;
             _eventAggregator = eventAggregator;
+            _eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             var refreshGraphCommand = new DelegateCommand(RefreshGraph, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
@@ -81,9 +84,31 @@ namespace GraphViewer
 
         public void VisualMouseDown(Visual vis)
         {
-            var res = _graphDrawService.GetByVisual(vis);
-            if (res is Block)
-            _eventAggregator.GetEvent<BlockSelected>().Publish(res as Block);
+            var block = _graphDrawService.GetByVisual(vis) as Block;
+
+            if (block != null)
+            {
+                var mPart = _modifyedParticles.FirstOrDefault(p => p.Block.BlockId == block.BlockId);
+                if (mPart != null)
+                {
+                    var part = block.Particles.FirstOrDefault(p => p.ParticleId == mPart.ParticleId);
+                    if (part != null)
+                    {
+                        block.Particles.Remove(part);
+                        block.Particles.Add(mPart);
+                        _modifyedParticles.Remove(mPart);
+                    }
+                }
+                _eventAggregator.GetEvent<BlockSelected>().Publish(block);
+            }
+        }
+
+        private readonly HashSet<Particle> _modifyedParticles;
+        private void OnParticleChanged(Particle obj)
+        {
+            var pt = _modifyedParticles.FirstOrDefault(p => p.ParticleId == obj.ParticleId);
+            if (pt == null)
+                _modifyedParticles.Add(obj);
         }
 
         private void ToggleHeaders()

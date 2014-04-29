@@ -36,6 +36,15 @@ namespace ChapterViewer
                     var dc = DataContext as ContentViewModel;
                     if (dc != null) dc.SaveCommand.Execute();
                 }
+                if (args.Key == Key.Escape)
+                {
+                    var dc = DataContext as ContentViewModel;
+                    if (dc != null)
+                    {
+                        dc.DiscardCommand.Execute();
+                        dc.CloseEditingCommand.Execute();
+                    }
+                }
             };
         }
     }

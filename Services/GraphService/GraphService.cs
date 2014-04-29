@@ -3,6 +3,7 @@ using System.Linq;
 using DAL.Entity;
 using EF;
 using MemOrg.Interfaces;
+using Microsoft.Practices.Prism.Events;
 
 namespace GraphService
 {

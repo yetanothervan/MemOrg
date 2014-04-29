@@ -21,6 +21,7 @@ namespace ChapterViewer
         public ContentViewModel(IEventAggregator eventAggregator)
         {
             eventAggregator.GetEvent<BlockSelected>().Subscribe(OnBlockSelected);
+            eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
             EditCommand = new DelegateCommand(Edit, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             SaveCommand = new DelegateCommand(Save, () => TextChanged);
             DiscardCommand = new DelegateCommand(Discard, () => TextChanged);
@@ -28,31 +29,50 @@ namespace ChapterViewer
             
             EditWindowVisible = Visibility.Collapsed;
         }
-        
+
+        private void OnParticleChanged(Particle obj)
+        {
+            var source = obj as SourceTextParticle;
+            var user = obj as UserTextParticle;
+            if (source == null && user == null) return;
+            
+            var part =
+                Document.Blocks.OfType<ParticleParagraph>()
+                    .FirstOrDefault(p => p.MyParticle != null && p.MyParticle.ParticleId == obj.ParticleId);
+            
+            if (part != null)
+            {
+                var paragraph = CreateParagraph(obj);
+                Document.Blocks.InsertAfter(part, paragraph);
+                Document.Blocks.Remove(part);
+            }
+        }
+
         private void OnBlockSelected(Block block)
         {
             var doc = new FlowDocument();
             var captionParagraph = new ParticleParagraph(block.Caption);
             doc.Blocks.Add(captionParagraph);
-
-            doc.MouseDown += (sender, args) =>
-            {
-                CurrentParagpaph = null;
-            };
+            
             foreach (var part in block.Particles.OrderBy(b => b.Order))
             {
-                var paragraph = new ParticleParagraph(part);
-
-                paragraph.MouseDown += (sender, args) =>
-                {
-                    CurrentParagpaph = paragraph;
-                    args.Handled = true;
-                };
-
+                var paragraph = CreateParagraph(part);
                 doc.Blocks.Add(paragraph);
             }
             
             Document = doc;
+        }
+
+        private ParticleParagraph CreateParagraph(Particle p)
+        {
+            var paragraph = new ParticleParagraph(p);
+
+            paragraph.MouseDown += (sender, args) =>
+            {
+                CurrentParagpaph = paragraph;
+            };
+
+            return paragraph;
         }
 
 

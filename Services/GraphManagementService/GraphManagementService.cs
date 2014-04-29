@@ -46,7 +46,7 @@ namespace GraphManagementService
             else if (particle is UserTextParticle)
                 (particle as UserTextParticle).Content = newText;
             _graphService.SaveChanges();
-            _eventAggregator.GetEvent<ParticleChanged>().Publish(particleId);
+            _eventAggregator.GetEvent<ParticleChanged>().Publish(particle);
         }
     }
 }

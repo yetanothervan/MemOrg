@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using DAL.Entity;
 using MemOrg.Interfaces;
+using Microsoft.Practices.Prism.Events;
 
 namespace GraphService
 {
@@ -17,7 +18,7 @@ namespace GraphService
             _graphService = graphService;
             _books = null;
         }
-
+        
         public IGraphService GraphService
         {
             get { return _graphService; }

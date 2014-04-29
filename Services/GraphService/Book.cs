@@ -31,6 +31,9 @@ namespace GraphService
             {
                 var page = chapter.PagesBlocks.FirstOrDefault(p => p.Block.BlockId == blockId);
                 if (page != null) return page;
+                if (chapter.ChapterPage != null && chapter.ChapterPage.Block != null &&
+                    chapter.ChapterPage.Block.BlockId == blockId)
+                    return chapter.ChapterPage;
             }
             return null;
         }
