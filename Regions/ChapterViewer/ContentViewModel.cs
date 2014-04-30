@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using ChapterViewer.BlockPointOutDlg;
 using DAL.Entity;
 using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
@@ -20,6 +21,7 @@ namespace ChapterViewer
     {
         public ContentViewModel(IEventAggregator eventAggregator)
         {
+            _selectBlockMode = false;
             eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
             eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
             eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
@@ -68,12 +70,25 @@ namespace ChapterViewer
         private IPage _curPage;
         private void OnPageSelected(IPage curPage)
         {
+            if (_selectBlockMode)
+            {
+                SelectBloctToExtractParticleTo(curPage.Block);
+                _selectBlockMode = false;
+                return;
+            }
+
             _curPage = curPage;
             Discard();
             CloseEditing();
             CurrentParagpaph = null;
             
             BuildDoc();
+        }
+
+        private void SelectBloctToExtractParticleTo(Block targetBlock)
+        {
+            ManagementService.ExtractParticleToExistBlock(_selectBlockModeParticleToExtract, 
+                targetBlock, _selectBlockModeStartSelection, _selectBlockModeLengthSelection);
         }
 
         private void BuildDoc()
@@ -161,7 +176,18 @@ namespace ChapterViewer
             {
                 var s = par.ContentStart.GetOffsetToPosition(_paragraphSelection.Start) - 1;
                 var e = _paragraphSelection.Start.GetOffsetToPosition(_paragraphSelection.End);
-                ManagementService.ExtractNewBlockFromParticle(par.MyParticle, s, e, "CAPTCHA");
+
+                var dlg = new BlockPointOutView();
+                dlg.ShowDialog();
+                if (dlg.BlockPointOutResult == BlockPointOutResult.Create)
+                    ManagementService.ExtractNewBlockFromParticle(par.MyParticle, s, e, dlg.Caption);
+                else
+                {
+                    _selectBlockMode = true;
+                    _selectBlockModeParticleToExtract = par.MyParticle;
+                    _selectBlockModeStartSelection = s;
+                    _selectBlockModeLengthSelection = e;
+                }
             }
         }
 
@@ -274,6 +300,12 @@ namespace ChapterViewer
         }
 
         private TextSelection _paragraphSelection;
+        
+        private bool _selectBlockMode;
+        private Particle _selectBlockModeParticleToExtract;
+        private int _selectBlockModeStartSelection;
+        private int _selectBlockModeLengthSelection;
+
         public void SetParagraphSelection(TextSelection selection)
         {
             _paragraphSelection = selection;

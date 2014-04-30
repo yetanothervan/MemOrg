@@ -10,5 +10,6 @@ namespace MemOrg.Interfaces
         void AddSourceParticle(Block sourceBlock);
         void RemoveSourceParticle(Particle particle);
         void ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption);
+        void ExtractParticleToExistBlock(Particle particle, Block targetBlock, int start, int length);
     }
 }

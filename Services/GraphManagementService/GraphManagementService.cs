@@ -69,8 +69,41 @@ namespace GraphManagementService
 
         public void ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption)
         {
+            var body = ExtractSourcePartition(particle, start, length);
+            _graphService.AddBlock(new Block
+            {
+                Caption = caption,
+                Particles =
+                    new Collection<Particle>
+                    {
+                        new QuoteSourceParticle {Order = 0, SourceTextParticleId = body.ParticleId}
+                    }
+            });
+            _graphService.SaveChanges();
+            _eventAggregator.GetEvent<BlockChanged>().Publish(body.Block);
+        }
+
+        public void ExtractParticleToExistBlock(Particle particle, Block targetBlock, int start, int length)
+        {
+            var body = ExtractSourcePartition(particle, start, length);
+            var block = _graphService.TrackingBlocks.FirstOrDefault(b => b.BlockId == targetBlock.BlockId);
+            if (block == null) return;
+            var max = block.Particles.Count > 0 ? block.Particles.Max(o => o.Order) : 0;
+            block.Particles.Add(new QuoteSourceParticle
+            {
+                Block = block,
+                Order = ++max,
+                SourceTextParticleId = body.ParticleId
+            });
+            _graphService.SaveChanges();
+            _eventAggregator.GetEvent<BlockChanged>().Publish(body.Block);
+            _eventAggregator.GetEvent<BlockChanged>().Publish(block);
+        }
+
+        private SourceTextParticle ExtractSourcePartition(Particle particle, int start, int length)
+        {
             var sp = particle as SourceTextParticle;
-            if (sp == null) return;
+            if (sp == null) return null;
 
             var text1 = sp.Content.Substring(0, start);
             var text2 = sp.Content.Substring(start, length);
@@ -116,18 +149,7 @@ namespace GraphManagementService
             if (!String.IsNullOrEmpty(text3))
                 block.Particles.Add(new SourceTextParticle { Block = block, Content = text3, Order = order3 });
             _graphService.SaveChanges();
-
-            _graphService.AddBlock(new Block
-            {
-                Caption = caption,
-                Particles =
-                    new Collection<Particle>
-                    {
-                        new QuoteSourceParticle {Order = 0, SourceTextParticleId = body.ParticleId}
-                    }
-            });
-            _graphService.SaveChanges();
-            _eventAggregator.GetEvent<BlockChanged>().Publish(block);
+            return body;
         }
     }
 }

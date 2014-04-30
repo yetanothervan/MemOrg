@@ -1,0 +1,16 @@
+﻿<Window x:Class="ChapterViewer.BlockPointOutDlg.BlockPointOutView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Укажите блок или создайте новый" Height="200" Width="300">
+    <StackPanel>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" 
+                Margin="15" Click="Button_Point">Point Block...</Button>
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15, 0, 15, 15">or create new</TextBlock>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15, 0, 15, 15" >
+            <TextBlock>Caption:</TextBlock>
+            <TextBox Margin="15, 0, 0, 0" Width="200" TextChanged="Caption_OnTextChanged"/>
+        </StackPanel>
+        <Button HorizontalAlignment="Center" VerticalAlignment="Top" Width="80" 
+                Margin="15, 0, 0, 0" Click="Button_Create">Create</Button>
+    </StackPanel>
+</Window>
