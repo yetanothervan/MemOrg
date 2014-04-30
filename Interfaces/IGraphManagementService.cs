@@ -9,5 +9,6 @@ namespace MemOrg.Interfaces
         void UpdateParticleText(int particleId, string newText);
         void AddSourceParticle(Block sourceBlock);
         void RemoveSourceParticle(Particle particle);
+        void ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption);
     }
 }

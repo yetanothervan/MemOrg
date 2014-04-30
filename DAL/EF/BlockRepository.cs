@@ -67,7 +67,12 @@ where TagId is null and RelationId is null and t1.ParticleId is null";*/
 
         public IQueryable<Block> BlockSources
         {
-            get { return _context.Blocks.AsNoTracking().Where(b => b.Particles.Any(p => p is SourceTextParticle)); }
+            get
+            {
+                return
+                    _context.Blocks.AsNoTracking()
+                        .Where(b => !String.IsNullOrEmpty(b.ParamName) || b.Particles.Any(p => p is SourceTextParticle));
+            }
         }
 
         public IQueryable<Block> BlockTags

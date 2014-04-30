@@ -62,6 +62,9 @@ namespace GraphOrganizeService.Chapter
 
         public IPage GetMostLargestNumberOfEdgeVertex()
         {
+            if (_vertexes.Count == 0) return null;
+            if (_edges.Count == 0)
+                return _vertexes.First();
             var res =
                 _vertexes.SelectMany(v => _edges, (v, e) => new {v, e})
                     .Where(@t => @t.e.First == @t.v || @t.e.Second == @t.v).GroupBy(g => g.v)

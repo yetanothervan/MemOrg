@@ -22,7 +22,7 @@ namespace ChapterViewer
         {
             eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
             eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
-            eventAggregator.GetEvent<ParticleDeleted>().Subscribe(OnParticleDeleted);
+            eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
             EditCommand = new DelegateCommand(Edit, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             SaveCommand = new DelegateCommand(Save, () => TextChanged);
             DiscardCommand = new DelegateCommand(Discard, () => TextChanged);
@@ -35,16 +35,13 @@ namespace ChapterViewer
             EditWindowVisible = Visibility.Collapsed;
         }
 
-        private void OnParticleDeleted(Particle obj)
+        private void OnBlockChanged(Block obj)
         {
-            var part =
-                Document.Blocks.OfType<ParticleParagraph>()
-                    .FirstOrDefault(p => p.MyParticle != null && p.MyParticle.ParticleId == obj.ParticleId);
-
-            if (part != null)
-                Document.Blocks.Remove(part);
+            if (_curPage != null && _curPage.Block.BlockId == obj.BlockId)
+                _curPage.Block = obj;
+            BuildDoc();
         }
-
+        
         private void OnParticleChanged(Particle obj)
         {
             var source = obj as SourceTextParticle;
@@ -76,16 +73,21 @@ namespace ChapterViewer
             CloseEditing();
             CurrentParagpaph = null;
             
+            BuildDoc();
+        }
+
+        private void BuildDoc()
+        {
             var doc = new FlowDocument();
-            var captionParagraph = new ParticleParagraph(curPage.Block.Caption);
+            var captionParagraph = new ParticleParagraph(_curPage.Block.Caption);
             doc.Blocks.Add(captionParagraph);
-            
-            foreach (var part in curPage.Block.Particles.OrderBy(b => b.Order))
+
+            foreach (var part in _curPage.Block.Particles.OrderBy(b => b.Order))
             {
                 var paragraph = CreateParagraph(part);
                 doc.Blocks.Add(paragraph);
             }
-            
+
             Document = doc;
             AddSourceCommand.RaiseCanExecuteChanged();
         }
@@ -135,6 +137,13 @@ namespace ChapterViewer
         {
             if (_curPage != null && _curPage.Block != null && _curPage.IsBlockSource)
                 ManagementService.AddSourceParticle(_curPage.Block);
+
+            var maxOrderParagraph =
+                Document.Blocks.OfType<ParticleParagraph>().Where(p => p.MyParticle != null)
+                    .Aggregate((curmax, x) =>
+                        (curmax == null || x.MyParticle.Order > curmax.MyParticle.Order) ? x : curmax);
+            
+            CurrentParagpaph = maxOrderParagraph;
         }
 
         public DelegateCommand DeleteCommand { get; set; }
@@ -147,6 +156,13 @@ namespace ChapterViewer
         public DelegateCommand ToBlockCommand { get; set; }
         private void ToBlock()
         {
+            var par = _paragraphSelection.Start.Paragraph as ParticleParagraph;
+            if (par != null)
+            {
+                var s = par.ContentStart.GetOffsetToPosition(_paragraphSelection.Start) - 1;
+                var e = _paragraphSelection.Start.GetOffsetToPosition(_paragraphSelection.End);
+                ManagementService.ExtractNewBlockFromParticle(par.MyParticle, s, e, "CAPTCHA");
+            }
         }
 
         public DelegateCommand ToRelCommand { get; set; }

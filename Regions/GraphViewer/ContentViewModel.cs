@@ -16,6 +16,7 @@ namespace GraphViewer
         private readonly IGraphOrganizeService _graphOrganizeService;
         private readonly IGraphDrawService _graphDrawService;
         private readonly IGraphVizualizeService _graphVizualizeService;
+        private readonly IGraphService _graphService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IDrawer _drawer;
         private IVisualizeOptions _options;
@@ -26,17 +27,17 @@ namespace GraphViewer
         IOrgGrid _blockTrees;
 
         public ContentViewModel(IGraphOrganizeService graphOrganizeService, 
-            IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService,
+            IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService, IGraphService _graphService,
             IEventAggregator eventAggregator)
         {
-            _modifyedParticles = new HashSet<Particle>();
-            _deletedParticles = new HashSet<Particle>();
+            _modifyedBlocks = new List<Block>();
             _graphOrganizeService = graphOrganizeService;
             _graphDrawService = graphDrawService;
             _graphVizualizeService = graphVizualizeService;
+            this._graphService = _graphService;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
-            _eventAggregator.GetEvent<ParticleDeleted>().Subscribe(OnParticleDeleted);
+            _eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             var refreshGraphCommand = new DelegateCommand(RefreshGraph, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
@@ -50,12 +51,12 @@ namespace GraphViewer
             RefreshGraph();
         }
 
-        private readonly HashSet<Particle> _deletedParticles;
-        private void OnParticleDeleted(Particle obj)
+        private readonly List<Block> _modifyedBlocks;
+        private void OnBlockChanged(Block obj)
         {
-            var pt = _deletedParticles.FirstOrDefault(p => p.ParticleId == obj.ParticleId);
+            var pt = _modifyedBlocks.FirstOrDefault(b => b.BlockId == obj.BlockId);
             if (pt == null)
-                _deletedParticles.Add(obj);
+                _modifyedBlocks.Add(obj);
         }
 
         private void RefreshGraph()
@@ -98,36 +99,22 @@ namespace GraphViewer
 
             if (page != null)
             {
-                var mParts = _modifyedParticles.Where(p => p.Block.BlockId == page.Block.BlockId).ToList();
-                foreach (var mPart in mParts)
+                var block = _modifyedBlocks.FirstOrDefault(b => b.BlockId == page.Block.BlockId);
+                if (block != null)
                 {
-                    var part = page.Block.Particles.FirstOrDefault(p => p.ParticleId == mPart.ParticleId);
-
-                    if (part != null)
-                        page.Block.Particles.Remove(part);
-
-                    page.Block.Particles.Add(mPart);
-                    _modifyedParticles.Remove(mPart);
-                }
-                var dParts = _deletedParticles.Where(p => p.Block.BlockId == page.Block.BlockId).ToList();
-                foreach (var dPart in dParts)
-                {
-                    var part = page.Block.Particles.FirstOrDefault(p => p.ParticleId == dPart.ParticleId);
-
-                    if (part != null)
-                        page.Block.Particles.Remove(part);
-                    _modifyedParticles.Remove(dPart);
+                    var blockFromBase = _graphService.BlockAll.First(b => b.BlockId == block.BlockId);
+                    page.Block = blockFromBase;
+                    _modifyedBlocks.Remove(block);
                 }
                 _eventAggregator.GetEvent<PageSelected>().Publish(page);
             }
         }
 
-        private readonly HashSet<Particle> _modifyedParticles;
         private void OnParticleChanged(Particle obj)
         {
-            var pt = _modifyedParticles.FirstOrDefault(p => p.ParticleId == obj.ParticleId);
+            var pt = _modifyedBlocks.FirstOrDefault(b => b.BlockId == obj.Block.BlockId);
             if (pt == null)
-                _modifyedParticles.Add(obj);
+                _modifyedBlocks.Add(obj.Block);
         }
 
         private void ToggleHeaders()

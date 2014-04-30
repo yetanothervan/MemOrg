@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,14 +55,79 @@ namespace GraphManagementService
             var particle = new SourceTextParticle {Block = block, Order = ++max};
             block.Particles.Add(particle);
             _graphService.SaveChanges();
-            _eventAggregator.GetEvent<ParticleChanged>().Publish(particle);
+            _eventAggregator.GetEvent<BlockChanged>().Publish(block);
         }
 
         public void RemoveSourceParticle(Particle particle)
         {
+            var block = particle.Block;
             _graphService.RemoveSourceParticle(particle);
             _graphService.SaveChanges();
-            _eventAggregator.GetEvent<ParticleDeleted>().Publish(particle);
+            var blockFromBase = _graphService.BlockAll.First(b => b.BlockId == block.BlockId);
+            _eventAggregator.GetEvent<BlockChanged>().Publish(blockFromBase);
+        }
+
+        public void ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption)
+        {
+            var sp = particle as SourceTextParticle;
+            if (sp == null) return;
+
+            var text1 = sp.Content.Substring(0, start);
+            var text2 = sp.Content.Substring(start, length);
+            var text3 = sp.Content.Substring(start + length);
+
+            int order1 = -1;
+            int order2;
+            int order3 = -1;
+            int addind = 0;
+
+            if (!String.IsNullOrEmpty(text1))
+            {
+                order1 = particle.Order;
+                order2 = particle.Order + 1;
+                ++addind;
+            }
+            else
+                order2 = particle.Order;
+
+            if (!String.IsNullOrEmpty(text3))
+            {
+                order3 = order2 + 1;
+                ++addind;
+            }
+
+            var blockId = particle.Block.BlockId;
+
+            var parts = _graphService.TrackingParticles.Where(p => p.Block.BlockId == particle.Block.BlockId);
+            foreach (var part in parts)
+            {
+                if (part.Order > particle.Order)
+                    part.Order += addind;
+            }
+            _graphService.RemoveSourceParticle(particle);
+            _graphService.SaveChanges();
+
+            var block = _graphService.TrackingBlocks.First(b => b.BlockId == blockId);
+
+            if (!String.IsNullOrEmpty(text1))
+                block.Particles.Add(new SourceTextParticle { Block = block, Content = text1, Order = order1 });
+            var body = new SourceTextParticle { Block = block, Content = text2, Order = order2 };
+            block.Particles.Add(body);
+            if (!String.IsNullOrEmpty(text3))
+                block.Particles.Add(new SourceTextParticle { Block = block, Content = text3, Order = order3 });
+            _graphService.SaveChanges();
+
+            _graphService.AddBlock(new Block
+            {
+                Caption = caption,
+                Particles =
+                    new Collection<Particle>
+                    {
+                        new QuoteSourceParticle {Order = 0, SourceTextParticleId = body.ParticleId}
+                    }
+            });
+            _graphService.SaveChanges();
+            _eventAggregator.GetEvent<BlockChanged>().Publish(block);
         }
     }
 }

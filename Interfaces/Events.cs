@@ -16,7 +16,7 @@ namespace MemOrg.Interfaces
     {
     }
 
-    public class ParticleDeleted : CompositePresentationEvent<Particle>
+    public class BlockChanged : CompositePresentationEvent<Block>
     {
     }
 }
