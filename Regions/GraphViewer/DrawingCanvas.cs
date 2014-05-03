@@ -30,7 +30,7 @@ namespace GraphViewer
         public DrawingCanvas()
         {
             _visuals = new VisualCollection(this);
-            MouseDown += (sender, args) =>
+            MouseUp += (sender, args) =>
             {
                 var dc = DataContext as ContentViewModel;
                 if (dc != null)

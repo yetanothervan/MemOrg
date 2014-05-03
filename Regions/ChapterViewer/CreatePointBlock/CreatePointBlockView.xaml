@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="ChapterViewer.CreatePointBlock.CreatePointBlockView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:model="clr-namespace:ChapterViewer.CreatePointBlock"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="270">
+    <UserControl.Resources>
+        <Style x:Key="SpItem" TargetType="FrameworkElement">
+            <Setter Property="Margin" Value="15, 15, 15, 0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+    </UserControl.Resources>
+    <StackPanel d:DataContext="{d:DesignInstance model:CreatePointBlockViewModel}">
+        <TextBlock Style="{StaticResource SpItem}" Text="{Binding CaptionView}" />
+        <Button Style="{StaticResource SpItem}" Command="Select" IsEnabled="{Binding IsCreateNewReversed}">Point Block...</Button>
+        <CheckBox Style="{StaticResource SpItem}" IsChecked="{Binding IsCreateNew}">or create new</CheckBox>
+        <StackPanel Orientation="Horizontal" Style="{StaticResource SpItem}" >
+            <TextBlock>Caption:</TextBlock>
+            <TextBox Margin="15, 0, 0, 0" Width="180" Text="{Binding CaptionBlock}" IsEnabled="{Binding IsCreateNew}"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

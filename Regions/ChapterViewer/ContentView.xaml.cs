@@ -22,6 +22,7 @@ namespace ChapterViewer
                     if (dc != null && eventArgs.PropertyName == "Document")
                         Rtf.Document = dc.Document;
                 };
+                viewModel.OwnerWindow = Window.GetWindow(this);
                 DataContext = viewModel; 
                 Rtf.SelectionChanged += RtfOnSelectionChanged;
             };

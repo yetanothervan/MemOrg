@@ -34,6 +34,8 @@ namespace GraphViewer
         {
             if (_mouseLbDown)
             {
+                if (!ContentGrid.IsMouseCaptured)
+                    ContentGrid.CaptureMouse();
                 var vm = (ContentViewModel) DataContext;
                 if (vm != null)
                 {
@@ -56,7 +58,7 @@ namespace GraphViewer
                 _mouseLbDown = true;
                 _startPosition = new Vector(e.GetPosition(this).X, e.GetPosition(this).Y);
                 _startOffset = vm.Offset;
-                ContentGrid.CaptureMouse();
+                
             }
         }
 

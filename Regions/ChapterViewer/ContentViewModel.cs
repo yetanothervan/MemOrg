@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using ChapterViewer.AddRelDlg;
 using ChapterViewer.BlockPointOutDlg;
 using DAL.Entity;
 using MemOrg.Interfaces;
@@ -21,7 +22,6 @@ namespace ChapterViewer
     {
         public ContentViewModel(IEventAggregator eventAggregator)
         {
-            _selectBlockMode = false;
             eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
             eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
             eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
@@ -31,7 +31,7 @@ namespace ChapterViewer
             CloseEditingCommand = new DelegateCommand(CloseEditing);
             AddSourceCommand = new DelegateCommand(AddSource, () => _curPage != null && _curPage.IsBlockSource);
             ToBlockCommand = new DelegateCommand(ToBlock, () => _paragraphSelection != null && _curPage.IsBlockSource);
-            ToRelCommand = new DelegateCommand(ToRel, () => false);
+            ToRelCommand = new DelegateCommand(ToRel, () => _curPage != null && _curPage.IsBlockSource);
             DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             
             EditWindowVisible = Visibility.Collapsed;
@@ -70,10 +70,9 @@ namespace ChapterViewer
         private IPage _curPage;
         private void OnPageSelected(IPage curPage)
         {
-            if (_selectBlockMode)
+            if (DialogAwaits != null)
             {
-                SelectBloctToExtractParticleTo(curPage.Block);
-                _selectBlockMode = false;
+                HandleDialogAwaits(curPage.Block);
                 return;
             }
 
@@ -85,10 +84,60 @@ namespace ChapterViewer
             BuildDoc();
         }
 
-        private void SelectBloctToExtractParticleTo(Block targetBlock)
+        private void HandleDialogAwaits(Block targetBlock)
         {
-            ManagementService.ExtractParticleToExistBlock(_selectBlockModeParticleToExtract, 
-                targetBlock, _selectBlockModeStartSelection, _selectBlockModeLengthSelection);
+            if (DialogAwaits is BlockPointOutView)
+            {
+                var dlg = DialogAwaits as BlockPointOutView;
+                dlg.MyBlock = targetBlock;
+                dlg.ShowDialog();
+
+                if (dlg.Result == null || dlg.Result == BlockPointOutViewResult.Cancel)
+                {
+                    DialogAwaits = null; return;
+                }
+                if (dlg.Result == BlockPointOutViewResult.SelectBlock) return;
+
+                if (dlg.IsCreateNew)
+                {
+                    DialogAwaits = null;
+                    ManagementService.ExtractNewBlockFromParticle(dlg.MyParticle,
+                        dlg.StartSelection, dlg.SelectionLength, dlg.Caption);
+                }
+                else
+                {
+                    DialogAwaits = null;
+                    ManagementService.ExtractParticleToExistBlock(dlg.MyParticle, dlg.MyBlock, 
+                        dlg.StartSelection, dlg.SelectionLength);
+                }
+            }
+
+            if (DialogAwaits is AddRelView)
+            {
+                var dlg = DialogAwaits as AddRelView;
+                if (dlg.Result == AddRelDlgResult.SelectFirst)
+                    dlg.BlockFirst = targetBlock;
+                else
+                    dlg.BlockSecond = targetBlock;
+                
+                dlg.ShowDialog();
+                if (dlg.Result == null || dlg.Result == AddRelDlgResult.Cancel)
+                {
+                    DialogAwaits = null;
+                    return;
+                }
+                if (dlg.Result == AddRelDlgResult.OK)
+                {
+                    ManagementService.AddNewRelation(dlg.RelType, 
+                        dlg.IsFirstCreateNew ? null : dlg.BlockFirst, dlg.CaptionFirst,
+                        dlg.IsSecondCreateNew ? null : dlg.BlockSecond, dlg.CaptionSecond,
+                        dlg.MyParticle.MyParticle, dlg.StartSelection, dlg.SelectionLength);
+                    DialogAwaits = null;
+                    return;
+                }
+
+                DialogAwaits = dlg; //select first or select second
+            }
         }
 
         private void BuildDoc()
@@ -104,7 +153,11 @@ namespace ChapterViewer
             }
 
             Document = doc;
+            
+            SetParagraphSelection(null);
             AddSourceCommand.RaiseCanExecuteChanged();
+            ToBlockCommand.RaiseCanExecuteChanged();
+            ToRelCommand.RaiseCanExecuteChanged();
         }
 
         private ParticleParagraph CreateParagraph(Particle p)
@@ -168,35 +221,83 @@ namespace ChapterViewer
                 ManagementService.RemoveSourceParticle(CurrentParagpaph.MyParticle);
         }
 
+        public Window OwnerWindow { get; set; }
+
         public DelegateCommand ToBlockCommand { get; set; }
         private void ToBlock()
         {
             var par = _paragraphSelection.Start.Paragraph as ParticleParagraph;
             if (par != null)
             {
-                var s = par.ContentStart.GetOffsetToPosition(_paragraphSelection.Start) - 1;
-                var e = _paragraphSelection.Start.GetOffsetToPosition(_paragraphSelection.End);
+                var dlg = new BlockPointOutView(par.MyParticle,
+                    GetSelectionStart(par), GetSelectionLength())
+                {Owner = OwnerWindow};
 
-                var dlg = new BlockPointOutView();
                 dlg.ShowDialog();
-                if (dlg.BlockPointOutResult == BlockPointOutResult.Create)
-                    ManagementService.ExtractNewBlockFromParticle(par.MyParticle, s, e, dlg.Caption);
-                else
+                if (dlg.Result == null || dlg.Result == BlockPointOutViewResult.Cancel) return;
+                
+                if (dlg.Result == BlockPointOutViewResult.Ok && dlg.IsCreateNew)
                 {
-                    _selectBlockMode = true;
-                    _selectBlockModeParticleToExtract = par.MyParticle;
-                    _selectBlockModeStartSelection = s;
-                    _selectBlockModeLengthSelection = e;
+                    ManagementService.ExtractNewBlockFromParticle(dlg.MyParticle,
+                        dlg.StartSelection, dlg.SelectionLength, dlg.Caption);
+                    return;
                 }
+                
+                DialogAwaits = dlg; //select block
             }
         }
 
-        public DelegateCommand ToRelCommand { get; set; }
-        private void ToRel()
+        private int GetSelectionLength()
         {
+            var e = _paragraphSelection.Start.GetOffsetToPosition(_paragraphSelection.End);
+            return e;
         }
 
+        private int GetSelectionStart(ParticleParagraph par)
+        {
+            var s = par.ContentStart.GetOffsetToPosition(_paragraphSelection.Start) - 1;
+            return s;
+        }
 
+        public DelegateCommand ToRelCommand { get; set; }
+
+        private void ToRel()
+        {
+            var selected = false;
+            var selectStart = 0;
+            var selectLength = 0;
+            ParticleParagraph par = null;
+            if (_paragraphSelection != null)
+            {
+                par = _paragraphSelection.Start.Paragraph as ParticleParagraph;
+                if (par != null)
+                {
+                    selected = true;
+                    selectStart = GetSelectionStart(par);
+                    selectLength = GetSelectionLength();
+                }
+            }
+
+            var dlg = new AddRelView {Owner = OwnerWindow};
+            if (selected)
+            {
+                dlg.Selection = true;
+                dlg.StartSelection = selectStart;
+                dlg.SelectionLength = selectLength;
+                dlg.MyParticle = par;
+            }
+
+            dlg.ShowDialog();
+            if (dlg.Result == null || dlg.Result == AddRelDlgResult.Cancel) return;
+            if (dlg.Result == AddRelDlgResult.OK)
+            {
+                ManagementService.AddNewRelation(dlg.RelType, null, dlg.CaptionFirst, null, dlg.CaptionSecond, 
+                    dlg.MyParticle.MyParticle, dlg.StartSelection, dlg.SelectionLength);
+                return;
+            }
+
+            DialogAwaits = dlg; //select first or select second
+        }
 
         public void ParagraphBlur()
         {
@@ -300,12 +401,9 @@ namespace ChapterViewer
         }
 
         private TextSelection _paragraphSelection;
-        
-        private bool _selectBlockMode;
-        private Particle _selectBlockModeParticleToExtract;
-        private int _selectBlockModeStartSelection;
-        private int _selectBlockModeLengthSelection;
 
+        private object DialogAwaits;
+        
         public void SetParagraphSelection(TextSelection selection)
         {
             _paragraphSelection = selection;

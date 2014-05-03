@@ -67,10 +67,10 @@ namespace GraphManagementService
             _eventAggregator.GetEvent<BlockChanged>().Publish(blockFromBase);
         }
 
-        public void ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption)
+        public Block ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption)
         {
             var body = ExtractSourcePartition(particle, start, length);
-            _graphService.AddBlock(new Block
+            var block = new Block
             {
                 Caption = caption,
                 Particles =
@@ -78,9 +78,11 @@ namespace GraphManagementService
                     {
                         new QuoteSourceParticle {Order = 0, SourceTextParticleId = body.ParticleId}
                     }
-            });
+            };
+            _graphService.AddBlock(block);
             _graphService.SaveChanges();
             _eventAggregator.GetEvent<BlockChanged>().Publish(body.Block);
+            return block;
         }
 
         public void ExtractParticleToExistBlock(Particle particle, Block targetBlock, int start, int length)
@@ -98,6 +100,51 @@ namespace GraphManagementService
             _graphService.SaveChanges();
             _eventAggregator.GetEvent<BlockChanged>().Publish(body.Block);
             _eventAggregator.GetEvent<BlockChanged>().Publish(block);
+        }
+
+        public void AddNewRelation(string relType, Block first, string captionFirst, Block second, string captionSecond,
+            Particle particle, int start, int length)
+        {
+            var relTypeBase = _graphService.RelationTypes.FirstOrDefault(rt => rt.Caption == relType);
+            if (relTypeBase == null)
+            {
+                relTypeBase = new RelationType {Caption = relType};
+                _graphService.AddRelationType(relTypeBase);
+                _graphService.SaveChanges();
+            }
+
+            if (first == null)
+            {
+                first = new Block {Caption = captionFirst};
+                _graphService.AddBlock(first);
+                _graphService.SaveChanges();
+            }
+
+            if (second == null)
+            {
+                second = new Block { Caption = captionSecond };
+                _graphService.AddBlock(second);
+                _graphService.SaveChanges();
+            }
+
+            Block relBlock = null;
+            if (particle != null)
+            {
+                string relBlockCaption = String.Format("{0} {1} {2}", first.Caption, relType, second.Caption);
+                relBlock = ExtractNewBlockFromParticle(particle, start, length,
+                    relBlockCaption);
+            }
+
+            var rel = new Relation
+            {
+                FirstBlock = first,
+                SecondBlock = second,
+                RelationBlock = relBlock,
+                RelationType = relTypeBase
+            };
+
+            _graphService.AddRelation(rel);
+            _graphService.SaveChanges();
         }
 
         private SourceTextParticle ExtractSourcePartition(Particle particle, int start, int length)
