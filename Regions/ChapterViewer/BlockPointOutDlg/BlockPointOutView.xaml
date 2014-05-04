@@ -10,8 +10,8 @@
         <createPointBlock:CreatePointBlockView x:Name="BlockSelectDlg"/>
         <Separator Margin="15, 15, 15, 0"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15, 15, 15, 15">
-            <Button Width="80" Margin="0,0,10,0" Click="OK_Click">OK</Button>
-            <Button Width="80" Margin="10,0,0,0" Click="Cancel_Click">Cancel</Button>
+            <Button Width="80" IsDefault="True" Margin="0,0,10,0" Click="OK_Click">OK</Button>
+            <Button Width="80" IsCancel="True" Margin="10,0,0,0" Click="Cancel_Click">Cancel</Button>
         </StackPanel>
     </StackPanel>
 </Window>

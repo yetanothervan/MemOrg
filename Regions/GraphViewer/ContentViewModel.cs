@@ -30,6 +30,7 @@ namespace GraphViewer
             IGraphDrawService graphDrawService, IGraphVizualizeService graphVizualizeService, IGraphService _graphService,
             IEventAggregator eventAggregator)
         {
+            _currentPage = null;
             _modifyedBlocks = new List<Block>();
             _graphOrganizeService = graphOrganizeService;
             _graphDrawService = graphDrawService;
@@ -38,6 +39,7 @@ namespace GraphViewer
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
             _eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
+            _eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             var refreshGraphCommand = new DelegateCommand(RefreshGraph, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
@@ -51,6 +53,12 @@ namespace GraphViewer
             RefreshGraph();
         }
 
+        private IPage _currentPage;
+        private void OnPageSelected(IPage obj)
+        {
+            _currentPage = obj;
+        }
+
         private readonly List<Block> _modifyedBlocks;
         private void OnBlockChanged(Block obj)
         {
@@ -59,8 +67,22 @@ namespace GraphViewer
                 _modifyedBlocks.Add(obj);
         }
 
+        Point GetOffsetOfPage(IPage page)
+        {
+            var vis = Visuals.OfType<ILogicalBlock>()
+                .FirstOrDefault(p => p.Data is IPage && (p.Data as IPage).Block.BlockId == page.Block.BlockId);
+                        
+            var childBounds = VisualTreeHelper.GetDescendantBounds(vis as ContainerVisual);
+            return childBounds.TopLeft;
+        }
+
         private void RefreshGraph()
         {
+            var oldPageOffset = new Point(0, 0);
+            if (_currentPage != null && Visuals != null)
+                oldPageOffset = GetOffsetOfPage(_currentPage);
+            
+
             IGraph graph = _graphOrganizeService.GetGraph(null);
             IGridLayout rawLayout = _graphOrganizeService.GetFullLayout(graph);
             IGridLayout camoLayout = _graphOrganizeService.GetLayout(graph);
@@ -73,7 +95,16 @@ namespace GraphViewer
             _blockTrees = blockLayout.CreateTreesGrid();
             
             UpdateGrid(_options);
-            Offset = new Vector(0, 400 - Grid.GetActualSize().Height);
+
+            if (_currentPage != null)
+            {
+                var newPageOffset = GetOffsetOfPage(_currentPage);
+                var newOffset = new Vector(Offset.X - (newPageOffset.X - oldPageOffset.X),
+                    Offset.Y - (newPageOffset.Y - oldPageOffset.Y));
+                Offset = newOffset;
+            }
+            else 
+                Offset = new Vector(0, 400 - _component.GetActualSize().Height);
         }
 
         private void UpdateGrid(IVisualizeOptions options)
@@ -89,7 +120,9 @@ namespace GraphViewer
             stack.AddChild(camoVisGrid);
             stack.AddChild(rawVisGrid);
 
-            Grid = stack;
+            _component = stack;
+            var visuals = _component.Render(new Point(0, 0));
+            Visuals = visuals;
         }
         private bool _headersOnly = true;
 
@@ -141,19 +174,20 @@ namespace GraphViewer
             }
         }
 
-        private IComponent _grid;
-        public IComponent Grid
+        private IComponent _component;
+        private IList<Visual> _visuals;
+        public IList<Visual> Visuals
         {
             get
             {
-                return _grid;
+                return _visuals;
             }
             set
             {
-                if (_grid != value)
+                if (_visuals != value)
                 {
-                    _grid = value;
-                    RaisePropertyChangedEvent("Grid");
+                    _visuals = value;
+                    RaisePropertyChangedEvent("Visuals");
                 }
             }
         }

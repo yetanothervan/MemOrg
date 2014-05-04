@@ -137,9 +137,9 @@ namespace GraphManagementService
 
             var rel = new Relation
             {
-                FirstBlock = first,
-                SecondBlock = second,
-                RelationBlock = relBlock,
+                FirstBlockId = first.BlockId,
+                SecondBlockId = second.BlockId,
+                RelationBlockId = (relBlock == null) ? null : (int?)relBlock.BlockId,
                 RelationType = relTypeBase
             };
 

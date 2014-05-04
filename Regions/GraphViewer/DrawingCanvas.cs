@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,7 +24,7 @@ namespace GraphViewer
             OffsetProperty = DependencyProperty.Register("Offset", typeof (Vector), typeof (DrawingCanvas), offsetMetadata);
 
             var graphSourceMetadata = new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender);
-            SourceProperty = DependencyProperty.Register("Source", typeof(IComponent), typeof(DrawingCanvas), graphSourceMetadata);
+            SourceProperty = DependencyProperty.Register("Source", typeof(IList<Visual>), typeof(DrawingCanvas), graphSourceMetadata);
         }
 
 
@@ -61,21 +62,20 @@ namespace GraphViewer
             get { return (Vector) GetValue(OffsetProperty); }
         }
 
-        public IGrid Source
+        public IList<Visual> Source
         {
             set { SetValue(SourceProperty, value); }
-            get { return (IGrid)GetValue(SourceProperty); }
+            get { return (IList<Visual>)GetValue(SourceProperty); }
         }
 
         public void Refresh()
         {
             var dc = DataContext as ContentViewModel;
-            if (dc != null && dc.Grid != null)
+            if (dc != null && dc.Visuals != null)
             {
                 _visuals.Clear();
                 _visuals = new VisualCollection(this);
-                var elems = dc.Grid.Render(new Point(0, 0));
-                foreach (var elem in elems)
+                foreach (var elem in dc.Visuals)
                 {
                     _visuals.Add(elem);
                 }

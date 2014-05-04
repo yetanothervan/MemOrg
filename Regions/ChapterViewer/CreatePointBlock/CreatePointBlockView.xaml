@@ -19,7 +19,7 @@
         <CheckBox Style="{StaticResource SpItem}" IsChecked="{Binding IsCreateNew}">or create new</CheckBox>
         <StackPanel Orientation="Horizontal" Style="{StaticResource SpItem}" >
             <TextBlock>Caption:</TextBlock>
-            <TextBox Margin="15, 0, 0, 0" Width="180" Text="{Binding CaptionBlock}" IsEnabled="{Binding IsCreateNew}"/>
+            <TextBox Margin="15, 0, 0, 0" Width="180" Text="{Binding CaptionBlock, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsCreateNew}"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -131,7 +131,8 @@ namespace ChapterViewer
                     ManagementService.AddNewRelation(dlg.RelType, 
                         dlg.IsFirstCreateNew ? null : dlg.BlockFirst, dlg.CaptionFirst,
                         dlg.IsSecondCreateNew ? null : dlg.BlockSecond, dlg.CaptionSecond,
-                        dlg.MyParticle.MyParticle, dlg.StartSelection, dlg.SelectionLength);
+                        (dlg.MyParticle != null) ? dlg.MyParticle.MyParticle : null, 
+                        dlg.StartSelection, dlg.SelectionLength);
                     DialogAwaits = null;
                     return;
                 }
