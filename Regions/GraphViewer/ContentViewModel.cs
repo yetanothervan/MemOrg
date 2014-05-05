@@ -40,6 +40,7 @@ namespace GraphViewer
             _eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
             _eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
             _eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
+            _eventAggregator.GetEvent<GraphChanged>().Subscribe(OnGraphChanged);
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             var refreshGraphCommand = new DelegateCommand(RefreshGraph, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
@@ -50,6 +51,11 @@ namespace GraphViewer
             _drawer = _graphDrawService.GetDrawer(style);
             _options = _graphVizualizeService.GetVisualizeOptions();
             
+            RefreshGraph();
+        }
+
+        private void OnGraphChanged(bool obj)
+        {
             RefreshGraph();
         }
 
@@ -71,6 +77,8 @@ namespace GraphViewer
         {
             var vis = Visuals.OfType<ILogicalBlock>()
                 .FirstOrDefault(p => p.Data is IPage && (p.Data as IPage).Block.BlockId == page.Block.BlockId);
+            if (vis == null)
+                return new Point(0, 0);
                         
             var childBounds = VisualTreeHelper.GetDescendantBounds(vis as ContainerVisual);
             return childBounds.TopLeft;

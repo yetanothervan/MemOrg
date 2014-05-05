@@ -32,6 +32,7 @@ namespace GraphManagementService
             };
 
             _graphService.AddBlock(chapter);
+            _eventAggregator.GetEvent<GraphChanged>().Publish(true);
         }
 
         public void UpdateParticleText(int particleId, string newText)
@@ -82,6 +83,7 @@ namespace GraphManagementService
             _graphService.AddBlock(block);
             _graphService.SaveChanges();
             _eventAggregator.GetEvent<BlockChanged>().Publish(body.Block);
+            _eventAggregator.GetEvent<GraphChanged>().Publish(true);
             return block;
         }
 
@@ -145,6 +147,7 @@ namespace GraphManagementService
 
             _graphService.AddRelation(rel);
             _graphService.SaveChanges();
+            _eventAggregator.GetEvent<GraphChanged>().Publish(true);
         }
 
         private SourceTextParticle ExtractSourcePartition(Particle particle, int start, int length)

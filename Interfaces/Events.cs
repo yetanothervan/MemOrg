@@ -19,4 +19,8 @@ namespace MemOrg.Interfaces
     public class BlockChanged : CompositePresentationEvent<Block>
     {
     }
+    
+    public class GraphChanged : CompositePresentationEvent<bool>
+    {
+    }
 }
