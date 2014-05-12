@@ -18,12 +18,14 @@ namespace GraphDrawService.Draw
 {
     class Link : Component 
     {
-        private readonly Pen _pen;
+        private readonly Pen _penRef;
+        private readonly Pen _penRel;
         private readonly IReadOnlyList<GridLinkPart> _gridLinkParts;
 
-        public Link(Pen pen, IReadOnlyList<GridLinkPart> gridLinkParts)
+        public Link(IDrawStyle style, IReadOnlyList<GridLinkPart> gridLinkParts)
         {
-            _pen = pen;
+            _penRel = style.RelationLinkPen;
+            _penRef = style.ReferenceLinkPen;
             _gridLinkParts = gridLinkParts;
         }
 
@@ -59,6 +61,7 @@ namespace GraphDrawService.Draw
                 
                 foreach (var part in _gridLinkParts)
                 {
+                    var partPen = part.Type == GridLinkPartType.Reference ? _penRef : _penRel;
                     /*if (part.Direction == GridLinkPartDirection.NorthEast
                         || part.Direction == GridLinkPartDirection.NorthWest
                         || part.Direction == GridLinkPartDirection.NorthSouth)
@@ -79,46 +82,46 @@ namespace GraphDrawService.Draw
                     switch (part.Direction)
                     {
                         case GridLinkPartDirection.NorthSouth:
-                            dc.DrawLine(_pen, n, s);
+                            dc.DrawLine(partPen, n, s);
                             break;
                         case GridLinkPartDirection.WestEast:
-                            dc.DrawLine(_pen, w, e);
+                            dc.DrawLine(partPen, w, e);
                             break;
                         case GridLinkPartDirection.NorthWest:
                         {
-                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                            dc.DrawGeometry(Brushes.Transparent, partPen,
                                 GetArc(cn, cw, SweepDirection.Clockwise));
-                            if (n != cn) 
-                                dc.DrawLine(_pen, n, cn);
-                            if (w != cw) 
-                                dc.DrawLine(_pen, w, cw);
+                            if (n != cn)
+                                dc.DrawLine(partPen, n, cn);
+                            if (w != cw)
+                                dc.DrawLine(partPen, w, cw);
                         }
                             break;
                         case GridLinkPartDirection.NorthEast:
                         {
-                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                            dc.DrawGeometry(Brushes.Transparent, partPen,
                                 GetArc(cn, ce, SweepDirection.Counterclockwise));
-                            if (n != cn) 
-                                dc.DrawLine(_pen, n, cn);
-                            if (e != ce) 
-                                dc.DrawLine(_pen, e, ce);
+                            if (n != cn)
+                                dc.DrawLine(partPen, n, cn);
+                            if (e != ce)
+                                dc.DrawLine(partPen, e, ce);
                         }
                             break;
                         case GridLinkPartDirection.SouthEast:
-                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                            dc.DrawGeometry(Brushes.Transparent, partPen,
                                 GetArc(cs, ce, SweepDirection.Clockwise));
                             if (s != cs)
-                                dc.DrawLine(_pen, s, cs);
+                                dc.DrawLine(partPen, s, cs);
                             if (e != ce)
-                                dc.DrawLine(_pen, e, ce);
+                                dc.DrawLine(partPen, e, ce);
                             break;
                         case GridLinkPartDirection.WestSouth:
-                            dc.DrawGeometry(Brushes.Transparent, _pen,
+                            dc.DrawGeometry(Brushes.Transparent, partPen,
                                 GetArc(cw, cs, SweepDirection.Clockwise));
-                            if (w != cw) 
-                                dc.DrawLine(_pen, w, cw);
+                            if (w != cw)
+                                dc.DrawLine(partPen, w, cw);
                             if (s != cs)
-                                dc.DrawLine(_pen, s, cs);
+                                dc.DrawLine(partPen, s, cs);
                             break;
                     }
                 }

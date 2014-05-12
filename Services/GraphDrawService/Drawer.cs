@@ -69,7 +69,7 @@ namespace GraphDrawService
 
         public IComponent DrawLink(IReadOnlyList<GridLinkPart> gridLinkParts)
         {
-            return new Link(_style.SourceBlockPen, gridLinkParts);
+            return new Link(_style, gridLinkParts);
         }
 
         public IComponent DrawBlockOthers()

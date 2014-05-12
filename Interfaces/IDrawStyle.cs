@@ -39,5 +39,8 @@ namespace MemOrg.Interfaces
 
         Brush OthersBlockNoParticlesBrush { get; set; }
         Pen OthersBlockNoParticlesPen { get; set; }
+        
+        Pen RelationLinkPen { get; set; }
+        Pen ReferenceLinkPen { get; set; }
     }
 }
