@@ -30,7 +30,7 @@ namespace GraphOrganizeService.Chapter
             _removedEdge = new HashSet<PageEdge>();
         }
 
-        private Dictionary<IPage, int> _vertexChildCount = null;
+        private Dictionary<IPage, int> _vertexChildCount;
 
         private void CalculateVertexChildCount()
         {
@@ -89,7 +89,8 @@ namespace GraphOrganizeService.Chapter
                     if (!edge.Equals(cycPars.Path.First()) && (edge.First == c || edge.Second == c))
                         break;
 
-                    if (!edge.First.RelatedBy.Contains(edge.Second))
+                    if (!edge.First.LinksBy
+                        .Any(l => l.LinkType == PageLinkType.ToRelationBlock && l.OppPage == edge.Second))
                     {
                         graph._removedEdge.Add(edge);
                         graph._edges.Remove(edge);
@@ -223,16 +224,10 @@ namespace GraphOrganizeService.Chapter
                 Proceed(result, remainingPages, addingPage.RelationSecond, edgeSecond, pagesInBook);
             }
 
-            foreach (var rel in addingPage.RelatedBy)
+            foreach (var rel in addingPage.LinksBy)
             {
-                var edge = new PageEdge(addingPage, rel);
-                Proceed(result, remainingPages, rel, edge, pagesInBook);
-            }
-
-            foreach (var refer in addingPage.ReferencedBy)
-            {
-                var edge = new PageEdge(addingPage, refer);
-                Proceed(result, remainingPages, refer, edge, pagesInBook);
+                var edge = new PageEdge(addingPage, rel.OppPage);
+                Proceed(result, remainingPages, rel.OppPage, edge, pagesInBook);
             }
         }
         

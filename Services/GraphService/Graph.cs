@@ -94,8 +94,18 @@ namespace GraphService
                 var second = chapter.MyBook.GetPageByBlock(rel.SecondBlock.BlockId) 
                     ?? new Page {Block = rel.SecondBlock};
 
-                first.ReferencedBy.Add(second);
-                second.ReferencedBy.Add(first);
+                first.LinksBy.Add(new PageLink
+                {
+                    LinkType = PageLinkType.RelationNoBlockToObject,
+                    OppPage = second,
+                    RelName = rel.RelationType.Caption
+                });
+                second.LinksBy.Add(new PageLink
+                {
+                    LinkType = PageLinkType.RelationNoBlockToSubject,
+                    OppPage = first,
+                    RelName = rel.RelationType.Caption
+                });
             }
 
             foreach (var page in chapter.PagesBlocks.Where(p => p.Block.References.Any()).ToList())
@@ -105,13 +115,24 @@ namespace GraphService
                     var referencedBlock = chapter.MyBook.GetPageByBlock(reference.ReferencedBlock.BlockId)
                         ?? new Page { Block = reference.ReferencedBlock };
 
-                    if (!page.ReferencedBy.Contains(referencedBlock))
+                    if (!page.LinksBy
+                        .Any(l => l.LinkType == PageLinkType.ReferenceTo && l.OppPage == referencedBlock))
                     {
                         referencedBlock.IsBlockUserText = 
                             referencedBlock.Block.Particles.All(p => p is UserTextParticle);
 
-                        page.ReferencedBy.Add(referencedBlock);
-                        referencedBlock.ReferencedBy.Add(page);
+                        page.LinksBy.Add(
+                            new PageLink
+                            {
+                                OppPage = referencedBlock,
+                                LinkType=PageLinkType.ReferenceTo
+                            });
+                        
+                        referencedBlock.LinksBy.Add(new PageLink
+                        {
+                            OppPage = page,
+                            LinkType = PageLinkType.ReferenceTo
+                        });
                     }
                 }
             }
@@ -177,8 +198,16 @@ namespace GraphService
 
                 page.RelationFirst = firstPage;
                 page.RelationSecond = secondPage;
-                firstPage.RelatedBy.Add(page);
-                secondPage.RelatedBy.Add(page);
+
+                firstPage.LinksBy.Add(new PageLink{
+                        LinkType = PageLinkType.ToRelationBlock,
+                        OppPage = page
+                    });
+                secondPage.LinksBy.Add(new PageLink
+                {
+                    LinkType = PageLinkType.ToRelationBlock,
+                    OppPage = page
+                });
             }
         }
 

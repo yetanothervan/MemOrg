@@ -20,7 +20,6 @@ namespace GraphOrganizeService.Chapter
             set
             {
                 _page = value;
-                _page.Parent = this;
             }
         }
 

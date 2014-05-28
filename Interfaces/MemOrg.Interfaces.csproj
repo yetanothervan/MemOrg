@@ -60,6 +60,7 @@
     <Compile Include="IntIntPair.cs" />
     <Compile Include="IOrgGrid.cs" />
     <Compile Include="IOrgGridElem.cs" />
+    <Compile Include="IPageLink.cs" />
     <Compile Include="OrgGridElem.cs" />
     <Compile Include="OrgUnits\GridLink.cs" />
     <Compile Include="OrgUnits\IOrg.cs" />

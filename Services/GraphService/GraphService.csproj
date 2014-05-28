@@ -62,6 +62,7 @@
     <Compile Include="GraphService.cs" />
     <Compile Include="ModuleDefinition\GraphServiceModule.cs" />
     <Compile Include="Page.cs" />
+    <Compile Include="PageLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

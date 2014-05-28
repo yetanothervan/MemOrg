@@ -8,8 +8,7 @@ namespace GraphService
     {
         public Page()
         {
-            RelatedBy = new List<IPage>();
-            ReferencedBy = new List<IPage>();
+            LinksBy = new List<IPageLink>();
             IsBlockUserText = false;
             IsBlockSource = false;
         }
@@ -38,9 +37,8 @@ namespace GraphService
             get { return MyChapterInternal; }
         }
 
-        public IList<IPage> ReferencedBy { get; private set; }
-        public object Parent { get; set; }
-        public IList<IPage> RelatedBy { get; private set; }
+        public IList<IPageLink> LinksBy { get; private set; }
+        
         public IChapter MyChapterInternal { get; set; }
 
         public override string ToString()
