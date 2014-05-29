@@ -84,13 +84,13 @@ namespace GraphOrganizeService
             }
             return res;
         }
-        
-        private static ChapterLayoutElem NewGridElem(IPage content, HorizontalAligment horAligment, params NESW[] conPoints)
+
+        private static ChapterLayoutElem NewGridElem(IPage content, HorizontalAligment horAligment, params ConnectionPoint[] conPoints)
         {
             return new ChapterLayoutElem
             {
                 Page = content,
-                ConnectionPoints = new List<NESW>(conPoints),
+                ConnectionPoints = new List<ConnectionPoint>(conPoints),
                 HorizontalAligment = horAligment
             };
         }

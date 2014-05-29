@@ -10,10 +10,10 @@ namespace GraphOrganizeService.OrgUnits
     {
         private readonly IPage _page;
 
-        protected OrgBlock(IPage page, IEnumerable<NESW> conPoints)
+        protected OrgBlock(IPage page, IEnumerable<ConnectionPoint> conPoints)
         {
             _page = page;
-            ConnectionPoints = conPoints ?? new List<NESW>();
+            ConnectionPoints = conPoints ?? new List<ConnectionPoint>();
         }
 
         public IPage Page
@@ -21,6 +21,6 @@ namespace GraphOrganizeService.OrgUnits
             get { return _page; }
         }
 
-        public IEnumerable<NESW> ConnectionPoints { get; private set; }
+        public IEnumerable<ConnectionPoint> ConnectionPoints { get; private set; }
     }
 }

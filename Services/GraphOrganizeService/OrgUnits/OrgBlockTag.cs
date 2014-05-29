@@ -7,7 +7,7 @@ namespace GraphOrganizeService.OrgUnits
 {
     public class OrgBlockTag : OrgBlock, IOrgBlockTag
     {
-        public OrgBlockTag(IPage page, List<NESW> conPoints)
+        public OrgBlockTag(IPage page, List<ConnectionPoint> conPoints)
             : base(page, conPoints)
         {
         }

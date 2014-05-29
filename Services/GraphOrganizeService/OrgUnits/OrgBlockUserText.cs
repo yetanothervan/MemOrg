@@ -7,7 +7,7 @@ namespace GraphOrganizeService.OrgUnits
 {
     public class OrgBlockUserText : OrgBlock, IOrgBlockUserText
     {
-        public OrgBlockUserText(IPage page, List<NESW> conPoints)
+        public OrgBlockUserText(IPage page, List<ConnectionPoint> conPoints)
             : base(page, conPoints)
         {
         }

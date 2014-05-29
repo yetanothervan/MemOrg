@@ -14,6 +14,7 @@ namespace GraphOrganizeService.Chapter
         private readonly ChapterLayoutElem _first;
         private readonly ChapterLayoutElem _second;
         private readonly PageEdge _link;
+        private readonly GridLinkPartType _type;
 
         public ChapterArrow(List<ChapterLayoutElem> elems, ChapterLayoutElem first, ChapterLayoutElem second, PageEdge link)
         {
@@ -21,6 +22,9 @@ namespace GraphOrganizeService.Chapter
             _first = first;
             _second = second;
             _link = link;
+            _type = (_link.PageLink.LinkType == PageLinkType.ReferenceTo)
+                ? GridLinkPartType.Reference
+                : GridLinkPartType.Relation;
         }
 
         public void Draw()
@@ -50,8 +54,8 @@ namespace GraphOrganizeService.Chapter
 
         private void DrawHorizontal()
         {
-            _first.AddCon(_first.Col > _second.Col ? NESW.West : NESW.East);
-            _second.AddCon(_first.Col > _second.Col ? NESW.East : NESW.West);
+            _first.AddCon(_first.Col > _second.Col ? NESW.West : NESW.East, _type);
+            _second.AddCon(_first.Col > _second.Col ? NESW.East : NESW.West, _type);
             AddLink(_first.Row, Math.Min(_first.Col, _second.Col) + 1, GridLinkPartDirection.WestEast, _link.PageLink.RelName);
         }
 
@@ -59,18 +63,18 @@ namespace GraphOrganizeService.Chapter
         {
             bool fromWest = false;
             bool toNorth = false;
-            if (_first.Col > _second.Col) _first.AddCon(NESW.West);
+            if (_first.Col > _second.Col) _first.AddCon(NESW.West, _type);
             else
             {
-                _first.AddCon(NESW.East);
+                _first.AddCon(NESW.East, _type);
                 fromWest = true;
             }
             if (_first.Row > _second.Row)
             {
-                _second.AddCon(NESW.South);
+                _second.AddCon(NESW.South, _type);
                 toNorth = true;
             }
-            else _second.AddCon(NESW.North);
+            else _second.AddCon(NESW.North, _type);
 
             if (fromWest)
                 AddLink(_first.Row, _second.Col,
@@ -82,7 +86,9 @@ namespace GraphOrganizeService.Chapter
             for (int i = 1; i < Math.Abs(_first.Col - _second.Col); ++i)
             {
                 var x = (fromWest ? _first.Col + i : _first.Col - i);
-                AddLink(_first.Row, x, GridLinkPartDirection.WestEast);
+                AddLink(_first.Row, x, GridLinkPartDirection.WestEast,
+                    i == 1 && String.IsNullOrEmpty(_link.PageLink.RelName) 
+                    ? _link.PageLink.RelName : null);
             }
             for (int i = 1; i < Math.Abs(_first.Row - _second.Row); ++i)
             {
@@ -94,8 +100,8 @@ namespace GraphOrganizeService.Chapter
         private void DrawNextColumn()
         {
             var c = Math.Min(_first.Col, _second.Col) + 1;
-            _first.AddCon(_first.Col < c ? NESW.East : NESW.West);
-            _second.AddCon(_second.Col < c ? NESW.East : NESW.West);
+            _first.AddCon(_first.Col < c ? NESW.East : NESW.West, _type);
+            _second.AddCon(_second.Col < c ? NESW.East : NESW.West, _type);
 
             var mindir = _first.Row > _second.Row
                 ? (_first.Col > _second.Col ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast)
@@ -107,16 +113,23 @@ namespace GraphOrganizeService.Chapter
 
             AddLink(Math.Min(_first.Row, _second.Row), c, mindir);
             AddLink(Math.Max(_first.Row, _second.Row), c, maxdir);
+
+            int itoc = (_first.Row < _second.Row) ? _second.Row - 1 : _second.Row + 1;
             for (int i = Math.Min(_first.Row, _second.Row) + 1; i < Math.Max(_first.Row, _second.Row); ++i)
-                AddLink(i, c, GridLinkPartDirection.NorthSouth);
+            {
+                AddLink(i, c, GridLinkPartDirection.NorthSouth,
+                    i == itoc && !String.IsNullOrEmpty(_link.PageLink.RelName)
+                        ? _link.PageLink.RelName
+                        : null);
+            }
         }
 
         private void DrawVertical()
         {
             var col = _first.Col == 4 ? _first.Col + 1 : _first.Col - 1;
             var dir = col == 5 ? NESW.East : NESW.West;
-            _first.AddCon(dir);
-            _second.AddCon(dir);
+            _first.AddCon(dir, _type);
+            _second.AddCon(dir, _type);
             AddLink(Math.Min(_first.Row, _second.Row), col,
                 col == 5 ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast);
             AddLink(Math.Max(_first.Row, _second.Row), col,
@@ -132,10 +145,7 @@ namespace GraphOrganizeService.Chapter
         {
             var l = new ChapterLayoutElem { Col = col, Row = row, 
                 HorizontalAligment = HorizontalAligment.Center};
-            GridLinkPartType type = (_link.PageLink.LinkType == PageLinkType.ReferenceTo)
-                ? GridLinkPartType.Reference
-                : GridLinkPartType.Relation;
-            l.AddGridLink(new GridLinkPart {Direction = dir, Type = type, Caption = caption});
+            l.AddGridLink(new GridLinkPart {Direction = dir, Type = _type, Caption = caption});
             _elems.Add(l);
         }
     }

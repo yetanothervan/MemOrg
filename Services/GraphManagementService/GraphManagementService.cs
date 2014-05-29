@@ -155,9 +155,9 @@ namespace GraphManagementService
             var sp = particle as SourceTextParticle;
             if (sp == null) return null;
 
-            var text1 = sp.Content.Substring(0, start);
-            var text2 = sp.Content.Substring(start, length);
-            var text3 = sp.Content.Substring(start + length);
+            var text1 = sp.Content.Substring(0, start).Trim();
+            var text2 = sp.Content.Substring(start, length).Trim();
+            var text3 = sp.Content.Substring(start + length).Trim();
 
             int order1 = -1;
             int order2;

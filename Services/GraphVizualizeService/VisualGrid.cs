@@ -73,10 +73,15 @@ namespace GraphVizualizeService
             var orgBlock = gc as IOrgBlock;
             if (orgBlock != null)
             {
-                bool up = orgBlock.ConnectionPoints.Any(p => p == NESW.North);
-                bool left = orgBlock.ConnectionPoints.Any(p => p == NESW.West);
-                bool right = orgBlock.ConnectionPoints.Any(p => p == NESW.East);
-                bool down = orgBlock.ConnectionPoints.Any(p => p == NESW.South);
+                bool up = orgBlock.ConnectionPoints.Any(p => p.Direction == NESW.North);
+                
+                bool left = orgBlock.ConnectionPoints.Any(p => p.Direction == NESW.West);
+                bool leftRel = orgBlock.ConnectionPoints.Any(p => p.Direction == NESW.West && p.LinkType == GridLinkPartType.Relation);
+                
+                bool right = orgBlock.ConnectionPoints.Any(p => p.Direction == NESW.East);
+                bool rightRel = orgBlock.ConnectionPoints.Any(p => p.Direction == NESW.East && p.LinkType == GridLinkPartType.Relation);
+                
+                bool down = orgBlock.ConnectionPoints.Any(p => p.Direction == NESW.South);
 
                 var colsWidths = new Dictionary<int, double>();
                 var rowsHeights = new Dictionary<int, double>();
@@ -89,8 +94,8 @@ namespace GraphVizualizeService
                 grid = drawer.DrawGrid(colsWidths, rowsHeights);
                 grid.AddChild(gridcenter);
                 
-                if (left) AddBoxLink(drawer, grid, 1, 0, false);
-                if (right) AddBoxLink(drawer, grid, 1, 2, false);
+                if (left) AddBoxLink(drawer, grid, 1, 0, false, leftRel ? GridLinkPartType.Relation : GridLinkPartType.Reference);
+                if (right) AddBoxLink(drawer, grid, 1, 2, false, rightRel ? GridLinkPartType.Relation : GridLinkPartType.Reference);
                 //if (up) AddBoxLink(drawer, grid, 0, 1, true);
                 //if (down) AddBoxLink(drawer, grid, 2, 1, true);
 
@@ -102,21 +107,21 @@ namespace GraphVizualizeService
             return grid;
         }
 
-        private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col, bool vertical)
+        private void AddBoxLink(IDrawer drawer, IComponent grid, int row, int col, bool vertical, GridLinkPartType type)
         {
             var parts = new List<GridLinkPart>
             {
                 new GridLinkPart
                 {
                     Direction = vertical ? GridLinkPartDirection.NorthSouth : GridLinkPartDirection.WestEast,
-                    Type = GridLinkPartType.Relation
+                    Type = type
                 }
             };
             var gridElem = drawer.DrawGridElem(row, col);
             gridElem.AddChild(drawer.DrawLink(parts));
             grid.AddChild(gridElem);
         }
-        
+
         public IEnumerator<IGridElem> GetEnumerator()
         {
             throw new NotImplementedException();

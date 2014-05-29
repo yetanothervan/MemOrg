@@ -7,7 +7,7 @@ namespace GraphOrganizeService.OrgUnits
 {
     public class OrgBlockOthers : OrgBlock, IOrgBlockOthers
     {
-        public OrgBlockOthers(IPage page, List<NESW> conPoints)
+        public OrgBlockOthers(IPage page, List<ConnectionPoint> conPoints)
             : base(page, conPoints)
         {
         }
