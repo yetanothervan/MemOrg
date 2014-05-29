@@ -9,6 +9,7 @@
     {
         public GridLinkPartType Type;
         public GridLinkPartDirection Direction;
+        public string Caption;
     }
 
     public enum GridLinkPartDirection

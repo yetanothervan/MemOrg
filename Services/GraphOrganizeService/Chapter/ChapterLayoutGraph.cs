@@ -217,16 +217,18 @@ namespace GraphOrganizeService.Chapter
 
             if (addingPage.IsBlockRel)
             {
-                var edgeFirst = new PageEdge(addingPage, addingPage.RelationFirst);
+                var edgeFirst = new PageEdge(addingPage, addingPage.RelationFirst,
+                    new PageLink {LinkType = PageLinkType.ToRelationBlock, OppPage = addingPage.RelationFirst});
                 Proceed(result, remainingPages, addingPage.RelationFirst, edgeFirst, pagesInBook);
                 
-                var edgeSecond = new PageEdge(addingPage, addingPage.RelationSecond);
+                var edgeSecond = new PageEdge(addingPage, addingPage.RelationSecond,
+                    new PageLink { LinkType = PageLinkType.ToRelationBlock, OppPage = addingPage.RelationSecond });
                 Proceed(result, remainingPages, addingPage.RelationSecond, edgeSecond, pagesInBook);
             }
 
             foreach (var rel in addingPage.LinksBy)
             {
-                var edge = new PageEdge(addingPage, rel.OppPage);
+                var edge = new PageEdge(addingPage, rel.OppPage, rel);
                 Proceed(result, remainingPages, rel.OppPage, edge, pagesInBook);
             }
         }

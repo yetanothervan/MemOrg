@@ -19,6 +19,6 @@ namespace MemOrg.Interfaces
         IPage RelationFirst { get; set; }
         IPage RelationSecond { get; set; }
         IChapter MyChapter { get; }
-        IList<IPageLink> LinksBy { get; }
+        IList<PageLink> LinksBy { get; }
     }
 }

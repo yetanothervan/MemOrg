@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,14 +19,12 @@ namespace GraphDrawService.Draw
 {
     class Link : Component 
     {
-        private readonly Pen _penRef;
-        private readonly Pen _penRel;
+        private readonly IDrawStyle _style;
         private readonly IReadOnlyList<GridLinkPart> _gridLinkParts;
 
         public Link(IDrawStyle style, IReadOnlyList<GridLinkPart> gridLinkParts)
         {
-            _penRel = style.RelationLinkPen;
-            _penRef = style.ReferenceLinkPen;
+            _style = style;
             _gridLinkParts = gridLinkParts;
         }
 
@@ -61,7 +60,9 @@ namespace GraphDrawService.Draw
                 
                 foreach (var part in _gridLinkParts)
                 {
-                    var partPen = part.Type == GridLinkPartType.Reference ? _penRef : _penRel;
+                    var partPen = part.Type == GridLinkPartType.Reference 
+                        ? _style.ReferenceLinkPen 
+                        : _style.RelationBlockPen;
                     /*if (part.Direction == GridLinkPartDirection.NorthEast
                         || part.Direction == GridLinkPartDirection.NorthWest
                         || part.Direction == GridLinkPartDirection.NorthSouth)
@@ -78,7 +79,7 @@ namespace GraphDrawService.Draw
                         || part.Direction == GridLinkPartDirection.SouthEast
                         || part.Direction == GridLinkPartDirection.WestEast)
                         dc.DrawLine(_pen, c, e);*/
-
+                    
                     switch (part.Direction)
                     {
                         case GridLinkPartDirection.NorthSouth:
@@ -123,6 +124,15 @@ namespace GraphDrawService.Draw
                             if (s != cs)
                                 dc.DrawLine(partPen, s, cs);
                             break;
+                    }
+
+                    if (!String.IsNullOrWhiteSpace(part.Caption))
+                    {
+                        var ft = new FormattedText(part.Caption, CultureInfo.CurrentCulture,
+                            FlowDirection.LeftToRight, _style.TextTypeface,
+                            _style.TextEmSize, _style.TextBrush);
+                        var tp = new Point(c.X - ft.Width/2, c.Y - ft.Height/2);
+                        dc.DrawText(ft, tp);
                     }
                 }
             }

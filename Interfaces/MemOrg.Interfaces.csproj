@@ -60,7 +60,7 @@
     <Compile Include="IntIntPair.cs" />
     <Compile Include="IOrgGrid.cs" />
     <Compile Include="IOrgGridElem.cs" />
-    <Compile Include="IPageLink.cs" />
+    <Compile Include="PageLinkType.cs" />
     <Compile Include="OrgGridElem.cs" />
     <Compile Include="OrgUnits\GridLink.cs" />
     <Compile Include="OrgUnits\IOrg.cs" />
@@ -91,6 +91,7 @@
     <Compile Include="IVisual.cs" />
     <Compile Include="IVisualizeOptions.cs" />
     <Compile Include="OrgUnits\IOrgBlock.cs" />
+    <Compile Include="PageLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNames.cs" />
     <Compile Include="ViewModelBase.cs" />

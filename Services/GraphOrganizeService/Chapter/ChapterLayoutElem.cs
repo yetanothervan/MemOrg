@@ -23,6 +23,8 @@ namespace GraphOrganizeService.Chapter
             }
         }
 
+        public PageEdge ParentPageEdge { get; set; }
+
         private List<GridLinkPart> _gridLinkParts;
         public bool IsGridLinkPart { get { return _gridLinkParts != null && _gridLinkParts.Count != 0; }}
         public IReadOnlyList<GridLinkPart> GridLinkParts { get { return _gridLinkParts; }}

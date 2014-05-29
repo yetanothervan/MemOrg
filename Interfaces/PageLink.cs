@@ -1,8 +1,6 @@
-﻿using MemOrg.Interfaces;
-
-namespace GraphService
+﻿namespace MemOrg.Interfaces
 {
-    public class PageLink : IPageLink
+    public class PageLink
     {
         public IPage OppPage { get; set; }
         public PageLinkType LinkType { get; set; }

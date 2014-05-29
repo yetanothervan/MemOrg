@@ -13,6 +13,7 @@ namespace GraphOrganizeService.Chapter
         private readonly List<PageEdge> _ones;
         private IPage _myElem;
         private ChapterLayoutBundle _parent;
+        private PageEdge _parentLink;
         private BundleDirection _direction;
         public IChapter MyChapter;
 
@@ -43,6 +44,7 @@ namespace GraphOrganizeService.Chapter
             _ones = new List<PageEdge>();
             _bundles = new List<ChapterLayoutBundle>();
             _parent = null;
+            _parentLink = null;
         }
 
         public static ChapterLayoutBundle ExtractBundlesFromGraph(ChapterLayoutGraph graph)
@@ -105,7 +107,8 @@ namespace GraphOrganizeService.Chapter
             var result = new ChapterLayoutBundle
             {
                 _myElem = my,
-                _direction = direction
+                _direction = direction,
+                _parentLink = myEdge
             };
             foreach (var edge in graph.GetEdgesForVertex(my))
             {
@@ -260,7 +263,7 @@ namespace GraphOrganizeService.Chapter
         {
             var result = new List<ChapterLayoutElem>();
             ChapterLayoutElem mainElem;
-
+            
             if (this.MyElem.IsBlockRel)
             {
                 result.AddRange(RenderElem(row, col, true, right, parent, out mainElem));
@@ -268,7 +271,7 @@ namespace GraphOrganizeService.Chapter
             else
             {
                 var upperRootElem = RenderRoot(row - 2, right ? col + 2 : col - 2, !right, out mainElem);
-                ChapterArrow.Draw(result, parent, mainElem);
+                new ChapterArrow(result, parent, mainElem, _parentLink).Draw();
                 result.AddRange(upperRootElem);
                 return result;
             }
@@ -279,7 +282,7 @@ namespace GraphOrganizeService.Chapter
                 ChapterLayoutElem dest;
                 var upperRootElem = upperRoot.RenderRoot(row - 2, right ? col + 2 : col - 2, 
                     !right, out  dest);
-                ChapterArrow.Draw(result, mainElem, dest);
+                new ChapterArrow(result, mainElem, dest, upperRoot._parentLink).Draw();
                 result.AddRange(upperRootElem);
             }
             
@@ -297,7 +300,7 @@ namespace GraphOrganizeService.Chapter
             {
                 var lowerRootElem = RenderRoot(GetLowerRow(result, row + 2),
                     right ? col + 2 : col - 2, !right, out mainElem);
-                ChapterArrow.Draw(result, parent, mainElem);
+                new ChapterArrow(result, parent, mainElem, _parentLink).Draw();
                 result.AddRange(lowerRootElem);
                 return result;
             }
@@ -308,7 +311,7 @@ namespace GraphOrganizeService.Chapter
                 ChapterLayoutElem dest;
                 var lowerRootElem = lowerRoot.RenderRoot(GetLowerRow(result, row + 2),
                     right ? col + 2 : col - 2, !right, out dest);
-                ChapterArrow.Draw(result, mainElem, dest);
+                new ChapterArrow(result, mainElem, dest, lowerRoot._parentLink).Draw();
                 result.AddRange(lowerRootElem);
             }
 
@@ -324,6 +327,7 @@ namespace GraphOrganizeService.Chapter
             {
                 var other = pageEdge.GetOther(MyElem);
                 var otherElem = other.MakeElem(row + onesIndex, col);
+                otherElem.ParentPageEdge = pageEdge;
                 result.Add(otherElem);
                 onesIndex = up ? onesIndex - 2 : onesIndex + 2;
             }
@@ -353,13 +357,13 @@ namespace GraphOrganizeService.Chapter
             result.Add(mainElem);
 
             if (parent != null)
-                ChapterArrow.Draw(result, mainElem, parent);
+                new ChapterArrow(result, parent, mainElem, _parentLink).Draw();
 
             var ones = RenderOnes(up ? row - 2 : row + 2, col, up);
 
             foreach (var elem in ones)
             {
-                ChapterArrow.Draw(result, mainElem, elem);
+                new ChapterArrow(result, mainElem, elem, elem.ParentPageEdge).Draw();
                 result.Add(elem);
             }
 

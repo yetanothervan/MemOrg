@@ -8,93 +8,135 @@ using MemOrg.Interfaces.OrgUnits;
 
 namespace GraphOrganizeService.Chapter
 {
-    public static class ChapterArrow
+    public class ChapterArrow
     {
-        public static void Draw(List<ChapterLayoutElem> elems, ChapterLayoutElem f, ChapterLayoutElem s)
+        private readonly List<ChapterLayoutElem> _elems;
+        private readonly ChapterLayoutElem _first;
+        private readonly ChapterLayoutElem _second;
+        private readonly PageEdge _link;
+
+        public ChapterArrow(List<ChapterLayoutElem> elems, ChapterLayoutElem first, ChapterLayoutElem second, PageEdge link)
         {
-            if (s != null && f != null)
+            _elems = elems;
+            _first = first;
+            _second = second;
+            _link = link;
+        }
+
+        public void Draw()
+        {
+            if (_second == null || _first == null) return;
+           
+            if (_first.Row == _second.Row)
             {
-                if (f.Row == s.Row)
-                {
-                    f.AddCon(f.Col > s.Col ? NESW.West : NESW.East);
-                    s.AddCon(f.Col > s.Col ? NESW.East : NESW.West);
-                    AddLink(elems, f.Row, Math.Min(f.Col, s.Col) + 1, GridLinkPartDirection.WestEast);
-                    return;
-                }
-                if (f.Col == s.Col)
-                {
-                    var col = f.Col == 4 ? f.Col + 1 : f.Col - 1;
-                    var dir = col == 5 ? NESW.East : NESW.West;
-                    f.AddCon(dir);
-                    s.AddCon(dir);
-                    AddLink(elems, Math.Min(f.Row, s.Row), col,
-                        col == 5 ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast);
-                    AddLink(elems, Math.Max(f.Row, s.Row), col,
-                        col == 5 ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
-                    for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
-                        AddLink(elems, i, col, GridLinkPartDirection.NorthSouth);
-                    return;
-                }
+                DrawHorizontal();
+                return;
+            }
+            
+            if (_first.Col == _second.Col)
+            {
+                DrawVertical();
+                return;
+            }
 
-                if (Math.Abs(f.Col - s.Col) == 2)
-                {
-                    var c = Math.Min(f.Col, s.Col) + 1;
-                    f.AddCon(f.Col < c ? NESW.East : NESW.West);
-                    s.AddCon(s.Col < c ? NESW.East : NESW.West);
+            if (Math.Abs(_first.Col - _second.Col) == 2)
+            {
+                DrawNextColumn();
+                return;
+            }
 
-                    var mindir = f.Row > s.Row
-                        ? (f.Col > s.Col ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast)
-                        : (f.Col > s.Col ? GridLinkPartDirection.SouthEast : GridLinkPartDirection.WestSouth);
+            DrawElse();
+        }
 
-                    var maxdir = f.Row > s.Row
-                        ? (f.Col > s.Col ? GridLinkPartDirection.NorthEast : GridLinkPartDirection.NorthWest)
-                        : (f.Col > s.Col ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
+        private void DrawHorizontal()
+        {
+            _first.AddCon(_first.Col > _second.Col ? NESW.West : NESW.East);
+            _second.AddCon(_first.Col > _second.Col ? NESW.East : NESW.West);
+            AddLink(_first.Row, Math.Min(_first.Col, _second.Col) + 1, GridLinkPartDirection.WestEast, _link.PageLink.RelName);
+        }
 
-                    AddLink(elems, Math.Min(f.Row, s.Row), c, mindir);
-                    AddLink(elems, Math.Max(f.Row, s.Row), c, maxdir);
-                    for (int i = Math.Min(f.Row, s.Row) + 1; i < Math.Max(f.Row, s.Row); ++i)
-                        AddLink(elems, i, c, GridLinkPartDirection.NorthSouth);
-                    return;
-                }
-                
-                bool fromWest = false;
-                bool toNorth = false;
-                if (f.Col > s.Col) f.AddCon(NESW.West);
-                else {f.AddCon(NESW.East);
-                    fromWest = true;
-                }
-                if (f.Row > s.Row) {s.AddCon(NESW.South);
-                    toNorth = true;
-                }
-                else s.AddCon(NESW.North);
+        private void DrawElse()
+        {
+            bool fromWest = false;
+            bool toNorth = false;
+            if (_first.Col > _second.Col) _first.AddCon(NESW.West);
+            else
+            {
+                _first.AddCon(NESW.East);
+                fromWest = true;
+            }
+            if (_first.Row > _second.Row)
+            {
+                _second.AddCon(NESW.South);
+                toNorth = true;
+            }
+            else _second.AddCon(NESW.North);
 
-                if (fromWest)
-                    AddLink(elems, f.Row, s.Col,
-                        toNorth ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.WestSouth);
-                else
-                    AddLink(elems, f.Row, s.Col,
+            if (fromWest)
+                AddLink(_first.Row, _second.Col,
+                    toNorth ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.WestSouth);
+            else
+                AddLink(_first.Row, _second.Col,
                     toNorth ? GridLinkPartDirection.SouthEast : GridLinkPartDirection.NorthEast);
 
-                for (int i = 1; i < Math.Abs(f.Col - s.Col); ++i)
-                {
-                    var x = (fromWest ? f.Col + i : f.Col - i);
-                    AddLink(elems, f.Row, x, GridLinkPartDirection.WestEast);
-                }
-                for (int i = 1; i < Math.Abs(f.Row - s.Row); ++i)
-                {
-                    var y = (toNorth ? f.Row - i : f.Row + i);
-                    AddLink(elems, y, s.Col, GridLinkPartDirection.NorthSouth);
-                }
-
+            for (int i = 1; i < Math.Abs(_first.Col - _second.Col); ++i)
+            {
+                var x = (fromWest ? _first.Col + i : _first.Col - i);
+                AddLink(_first.Row, x, GridLinkPartDirection.WestEast);
+            }
+            for (int i = 1; i < Math.Abs(_first.Row - _second.Row); ++i)
+            {
+                var y = (toNorth ? _first.Row - i : _first.Row + i);
+                AddLink(y, _second.Col, GridLinkPartDirection.NorthSouth);
             }
         }
 
-        private static void AddLink(List<ChapterLayoutElem> elems, int row, int col, GridLinkPartDirection dir)
+        private void DrawNextColumn()
         {
-            var l = new ChapterLayoutElem { Col = col, Row = row , 
+            var c = Math.Min(_first.Col, _second.Col) + 1;
+            _first.AddCon(_first.Col < c ? NESW.East : NESW.West);
+            _second.AddCon(_second.Col < c ? NESW.East : NESW.West);
+
+            var mindir = _first.Row > _second.Row
+                ? (_first.Col > _second.Col ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast)
+                : (_first.Col > _second.Col ? GridLinkPartDirection.SouthEast : GridLinkPartDirection.WestSouth);
+
+            var maxdir = _first.Row > _second.Row
+                ? (_first.Col > _second.Col ? GridLinkPartDirection.NorthEast : GridLinkPartDirection.NorthWest)
+                : (_first.Col > _second.Col ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
+
+            AddLink(Math.Min(_first.Row, _second.Row), c, mindir);
+            AddLink(Math.Max(_first.Row, _second.Row), c, maxdir);
+            for (int i = Math.Min(_first.Row, _second.Row) + 1; i < Math.Max(_first.Row, _second.Row); ++i)
+                AddLink(i, c, GridLinkPartDirection.NorthSouth);
+        }
+
+        private void DrawVertical()
+        {
+            var col = _first.Col == 4 ? _first.Col + 1 : _first.Col - 1;
+            var dir = col == 5 ? NESW.East : NESW.West;
+            _first.AddCon(dir);
+            _second.AddCon(dir);
+            AddLink(Math.Min(_first.Row, _second.Row), col,
+                col == 5 ? GridLinkPartDirection.WestSouth : GridLinkPartDirection.SouthEast);
+            AddLink(Math.Max(_first.Row, _second.Row), col,
+                col == 5 ? GridLinkPartDirection.NorthWest : GridLinkPartDirection.NorthEast);
+            
+            int to = Math.Max(_first.Row, _second.Row);
+            for (int i = Math.Min(_first.Row, _second.Row) + 1; i < to; ++i)
+                AddLink(i, col, GridLinkPartDirection.NorthSouth, 
+                    i + 1 == to ? _link.PageLink.RelName : null);
+        }
+        
+        private void AddLink(int row, int col, GridLinkPartDirection dir, string caption = null)
+        {
+            var l = new ChapterLayoutElem { Col = col, Row = row, 
                 HorizontalAligment = HorizontalAligment.Center};
-            l.AddGridLink(new GridLinkPart { Direction = dir });
-            elems.Add(l);
+            GridLinkPartType type = (_link.PageLink.LinkType == PageLinkType.ReferenceTo)
+                ? GridLinkPartType.Reference
+                : GridLinkPartType.Relation;
+            l.AddGridLink(new GridLinkPart {Direction = dir, Type = type, Caption = caption});
+            _elems.Add(l);
         }
     }
 }

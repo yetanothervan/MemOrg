@@ -26,13 +26,13 @@ namespace GraphOrganizeService.Chapter
 
         public readonly IPage First;
         public readonly IPage Second;
-        public readonly string RelName;
+        public readonly PageLink PageLink;
 
-        public PageEdge(IPage first, IPage second, string relName = null)
+        public PageEdge(IPage first, IPage second, PageLink pageLink)
         {
             First = first;
             Second = second;
-            RelName = relName;
+            PageLink = pageLink;
         }
 
         public override bool Equals(object obj)

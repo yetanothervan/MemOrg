@@ -8,7 +8,7 @@ namespace GraphService
     {
         public Page()
         {
-            LinksBy = new List<IPageLink>();
+            LinksBy = new List<PageLink>();
             IsBlockUserText = false;
             IsBlockSource = false;
         }
@@ -37,7 +37,7 @@ namespace GraphService
             get { return MyChapterInternal; }
         }
 
-        public IList<IPageLink> LinksBy { get; private set; }
+        public IList<PageLink> LinksBy { get; private set; }
         
         public IChapter MyChapterInternal { get; set; }
 
