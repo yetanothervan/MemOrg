@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MemOrg.Interfaces
 {
-    public class GridEnumerator<T> : IEnumerator<T> where T : IGridElem
+    public sealed class GridEnumerator<T> : IEnumerator<T> where T : IGridElem
     {
         private readonly SortedDictionary<IntIntPair, T> _elems;
         private readonly List<IntIntPair> _pairs;

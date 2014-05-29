@@ -12,7 +12,7 @@ using ChapterViewer.BlockPointOutDlg;
 using DAL.Entity;
 using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
 using Block = DAL.Entity.Block;
 

@@ -7,7 +7,7 @@ using System.Windows.Navigation;
 using DAL.Entity;
 using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace GraphViewer
 {
@@ -92,15 +92,15 @@ namespace GraphViewer
             
 
             IGraph graph = _graphOrganizeService.GetGraph(null);
-            IGridLayout rawLayout = _graphOrganizeService.GetFullLayout(graph);
+            //IGridLayout rawLayout = _graphOrganizeService.GetFullLayout(graph);
             IGridLayout camoLayout = _graphOrganizeService.GetLayout(graph);
-            ITreeLayout tagLayout = _graphOrganizeService.GetTagLayout(graph);
-            ITreeLayout blockLayout = _graphOrganizeService.GetChapterTreeLayout(graph);
+            //ITreeLayout tagLayout = _graphOrganizeService.GetTagLayout(graph);
+            //ITreeLayout blockLayout = _graphOrganizeService.GetChapterTreeLayout(graph);
 
             _camoGrid = camoLayout.CreateGrid();
-            _rawGrid = rawLayout.CreateGrid();
-            _tagTrees = tagLayout.CreateTreesGrid();
-            _blockTrees = blockLayout.CreateTreesGrid();
+            //_rawGrid = rawLayout.CreateGrid();
+            //_tagTrees = tagLayout.CreateTreesGrid();
+            //_blockTrees = blockLayout.CreateTreesGrid();
             
             UpdateGrid(_options);
 
@@ -118,15 +118,15 @@ namespace GraphViewer
         private void UpdateGrid(IVisualizeOptions options)
         {
             var camoVisGrid = _graphVizualizeService.VisualizeGrid(_camoGrid, options, _drawer);
-            var rawVisGrid = _graphVizualizeService.VisualizeGrid(_rawGrid, options, _drawer);
-            var tagVisTree = _graphVizualizeService.VisualizeGrid(_tagTrees, options, _drawer);
-            var blockVisTree = _graphVizualizeService.VisualizeGrid(_blockTrees, options, _drawer);
+            //var rawVisGrid = _graphVizualizeService.VisualizeGrid(_rawGrid, options, _drawer);
+            //var tagVisTree = _graphVizualizeService.VisualizeGrid(_tagTrees, options, _drawer);
+            //var blockVisTree = _graphVizualizeService.VisualizeGrid(_blockTrees, options, _drawer);
 
             var stack = _graphVizualizeService.StackPanel(options, _drawer);
-            stack.AddChild(blockVisTree);
-            stack.AddChild(tagVisTree);
+            //stack.AddChild(blockVisTree);
+            //stack.AddChild(tagVisTree);
             stack.AddChild(camoVisGrid);
-            stack.AddChild(rawVisGrid);
+            //stack.AddChild(rawVisGrid);
 
             _component = stack;
             var visuals = _component.Render(new Point(0, 0));

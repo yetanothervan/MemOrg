@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
-using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace MemOrg.Interfaces
 {
-    public class PageSelected : CompositePresentationEvent<IPage>
+    public class PageSelected : PubSubEvent<IPage>
     {
     }
 
-    public class ParticleChanged : CompositePresentationEvent<Particle>
+    public class ParticleChanged : PubSubEvent<Particle>
     {
     }
 
-    public class BlockChanged : CompositePresentationEvent<Block>
+    public class BlockChanged : PubSubEvent<Block>
     {
     }
-    
-    public class GraphChanged : CompositePresentationEvent<bool>
+
+    public class GraphChanged : PubSubEvent<bool>
     {
     }
 }

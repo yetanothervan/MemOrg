@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Entity;
 using MemOrg.Interfaces;
-using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace GraphManagementService
 {
