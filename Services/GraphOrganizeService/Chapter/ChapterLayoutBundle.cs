@@ -359,13 +359,25 @@ namespace GraphOrganizeService.Chapter
             if (parent != null)
                 new ChapterArrow(result, parent, mainElem, _parentLink).Draw();
 
-            var ones = RenderOnes(up ? row - 2 : row + 2, col, up);
-
-            foreach (var elem in ones)
+            if (!_bundles.Any() && _parentLink == null && _ones.Count == 1)
             {
-                new ChapterArrow(result, mainElem, elem, elem.ParentPageEdge).Draw();
-                result.Add(elem);
+                var pageEdge = _ones[0];
+                var other = pageEdge.GetOther(MyElem);
+                var otherElem = other.MakeElem(row, col + 2);
+                otherElem.ParentPageEdge = pageEdge;
+                result.Add(otherElem);
+                new ChapterArrow(result, mainElem, otherElem, pageEdge).Draw();
             }
+            else
+            {
+                var ones = RenderOnes(up ? row - 2 : row + 2, col, up);
+                foreach (var elem in ones)
+                {
+                    new ChapterArrow(result, mainElem, elem, elem.ParentPageEdge).Draw();
+                    result.Add(elem);
+                }
+            }
+
 
             ChapterLayoutElem endRelElem;
             var endRel = Bundles.FirstOrDefault(b => b.Direction == BundleDirection.EndRel);
