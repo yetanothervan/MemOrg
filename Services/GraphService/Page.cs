@@ -9,6 +9,7 @@ namespace GraphService
         public Page()
         {
             LinksBy = new List<PageLink>();
+            MyParagraphs = new List<IParagraph>();
             IsBlockUserText = false;
             IsBlockSource = false;
         }
@@ -30,6 +31,7 @@ namespace GraphService
         public bool IsBlockSource { get; set; }
 
         public BlockQuoteParticleSources MySources { get; set; }
+        public List<IParagraph> MyParagraphs { get; set; }
 
         public IPage RelationFirst { get; set; }
         public IPage RelationSecond { get; set; }

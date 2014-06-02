@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using DAL.Entity;
+using MemOrg.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 
 namespace ChapterViewer
@@ -16,11 +17,13 @@ namespace ChapterViewer
     public class ParticleParagraph : Paragraph
     {
         private readonly Particle _particle;
+        private readonly ParagraphType _type;
         private readonly string _text;
 
-        public ParticleParagraph(Particle particle)
+        public ParticleParagraph(Particle particle, ParagraphType type)
         {
             _particle = particle;
+            _type = type;
 
             Over = false;
             _isSelected = false;
@@ -35,6 +38,25 @@ namespace ChapterViewer
                 throw new NotImplementedException();
 
             Editible = (particle is SourceTextParticle) || (particle is UserTextParticle);
+
+            switch (type)
+            {
+                case ParagraphType.SourceMixedQuotes:
+                    Background = Brushes.Tan;
+                    break;
+                case ParagraphType.SourceBlockTagQuotes:
+                    Background = Brushes.Gray;
+                    break;
+                case ParagraphType.SourceNoQuotes:
+                    Background = Brushes.White;
+                    break;
+                case ParagraphType.SourceBlockQuotes:
+                    Background = Brushes.LightGray;
+                    break;
+                case ParagraphType.SourceBlockRelQuotes:
+                    Background = Brushes.Yellow;
+                    break;
+            }
 
             Init();
         }

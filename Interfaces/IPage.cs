@@ -16,6 +16,8 @@ namespace MemOrg.Interfaces
         bool IsBlockSource { get; set; }
         
         BlockQuoteParticleSources MySources { get; set; }
+        List<IParagraph> MyParagraphs { get; set; }
+        
         IPage RelationFirst { get; set; }
         IPage RelationSecond { get; set; }
         IChapter MyChapter { get; }

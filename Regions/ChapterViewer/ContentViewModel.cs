@@ -163,7 +163,10 @@ namespace ChapterViewer
 
         private ParticleParagraph CreateParagraph(Particle p)
         {
-            var paragraph = new ParticleParagraph(p);
+            var pp = _curPage.MyParagraphs.FirstOrDefault(m => m.ParticleId == p.ParticleId);
+
+            var paragraph = new ParticleParagraph(p, 
+                pp != null ? pp.ParagraphType : ParagraphType.SourceNoQuotes);
 
             paragraph.MouseDown += (sender, args) =>
             {

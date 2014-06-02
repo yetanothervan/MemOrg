@@ -154,10 +154,10 @@ namespace GraphService
                 if (sources == BlockQuoteParticleSources.OtherBook)
                     continue;
 
-                if (sources != BlockQuoteParticleSources.MyChapterOnly 
+                if (sources != BlockQuoteParticleSources.MyChapterOnly
                     && chapter.MyBook.GetPageByBlock(block.BlockId) != null) continue;
 
-                chapter.PagesBlocks.Add(new Page
+                var page = new Page
                 {
                     MyChapterInternal = chapter,
                     Block = block,
@@ -166,7 +166,51 @@ namespace GraphService
                     Relation = _graphService.RelationsBlock
                         .FirstOrDefault(r => r.RelationBlock.BlockId == block.BlockId),
                     MySources = sources
-                });
+                };
+                chapter.PagesBlocks.Add(page);
+
+                foreach (var part in block.Particles.OfType<QuoteSourceParticle>())
+                {
+                    if (part.SourceTextParticle.Block.BlockId == chapter.ChapterPage.Block.BlockId)
+                    {
+                        var existPart =
+                            chapter.ChapterPage.MyParagraphs
+                                .FirstOrDefault(p => p.ParticleId == part.SourceTextParticleId);
+                        if (existPart == null)
+                        {
+                            existPart = new BlockParagraph {ParticleId = part.SourceTextParticleId};
+                            chapter.ChapterPage.MyParagraphs.Add(existPart);
+                        }
+
+                        if (page.IsBlockRel)
+                        {
+                            if (existPart.ParagraphType != ParagraphType.SourceNoQuotes
+                                && existPart.ParagraphType != ParagraphType.SourceBlockRelQuotes)
+                                existPart.ParagraphType = ParagraphType.SourceMixedQuotes;
+                            else
+                                existPart.ParagraphType = ParagraphType.SourceBlockRelQuotes;
+                        }
+                        else if (page.IsBlockTag)
+                        {
+                            if (existPart.ParagraphType != ParagraphType.SourceNoQuotes
+                                && existPart.ParagraphType != ParagraphType.SourceBlockTagQuotes)
+                                existPart.ParagraphType = ParagraphType.SourceMixedQuotes;
+                            else
+                                existPart.ParagraphType = ParagraphType.SourceBlockTagQuotes;
+                        }
+                        else
+                        {
+                            if (existPart.ParagraphType != ParagraphType.SourceNoQuotes
+                                && existPart.ParagraphType != ParagraphType.SourceBlockQuotes)
+                                existPart.ParagraphType = ParagraphType.SourceMixedQuotes;
+                            else
+                                existPart.ParagraphType = ParagraphType.SourceBlockQuotes;
+                        }
+
+                        if (!existPart.UsedInBlocks.Contains(part.Block))
+                            existPart.UsedInBlocks.Add(part.Block);
+                    }
+                }
             }
         }
 
