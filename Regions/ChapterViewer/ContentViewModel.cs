@@ -147,11 +147,28 @@ namespace ChapterViewer
             var captionParagraph = new ParticleParagraph(_curPage.Block.Caption);
             doc.Blocks.Add(captionParagraph);
 
+            //table
+            var table = new Table();
+            table.Columns.Add(new TableColumn {Width = new GridLength(5, GridUnitType.Star)});
+            table.Columns.Add(new TableColumn {Width = new GridLength(1, GridUnitType.Star)});
+
+            var tableRowGroup = new TableRowGroup();
+            table.RowGroups.Add(tableRowGroup);
+
             foreach (var part in _curPage.Block.Particles.OrderBy(b => b.Order))
             {
-                var paragraph = CreateParagraph(part);
-                doc.Blocks.Add(paragraph);
+                var tr = new TableRow();
+                tr.Cells.Add(new TableCell(CreateParagraph(part)));
+                
+                var myPar = _curPage.MyParagraphs.FirstOrDefault(p => p.ParticleId == part.ParticleId);
+                if (myPar != null)
+                    tr.Cells.Add(new TableCell(new Paragraph(
+                        new Run(myPar.UsedInBlocks.Aggregate("", (current, par) => current + par.Caption)))));
+
+                tableRowGroup.Rows.Add(tr);
             }
+
+            doc.Blocks.Add(table);
 
             Document = doc;
             
