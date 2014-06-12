@@ -23,4 +23,8 @@ namespace MemOrg.Interfaces
     public class GraphChanged : PubSubEvent<bool>
     {
     }
+
+    public class BlockNavigated : PubSubEvent<Block>
+    {
+    }
 }

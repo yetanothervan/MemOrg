@@ -20,11 +20,13 @@ namespace ChapterViewer
 {
     public class ContentViewModel : ViewModelBase
     {
+        private readonly IEventAggregator _eventAggregator;
         public ContentViewModel(IEventAggregator eventAggregator)
         {
-            eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
-            eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
-            eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
+            _eventAggregator = eventAggregator;
+            _eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
+            _eventAggregator.GetEvent<ParticleChanged>().Subscribe(OnParticleChanged);
+            _eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
             EditCommand = new DelegateCommand(Edit, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             SaveCommand = new DelegateCommand(Save, () => TextChanged);
             DiscardCommand = new DelegateCommand(Discard, () => TextChanged);
@@ -33,6 +35,7 @@ namespace ChapterViewer
             ToBlockCommand = new DelegateCommand(ToBlock, () => _paragraphSelection != null && _curPage.IsBlockSource);
             ToRelCommand = new DelegateCommand(ToRel, () => _curPage != null && _curPage.IsBlockSource);
             DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
+            BlockNavigateCommand = new DelegateCommand<Block>(BlockNavigate);
             
             EditWindowVisible = Visibility.Collapsed;
         }
@@ -51,20 +54,10 @@ namespace ChapterViewer
             if (source == null && user == null) return;
             
             var part =
-                Document.Blocks.OfType<ParticleParagraph>()
-                    .FirstOrDefault(p => p.MyParticle != null && p.MyParticle.ParticleId == obj.ParticleId);
+                _particleParagraphs
+                    .First(p => p.MyParticle != null && p.MyParticle.ParticleId == obj.ParticleId);
             
-            if (part != null)
-            {
-                var paragraph = CreateParagraph(obj);
-                Document.Blocks.InsertAfter(part, paragraph);
-                Document.Blocks.Remove(part);
-            }
-            else
-            {
-                var paragraph = CreateParagraph(obj);
-                Document.Blocks.Add(paragraph);
-            }
+            part.SetText(obj);
         }
 
         private IPage _curPage;
@@ -144,6 +137,7 @@ namespace ChapterViewer
         private void BuildDoc()
         {
             var doc = new FlowDocument();
+            _particleParagraphs = new List<ParticleParagraph>();
             var captionParagraph = new ParticleParagraph(_curPage.Block.Caption);
             doc.Blocks.Add(captionParagraph);
 
@@ -162,8 +156,20 @@ namespace ChapterViewer
                 
                 var myPar = _curPage.MyParagraphs.FirstOrDefault(p => p.ParticleId == part.ParticleId);
                 if (myPar != null)
-                    tr.Cells.Add(new TableCell(new Paragraph(
-                        new Run(myPar.UsedInBlocks.Aggregate("", (current, par) => current + par.Caption)))));
+                {
+                    var np = new Paragraph();
+                    foreach (var usedInBlock in myPar.UsedInBlocks)
+                    {
+                        var hl = new Hyperlink(new Run(usedInBlock.Caption))
+                        {
+                            Command = BlockNavigateCommand,
+                            CommandParameter = usedInBlock
+                        };
+                        np.Inlines.Add(hl);
+                        np.Inlines.Add(new LineBreak());
+                    }
+                    tr.Cells.Add(new TableCell(np));
+                }
 
                 tableRowGroup.Rows.Add(tr);
             }
@@ -178,6 +184,7 @@ namespace ChapterViewer
             ToRelCommand.RaiseCanExecuteChanged();
         }
 
+        private List<ParticleParagraph> _particleParagraphs;
         private ParticleParagraph CreateParagraph(Particle p)
         {
             var pp = _curPage.MyParagraphs.FirstOrDefault(m => m.ParticleId == p.ParticleId);
@@ -190,9 +197,15 @@ namespace ChapterViewer
                 CurrentParagpaph = paragraph;
             };
 
+            _particleParagraphs.Add(paragraph);
             return paragraph;
         }
 
+        public DelegateCommand<Block> BlockNavigateCommand { get; set; }
+        private void BlockNavigate(Block block)
+        {
+            _eventAggregator.GetEvent<BlockNavigated>().Publish(block);
+        }
 
         public DelegateCommand EditCommand { get; set; }
         private void Edit()
@@ -228,7 +241,7 @@ namespace ChapterViewer
                 ManagementService.AddSourceParticle(_curPage.Block);
 
             var maxOrderParagraph =
-                Document.Blocks.OfType<ParticleParagraph>().Where(p => p.MyParticle != null)
+               _particleParagraphs.Where(p => p.MyParticle != null)
                     .Aggregate((curmax, x) =>
                         (curmax == null || x.MyParticle.Order > curmax.MyParticle.Order) ? x : curmax);
             
@@ -322,7 +335,7 @@ namespace ChapterViewer
 
         public void ParagraphBlur()
         {
-            foreach (var b in Document.Blocks.OfType<ParticleParagraph>())
+            foreach (var b in _particleParagraphs)
             {
                 b.IsSelected = false;
             }

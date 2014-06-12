@@ -17,7 +17,13 @@ namespace GraphViewer
 
         public static readonly DependencyProperty OffsetProperty;
         public static readonly DependencyProperty SourceProperty;
-        
+        public static readonly DependencyProperty CanvasHeightProperty 
+            = DependencyProperty.Register("CanvasHeight", typeof (double), typeof (DrawingCanvas), 
+            new PropertyMetadata(default(double)));
+        public static readonly DependencyProperty CanvasWidthProperty 
+            = DependencyProperty.Register("CanvasWidth", typeof (double), typeof (DrawingCanvas), 
+            new PropertyMetadata(default(double)));
+
         static DrawingCanvas()
         {
             var offsetMetadata = new FrameworkPropertyMetadata(new Vector(), FrameworkPropertyMetadataOptions.AffectsRender);
@@ -89,7 +95,19 @@ namespace GraphViewer
                 return _visuals.Count;
             }
         }
-        
+
+        public double CanvasHeight
+        {
+            get { return (double) GetValue(CanvasHeightProperty); }
+            set { SetValue(CanvasHeightProperty, value); }
+        }
+
+        public double CanvasWidth
+        {
+            get { return (double) GetValue(CanvasWidthProperty); }
+            set { SetValue(CanvasWidthProperty, value); }
+        }
+
         protected override Visual GetVisualChild(int index)
         {
             if (index < 0 || index >= _visuals.Count)

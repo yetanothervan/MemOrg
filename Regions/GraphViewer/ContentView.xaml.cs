@@ -20,7 +20,19 @@ namespace GraphViewer
         public ContentView(ContentViewModel viewModel)
         {
             InitializeComponent();
-            Loaded += (sender, args) => { DataContext = viewModel; };
+            
+            
+            Loaded += (sender, args) =>
+            {
+                DataContext = viewModel;
+                InnerCanvas.CanvasHeight = ActualHeight;
+                InnerCanvas.CanvasWidth = ActualWidth;
+            };
+            SizeChanged += (sender, args) =>
+            {
+                InnerCanvas.CanvasHeight = ActualHeight;
+                InnerCanvas.CanvasWidth = ActualWidth;
+            };
 
             /*RegionContext.GetObservableContext(this).PropertyChanged += (sender, args) =>
             {

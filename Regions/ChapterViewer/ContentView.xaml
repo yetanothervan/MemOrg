@@ -10,7 +10,7 @@
         <chapterViewer:VisibilityInverseConvertor x:Key="VisibilityInverseConvertor" />
     </UserControl.Resources>
     <Grid d:DataContext="{d:DesignInstance chapterViewer:ContentViewModel}">
-        <RichTextBox Name="Rtf" IsReadOnly="True"/>
+        <RichTextBox Name="Rtf" IsDocumentEnabled="True" IsReadOnly="True"/>
         <TextBox Name="CurParticleTextBox" 
                 TextWrapping="Wrap" AcceptsReturn="True"
                  Background="White" Visibility="{Binding EditWindowVisible}"

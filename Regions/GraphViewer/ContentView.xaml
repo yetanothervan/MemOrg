@@ -11,7 +11,10 @@
           MouseLeftButtonDown="Window_OnMouseLeftButtonDown"
           MouseMove="Window_OnMouseMove"
           MouseUp="Window_OnMouseUp" d:DataContext="{d:DesignInstance graphViewer:ContentViewModel}">
-            <model:DrawingCanvas Offset="{Binding Offset}" Canvas.Left="{Binding Offset.X}" 
-                                 Canvas.Top="{Binding Offset.Y}" Source="{Binding Visuals}" />
+            <model:DrawingCanvas x:Name="InnerCanvas"
+                Offset="{Binding Offset}" Canvas.Left="{Binding Offset.X}" 
+                Canvas.Top="{Binding Offset.Y}" Source="{Binding Visuals}" 
+                CanvasHeight="{Binding CanvasHeight, Mode=OneWayToSource}" 
+                CanvasWidth="{Binding CanvasWidth, Mode=OneWayToSource}"/>
     </Canvas>
 </UserControl>

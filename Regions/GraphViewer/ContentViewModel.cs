@@ -41,6 +41,7 @@ namespace GraphViewer
             _eventAggregator.GetEvent<BlockChanged>().Subscribe(OnBlockChanged);
             _eventAggregator.GetEvent<PageSelected>().Subscribe(OnPageSelected);
             _eventAggregator.GetEvent<GraphChanged>().Subscribe(OnGraphChanged);
+            _eventAggregator.GetEvent<BlockNavigated>().Subscribe(OnBlockNavigated);
             var headersToggleCommand = new DelegateCommand(ToggleHeaders, () => true);
             var refreshGraphCommand = new DelegateCommand(RefreshGraph, () => true);
             GlobalCommands.ToggleHeadersCompositeCommand.RegisterCommand(headersToggleCommand);
@@ -52,6 +53,15 @@ namespace GraphViewer
             _options = _graphVizualizeService.GetVisualizeOptions();
             
             RefreshGraph();
+        }
+
+        private void OnBlockNavigated(Block obj)
+        {
+            var off = new Point(0, 0);
+            if (obj != null && Visuals != null)
+                off = GetOffsetOfBlock(obj.BlockId);
+            if (Math.Abs(off.X) > 0.1 || Math.Abs(off.Y) > 0.1)
+                Offset = new Vector(-off.X + CanvasWidth / 2, -off.Y + CanvasHeight / 2);
         }
 
         private void OnGraphChanged(bool obj)
@@ -73,10 +83,10 @@ namespace GraphViewer
                 _modifyedBlocks.Add(obj);
         }
 
-        Point GetOffsetOfPage(IPage page)
+        Point GetOffsetOfBlock(int blockId)
         {
             var vis = Visuals.OfType<ILogicalBlock>()
-                .FirstOrDefault(p => p.Data is IPage && (p.Data as IPage).Block.BlockId == page.Block.BlockId);
+                .FirstOrDefault(p => p.Data is IPage && (p.Data as IPage).Block.BlockId == blockId);
             if (vis == null)
                 return new Point(0, 0);
                         
@@ -88,7 +98,7 @@ namespace GraphViewer
         {
             var oldPageOffset = new Point(0, 0);
             if (_currentPage != null && Visuals != null)
-                oldPageOffset = GetOffsetOfPage(_currentPage);
+                oldPageOffset = GetOffsetOfBlock(_currentPage.Block.BlockId);
             
 
             IGraph graph = _graphOrganizeService.GetGraph(null);
@@ -106,7 +116,7 @@ namespace GraphViewer
 
             if (_currentPage != null)
             {
-                var newPageOffset = GetOffsetOfPage(_currentPage);
+                var newPageOffset = GetOffsetOfBlock(_currentPage.Block.BlockId);
                 var newOffset = new Vector(Offset.X - (newPageOffset.X - oldPageOffset.X),
                     Offset.Y - (newPageOffset.Y - oldPageOffset.Y));
                 Offset = newOffset;
@@ -201,6 +211,8 @@ namespace GraphViewer
         }
 
         private Vector _offset;
+        private double _canvasHeight;
+
         public Vector Offset
         {
             get { return _offset; }
@@ -214,5 +226,8 @@ namespace GraphViewer
                 }
             }
         }
+
+        public double CanvasHeight { get; set; }
+        public double CanvasWidth { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace ChapterViewer
     {
         private readonly Particle _particle;
         private readonly ParagraphType _type;
-        private readonly string _text;
+        private string _text;
 
         public ParticleParagraph(Particle particle, ParagraphType type)
         {
@@ -28,14 +28,7 @@ namespace ChapterViewer
             Over = false;
             _isSelected = false;
 
-            if (particle is UserTextParticle)
-                _text = (particle as UserTextParticle).Content;
-            else if (particle is SourceTextParticle)
-                _text = (particle as SourceTextParticle).Content;
-            else if (particle is QuoteSourceParticle)
-                _text = (particle as QuoteSourceParticle).SourceTextParticle.Content;
-            else
-                throw new NotImplementedException();
+            _text = GetTextFromParticle(particle);
 
             Editible = (particle is SourceTextParticle) || (particle is UserTextParticle);
 
@@ -60,7 +53,18 @@ namespace ChapterViewer
 
             Init();
         }
-        
+
+        private string GetTextFromParticle(Particle particle)
+        {
+            if (particle is UserTextParticle)
+                return (particle as UserTextParticle).Content;
+            if (particle is SourceTextParticle)
+                return (particle as SourceTextParticle).Content;
+            if (particle is QuoteSourceParticle)
+                return (particle as QuoteSourceParticle).SourceTextParticle.Content;
+            throw new NotImplementedException();
+        }
+
         public ParticleParagraph(string caption)
         {
             Editible = false;
@@ -71,6 +75,14 @@ namespace ChapterViewer
         }
 
         public bool Editible { get; private set; }
+
+        public void SetText(Particle part)
+        {
+            if (!(Inlines.FirstInline is Run)) return;
+            
+            _text = GetTextFromParticle(part);
+            (Inlines.FirstInline as Run).Text = _text;
+        }
 
         private void Init()
         {
