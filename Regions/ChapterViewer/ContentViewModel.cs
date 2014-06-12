@@ -138,8 +138,13 @@ namespace ChapterViewer
         {
             var doc = new FlowDocument();
             _particleParagraphs = new List<ParticleParagraph>();
-            var captionParagraph = new ParticleParagraph(_curPage.Block.Caption);
-            doc.Blocks.Add(captionParagraph);
+            
+            //caption
+            doc.Blocks.Add(new Paragraph(new Hyperlink(new Run(_curPage.Block.Caption))
+                        {
+                            Command = BlockNavigateCommand,
+                            CommandParameter = _curPage.Block
+                        }));
 
             //table
             var table = new Table();

@@ -57,11 +57,12 @@ namespace GraphViewer
 
         private void OnBlockNavigated(Block obj)
         {
-            var off = new Point(0, 0);
+            PointSize off = new PointSize();
             if (obj != null && Visuals != null)
                 off = GetOffsetOfBlock(obj.BlockId);
-            if (Math.Abs(off.X) > 0.1 || Math.Abs(off.Y) > 0.1)
-                Offset = new Vector(-off.X + CanvasWidth / 2, -off.Y + CanvasHeight / 2);
+            if (Math.Abs(off.Offset.X) > 0.1 || Math.Abs(off.Offset.Y) > 0.1)
+                Offset = new Vector(-off.Offset.X - off.Size.Width/2 + CanvasWidth/2,
+                    -off.Offset.Y - off.Size.Height/2 + CanvasHeight/2);
         }
 
         private void OnGraphChanged(bool obj)
@@ -83,23 +84,23 @@ namespace GraphViewer
                 _modifyedBlocks.Add(obj);
         }
 
-        Point GetOffsetOfBlock(int blockId)
+        PointSize GetOffsetOfBlock(int blockId)
         {
             var vis = Visuals.OfType<ILogicalBlock>()
                 .FirstOrDefault(p => p.Data is IPage && (p.Data as IPage).Block.BlockId == blockId);
-            if (vis == null)
-                return new Point(0, 0);
-                        
+            if (vis == null) 
+                return null;
+
             var childBounds = VisualTreeHelper.GetDescendantBounds(vis as ContainerVisual);
-            return childBounds.TopLeft;
+            var result = new PointSize {Offset = childBounds.TopLeft, Size = childBounds.Size};
+            return result;
         }
 
         private void RefreshGraph()
         {
-            var oldPageOffset = new Point(0, 0);
+            var oldPageOffset = new PointSize();;
             if (_currentPage != null && Visuals != null)
                 oldPageOffset = GetOffsetOfBlock(_currentPage.Block.BlockId);
-            
 
             IGraph graph = _graphOrganizeService.GetGraph(null);
             //IGridLayout rawLayout = _graphOrganizeService.GetFullLayout(graph);
@@ -117,8 +118,8 @@ namespace GraphViewer
             if (_currentPage != null)
             {
                 var newPageOffset = GetOffsetOfBlock(_currentPage.Block.BlockId);
-                var newOffset = new Vector(Offset.X - (newPageOffset.X - oldPageOffset.X),
-                    Offset.Y - (newPageOffset.Y - oldPageOffset.Y));
+                var newOffset = new Vector(Offset.X - (newPageOffset.Offset.X - oldPageOffset.Offset.X),
+                    Offset.Y - (newPageOffset.Offset.Y - oldPageOffset.Offset.Y));
                 Offset = newOffset;
             }
             else 
