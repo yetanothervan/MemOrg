@@ -35,9 +35,10 @@
             <!--Operations with chapter content-->
             <StackPanel Visibility="{Binding Path=EditWindowVisible, Converter={StaticResource VisibilityInverseConvertor}}"
                         Orientation="Horizontal" Margin="10,0,0,0" Background="CornflowerBlue">
-                <Button Margin="5" Command="{Binding AddSourceCommand}">Add source</Button>
+                <Button Margin="5" Command="{Binding AddTextCommand}">Add text</Button>
                 <Button Margin="5" Command="{Binding ToBlockCommand}">To block</Button>
                 <Button Margin="5" Command="{Binding ToRelCommand}">To rel</Button>
+                <Button Margin="5" Command="{Binding AddRefCommand}">Add ref</Button>
             </StackPanel>
         </StackPanel>
         <Button Command="{Binding CloseEditingCommand}"

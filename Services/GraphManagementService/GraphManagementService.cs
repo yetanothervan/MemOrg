@@ -59,13 +59,32 @@ namespace GraphManagementService
             _eventAggregator.GetEvent<BlockChanged>().Publish(block);
         }
 
-        public void RemoveSourceParticle(Particle particle)
+        public bool RemoveParticle(Particle particle)
         {
+            Block particleSource = null;
+            if (particle is SourceTextParticle)
+            {
+                if (_graphService.BlockAll.Any(
+                    b =>
+                        b.Particles.OfType<QuoteSourceParticle>()
+                            .Any(p => p.SourceTextParticleId == particle.ParticleId)))
+                    return false; //if any quotes
+            }
+            else if (particle is QuoteSourceParticle)
+            {
+                particleSource =
+                    _graphService.BlockSources.First(
+                        b => b.BlockId == (particle as QuoteSourceParticle).SourceTextParticleId);
+            }
+
             var block = particle.Block;
-            _graphService.RemoveSourceParticle(particle);
+            _graphService.RemoveParticle(particle);
             _graphService.SaveChanges();
             var blockFromBase = _graphService.BlockAll.First(b => b.BlockId == block.BlockId);
             _eventAggregator.GetEvent<BlockChanged>().Publish(blockFromBase);
+            if (particleSource != null)
+                _eventAggregator.GetEvent<BlockChanged>().Publish(particleSource);
+            return true;
         }
 
         public Block ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption)
@@ -150,6 +169,50 @@ namespace GraphManagementService
             _eventAggregator.GetEvent<GraphChanged>().Publish(true);
         }
 
+        public void AddNewReference(string refType, Block first, Block second, string captionSecond, bool isUserText)
+        {
+            if (second == null)
+            {
+                second = new Block { Caption = captionSecond };
+                if (isUserText)
+                    second.Particles.Add(new UserTextParticle
+                    {
+                        Block = second,
+                        Order = 0
+                    });
+                _graphService.AddBlock(second);
+                _graphService.SaveChanges();
+            }
+
+            var blockFirstFromBase = _graphService.TrackingBlocks.First(b => b.BlockId == first.BlockId);
+            var blockSecondFromBase = _graphService.TrackingBlocks.First(b => b.BlockId == second.BlockId);
+
+            if (refType == "->" || refType == "<->")
+            {
+                if (blockFirstFromBase.References == null)
+                    blockFirstFromBase.References = new Collection<Reference>();
+                blockFirstFromBase.References.Add(new Reference
+                {
+                    Block = blockFirstFromBase,
+                    ReferencedBlock = blockSecondFromBase
+                });
+            }
+
+            if (refType == "<-" || refType == "<->")
+            {
+                if (blockSecondFromBase.References == null) 
+                    blockSecondFromBase.References = new Collection<Reference>();
+                blockSecondFromBase.References.Add(new Reference
+                {
+                    Block = blockSecondFromBase,
+                    ReferencedBlock = blockFirstFromBase
+                });
+            }
+
+            _graphService.SaveChanges();
+            _eventAggregator.GetEvent<GraphChanged>().Publish(true);
+        }
+
         private SourceTextParticle ExtractSourcePartition(Particle particle, int start, int length)
         {
             var sp = particle as SourceTextParticle;
@@ -187,7 +250,7 @@ namespace GraphManagementService
                 if (part.Order > particle.Order)
                     part.Order += addind;
             }
-            _graphService.RemoveSourceParticle(particle);
+            _graphService.RemoveParticle(particle);
             _graphService.SaveChanges();
 
             var block = _graphService.TrackingBlocks.First(b => b.BlockId == blockId);

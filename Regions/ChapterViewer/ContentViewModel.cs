@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using ChapterViewer.AddRefDlg;
 using ChapterViewer.AddRelDlg;
 using ChapterViewer.BlockPointOutDlg;
 using DAL.Entity;
@@ -31,9 +32,10 @@ namespace ChapterViewer
             SaveCommand = new DelegateCommand(Save, () => TextChanged);
             DiscardCommand = new DelegateCommand(Discard, () => TextChanged);
             CloseEditingCommand = new DelegateCommand(CloseEditing);
-            AddSourceCommand = new DelegateCommand(AddSource, () => _curPage != null && _curPage.IsBlockSource);
+            AddTextCommand = new DelegateCommand(AddText, () => _curPage != null && _curPage.IsBlockSource);
             ToBlockCommand = new DelegateCommand(ToBlock, () => _paragraphSelection != null && _curPage.IsBlockSource);
             ToRelCommand = new DelegateCommand(ToRel, () => _curPage != null && _curPage.IsBlockSource);
+            AddRefCommand = new DelegateCommand(AddRef, () => _curPage != null && !_curPage.IsBlockSource);
             DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
             BlockNavigateCommand = new DelegateCommand<Block>(BlockNavigate);
             
@@ -132,6 +134,28 @@ namespace ChapterViewer
 
                 DialogAwaits = dlg; //select first or select second
             }
+
+            if (DialogAwaits is AddRefView)
+            {
+                var dlg = DialogAwaits as AddRefView;
+                dlg.Block = targetBlock;
+
+                dlg.ShowDialog();
+                if (dlg.Result == null || dlg.Result == AddRefDlgResult.Cancel)
+                {
+                    DialogAwaits = null;
+                    return;
+                }
+                if (dlg.Result == AddRefDlgResult.OK)
+                {
+                    ManagementService.AddNewReference(dlg.RefType, _curPage.Block,
+                        dlg.Block, dlg.Caption, dlg.IsCreateUserText);
+                    DialogAwaits = null;
+                    return;
+                }
+
+                DialogAwaits = dlg; //select again
+            }
         }
 
         private void BuildDoc()
@@ -184,9 +208,10 @@ namespace ChapterViewer
             Document = doc;
             
             SetParagraphSelection(null);
-            AddSourceCommand.RaiseCanExecuteChanged();
+            AddTextCommand.RaiseCanExecuteChanged();
             ToBlockCommand.RaiseCanExecuteChanged();
             ToRelCommand.RaiseCanExecuteChanged();
+            AddRefCommand.RaiseCanExecuteChanged();
         }
 
         private List<ParticleParagraph> _particleParagraphs;
@@ -239,8 +264,8 @@ namespace ChapterViewer
             EditWindowVisible = Visibility.Collapsed;
         }
 
-        public DelegateCommand AddSourceCommand { get; set; }
-        private void AddSource()
+        public DelegateCommand AddTextCommand { get; set; }
+        private void AddText()
         {
             if (_curPage != null && _curPage.Block != null && _curPage.IsBlockSource)
                 ManagementService.AddSourceParticle(_curPage.Block);
@@ -257,7 +282,10 @@ namespace ChapterViewer
         private void Delete()
         {
             if (CurrentParagpaph != null && CurrentParagpaph.MyParticle != null)
-                ManagementService.RemoveSourceParticle(CurrentParagpaph.MyParticle);
+            {
+                if (!ManagementService.RemoveParticle(CurrentParagpaph.MyParticle))
+                    MessageBox.Show("Не могу удалить абзац, т.к. он связан с другим блоком или блоками");
+            }
         }
 
         public Window OwnerWindow { get; set; }
@@ -336,6 +364,23 @@ namespace ChapterViewer
             }
 
             DialogAwaits = dlg; //select first or select second
+        }
+
+        public DelegateCommand AddRefCommand { get; set; }
+
+        private void AddRef()
+        {
+            var dlg = new AddRefView { Owner = OwnerWindow };
+            dlg.ShowDialog();
+            if (dlg.Result == null || dlg.Result == AddRefDlgResult.Cancel) return;
+            if (dlg.Result == AddRefDlgResult.OK)
+            {
+                ManagementService.AddNewReference(dlg.RefType, _curPage.Block, 
+                    dlg.Block, dlg.Caption, dlg.IsCreateUserText);
+                return;
+            }
+
+            DialogAwaits = dlg;
         }
 
         public void ParagraphBlur()
