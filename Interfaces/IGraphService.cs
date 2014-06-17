@@ -77,7 +77,7 @@ namespace MemOrg.Interfaces
         void AddBlock(Block block);
         IQueryable<Block> TrackingBlocks { get; }
         void AddTag(Tag tag);
-        void RemoveSourceParticle(Particle particle);
+        void RemoveParticle(Particle particle);
         IQueryable<Tag> TrackingTags { get; }
         IQueryable<Particle> TrackingParticles { get; }
 

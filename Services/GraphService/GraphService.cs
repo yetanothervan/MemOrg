@@ -111,7 +111,7 @@ namespace GraphService
             _tagRepository.AddTag(tag);
         }
 
-        public void RemoveSourceParticle(Particle particle)
+        public void RemoveParticle(Particle particle)
         {
             _particlesRepository.RemoveParticle(particle);
         }

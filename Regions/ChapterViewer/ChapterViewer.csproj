@@ -84,6 +84,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddRefDlg\AddRefView.xaml.cs">
+      <DependentUpon>AddRefView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddRefDlg\AddRefViewModel.cs" />
     <Compile Include="AddRelDlg\AddRelView.xaml.cs">
       <DependentUpon>AddRelView.xaml</DependentUpon>
     </Compile>
@@ -142,6 +146,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AddRefDlg\AddRefView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddRelDlg\AddRelView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
