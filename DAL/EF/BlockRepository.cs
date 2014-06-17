@@ -100,12 +100,15 @@ where TagId is null and RelationId is null and t1.ParticleId is null";*/
         public void RemoveAllBlocks()
         {
             foreach (var b in  _context.Blocks)
-                b.Tags.Clear();
+                if (b.Tags != null)
+                    b.Tags.Clear();
+            
             _context.SaveChanges();
             _context.References.RemoveRange(_context.References);
             _context.SaveChanges();
             foreach (var b in _context.Blocks)
-                b.References.Clear();
+                if (b.References != null)
+                    b.References.Clear();
             _context.SaveChanges();
             _context.Relations.RemoveRange(_context.Relations);
             _context.SaveChanges();

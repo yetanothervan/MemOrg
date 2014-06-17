@@ -72,9 +72,10 @@ namespace GraphManagementService
             }
             else if (particle is QuoteSourceParticle)
             {
+                var sourceParticleId = (particle as QuoteSourceParticle).SourceTextParticleId;
                 particleSource =
                     _graphService.BlockSources.First(
-                        b => b.BlockId == (particle as QuoteSourceParticle).SourceTextParticleId);
+                        b => b.Particles.Any(p => p.ParticleId == sourceParticleId));
             }
 
             var block = particle.Block;
