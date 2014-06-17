@@ -20,7 +20,7 @@ namespace ChapterViewer
         private readonly ParagraphType _type;
         private string _text;
 
-        public ParticleParagraph(Particle particle, ParagraphType type)
+        public ParticleParagraph(Particle particle, ParagraphType type, bool deletable)
         {
             _particle = particle;
             _type = type;
@@ -31,6 +31,8 @@ namespace ChapterViewer
             _text = GetTextFromParticle(particle);
 
             Editible = (particle is SourceTextParticle) || (particle is UserTextParticle);
+
+            Deletable = deletable;
 
             switch (type)
             {
@@ -149,5 +151,7 @@ namespace ChapterViewer
                 UpdateView();
             }
         }
+
+        public bool Deletable { get; private set; }
     }
 }

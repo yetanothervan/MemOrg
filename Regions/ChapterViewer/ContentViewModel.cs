@@ -34,7 +34,7 @@ namespace ChapterViewer
             AddSourceCommand = new DelegateCommand(AddSource, () => _curPage != null && _curPage.IsBlockSource);
             ToBlockCommand = new DelegateCommand(ToBlock, () => _paragraphSelection != null && _curPage.IsBlockSource);
             ToRelCommand = new DelegateCommand(ToRel, () => _curPage != null && _curPage.IsBlockSource);
-            DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Editible));
+            DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Deletable));
             BlockNavigateCommand = new DelegateCommand<Block>(BlockNavigate);
             
             EditWindowVisible = Visibility.Collapsed;
@@ -194,8 +194,12 @@ namespace ChapterViewer
         {
             var pp = _curPage.MyParagraphs.FirstOrDefault(m => m.ParticleId == p.ParticleId);
 
-            var paragraph = new ParticleParagraph(p, 
-                pp != null ? pp.ParagraphType : ParagraphType.SourceNoQuotes);
+            bool deletable = _curPage.IsBlockSource && pp == null || _curPage.IsBlockUserText 
+                || !_curPage.IsBlockSource;
+
+            var paragraph = new ParticleParagraph(p,
+                pp != null ? pp.ParagraphType : ParagraphType.SourceNoQuotes,
+                deletable);
 
             paragraph.MouseDown += (sender, args) =>
             {
