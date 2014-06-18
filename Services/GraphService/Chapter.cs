@@ -4,7 +4,7 @@ using MemOrg.Interfaces;
 
 namespace GraphService
 {
-    class Chapter : IChapter
+    public class Chapter : IChapter
     {
         public Chapter()
         {

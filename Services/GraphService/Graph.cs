@@ -29,36 +29,15 @@ namespace GraphService
             get { return _books ?? (_books = GetBooks()); }
         }
 
-        private IList<IBook> GetBooks()
+        public IList<IBook> GetBooks()
         {
             var books = Enumerable.Cast<IBook>(
                     _graphService.BlockSources.GroupBy(o => o.ParamName)
                         .Select(@g => new Book {CaptionInternal = @g.Key}))
                         .ToList();
 
-            //feel with chapters
-            foreach (var book in books.Cast<Book>())
-            {
-                book.ChaptersInternal =
-                    Enumerable.Cast<IChapter>(
-                        _graphService.BlockSources
-                            .Where(b => b.ParamName == book.CaptionInternal)
-                            .OrderBy(b => b.ParamName)
-                            .Select(c => new Chapter {ChapterPage = new Page{Block = c, IsBlockSource = true}})).ToList();
-                
-                foreach (var chapter in book.ChaptersInternal.Cast<Chapter>())
-                    chapter.MyBookInternal = book;
-            }
-
-            //enumerate chapters
-            foreach (var book in books)
-                for (int i = 0; i < book.Chapters.Count; ++i)
-                {
-                    if (i != 0)
-                        book.Chapters[i].PrevChapter = book.Chapters[i - 1];
-                    if (i != book.Chapters.Count - 1)
-                        book.Chapters[i].NextChapter = book.Chapters[i + 1];
-                }
+            FeelBooksWithChapters(books);
+            EnumerateChapters(books);
 
             //feel chapters with page-blocks
             foreach (var book in books.Cast<Book>())
@@ -78,7 +57,35 @@ namespace GraphService
             return books;
         }
 
-        private void ProvideWithReferences(IChapter chapter)
+        public static void EnumerateChapters(IEnumerable<IBook> books)
+        {
+            foreach (var book in books)
+                for (int i = 0; i < book.Chapters.Count; ++i)
+                {
+                    if (i != 0)
+                        book.Chapters[i].PrevChapter = book.Chapters[i - 1];
+                    if (i != book.Chapters.Count - 1)
+                        book.Chapters[i].NextChapter = book.Chapters[i + 1];
+                }
+        }
+
+        public void FeelBooksWithChapters(IEnumerable<IBook> books)
+        {
+            foreach (var book in books.Cast<Book>())
+            {
+                book.ChaptersInternal =
+                    Enumerable.Cast<IChapter>(
+                        _graphService.BlockSources
+                            .Where(b => b.ParamName == book.CaptionInternal)
+                            .OrderBy(b => b.ParamName)
+                            .Select(c => new Chapter {ChapterPage = new Page {Block = c, IsBlockSource = true}})).ToList();
+
+                foreach (var chapter in book.ChaptersInternal.Cast<Chapter>())
+                    chapter.MyBookInternal = book;
+            }
+        }
+
+        public void ProvideWithReferences(IChapter chapter)
         {
             var blocks = chapter.PagesBlocks.Select(c => c.Block.BlockId).ToList();
             var relnoblocksOfChapter = _graphService.RelationsNoBlock
@@ -138,7 +145,7 @@ namespace GraphService
             }
         }
 
-        private void FillChapterWithPageBlocks(Chapter chapter)
+        public void FillChapterWithPageBlocks(Chapter chapter)
         {
             //all blocks with chapter's block as source
             var chaptersBlocks = _graphService.BlockAll
@@ -214,7 +221,7 @@ namespace GraphService
             }
         }
 
-        private void TunePageRels(IChapter chapter)
+        public void TunePageRels(IChapter chapter)
         {
             foreach (var page in chapter.PagesBlocks.Where(p => p.IsBlockRel).ToList())
             {
