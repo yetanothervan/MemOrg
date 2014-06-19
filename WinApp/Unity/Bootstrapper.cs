@@ -34,12 +34,12 @@ namespace MemOrg.WinApp.Unity
             var regionManager = Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(Interfaces.RegionNames.MainViewRegion, typeof(MainView.MainView));
             regionManager.RegisterViewWithRegion(Interfaces.RegionNames.TempToolbarRegion, typeof(TempToolbar.ContentView));
-            
+
             Container.RegisterType<ITmpXmlExportImportService, TmpXmlExportImportService.TmpXmlExportImportService>();
 
             return Container.Resolve<Shell>();
         }
-
+        
         protected override void InitializeShell()
         {
             base.InitializeShell();

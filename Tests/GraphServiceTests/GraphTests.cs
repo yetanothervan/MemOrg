@@ -24,15 +24,15 @@ namespace GraphServiceTests
 
             result.ClearGraph();
             
-            ITmpXmlExportImportService xmlExportImport
-                = new TmpXmlExportImportService.TmpXmlExportImportService(result);
+            var xmlExportImport
+                = new TmpXmlExportImportService.TmpXmlExportImportService {GraphService = result};
             xmlExportImport.LoadGraph(xmlFileName);
             
             return result;
         }
 
         [Test]
-        public void Books_LoadedCorrect_CountCorrect()
+        public void Books_BookCount_Correct()
         {
             var gs = GetGraphService("..\\..\\GraphTestBooks.xml");
 
@@ -43,25 +43,38 @@ namespace GraphServiceTests
         }
 
         [Test]
-        public void Books_LoadedCorrect_CountCorrect2()
+        public void Books_ChaptersCount_Correct()
         {
             var gs = GetGraphService("..\\..\\GraphTestBooks.xml");
 
             var books = gs.GetGraph().Books;
+            var booksList = books as IList<IBook> ?? books.ToList();
 
-            Assert.AreNotSame(null, books);
-            Assert.AreEqual(3, books.Count());
+            Assert.AreEqual(2, booksList.First(b => b.Caption == "BookOne").Chapters.Count);
+            Assert.AreEqual(3, booksList.First(b => b.Caption == "BookTwo").Chapters.Count);
+            Assert.AreEqual(2, booksList.First(b => b.Caption == "BookThree").Chapters.Count);
         }
 
         [Test]
-        public void Books_LoadedCorrect_CountCorrect3()
+        public void Books_ChaptersOfBookTwoOrder_Correct()
         {
             var gs = GetGraphService("..\\..\\GraphTestBooks.xml");
 
             var books = gs.GetGraph().Books;
+            var bookTwo = books.First(b => b.Caption == "BookTwo");
 
-            Assert.AreNotSame(null, books);
-            Assert.AreEqual(2, books.Count());
+            Assert.AreEqual(bookTwo.Chapters[1], bookTwo.Chapters[0].NextChapter);
+            Assert.AreEqual(bookTwo.Chapters[2], bookTwo.Chapters[1].NextChapter);
+            Assert.AreEqual(bookTwo.Chapters[1], bookTwo.Chapters[2].PrevChapter);
+            Assert.AreEqual(bookTwo.Chapters[0], bookTwo.Chapters[1].PrevChapter);
+        }
+
+        [Test]
+        public void DetermineBlockQuatasSources_NoParticles_ReturnNoSources()
+        {
+            var gs = GetGraphService("..\\..\\GraphTestBooks.xml");
+
+
         }
     }
 }

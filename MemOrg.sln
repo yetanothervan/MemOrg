@@ -54,6 +54,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A01FF720
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphServiceTests", "Tests\GraphServiceTests\GraphServiceTests.csproj", "{2BAB4351-FF4E-4E97-9855-3009BA3F72BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphOrganizeServiceTests", "Tests\GraphOrganizeServiceTests\GraphOrganizeServiceTests.csproj", "{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,12 @@ Global
 		{2BAB4351-FF4E-4E97-9855-3009BA3F72BE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2BAB4351-FF4E-4E97-9855-3009BA3F72BE}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{2BAB4351-FF4E-4E97-9855-3009BA3F72BE}.Test|Any CPU.Build.0 = Release|Any CPU
+		{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,6 +170,7 @@ Global
 		{3C65ACB0-7205-4958-892A-64E12A1192E6} = {92129A69-5915-4CC8-B4FA-011A65A2CB9E}
 		{FE95B316-8049-4124-BF2B-BBC4131B8D0B} = {92129A69-5915-4CC8-B4FA-011A65A2CB9E}
 		{2BAB4351-FF4E-4E97-9855-3009BA3F72BE} = {A01FF720-27EE-4EAC-95E9-8BF90F921BD8}
+		{D8927372-CA57-4294-AAE6-C48D7CA0EC8B} = {A01FF720-27EE-4EAC-95E9-8BF90F921BD8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35

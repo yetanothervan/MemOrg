@@ -15,20 +15,18 @@ namespace TmpXmlExportImportService
 {
     public class TmpXmlExportImportService : ITmpXmlExportImportService
     {
+        private IGraphService _graphService;
         const string GraphPath = "..\\..\\..\\BL\\TmpXmlExportImport\\graph.xml";
 
-        private IGraphService _graphService;
-
-        public TmpXmlExportImportService()
+        public IGraphService GraphService
         {
-            _graphService = (IGraphService)ServiceLocator.Current.GetService(typeof(IGraphService));
+            get {
+                return _graphService ??
+                       (_graphService = (IGraphService) ServiceLocator.Current.GetService(typeof (IGraphService)));
+            }
+            set { _graphService = value; }
         }
-
-        public TmpXmlExportImportService(IGraphService graphService)
-        {
-            _graphService = graphService;
-        }
-
+        
         public void SaveGraph()
         {
             SaveGraph(GraphPath);
@@ -41,7 +39,7 @@ namespace TmpXmlExportImportService
 
         public void SaveGraph(string path)
         {
-            var g = Graph2XmlGraphConverter.Convert(_graphService);
+            var g = Graph2XmlGraphConverter.Convert(GraphService);
             SerializeGraph(g, path);
         }
 
@@ -65,10 +63,10 @@ namespace TmpXmlExportImportService
             foreach (var rt in xmlGraph.RelationTypes)
             {
                 var i = new RelationType {Caption = rt.Caption};
-                _graphService.AddRelationType(i);
+                GraphService.AddRelationType(i);
                 relationTypeIds[rt.RelationTypeId] = i.RelationTypeId;
             }
-            _graphService.SaveChanges();
+            GraphService.SaveChanges();
 
             foreach (var block in xmlGraph.Blocks)
             {
@@ -78,10 +76,10 @@ namespace TmpXmlExportImportService
                     ParamName = block.ParamName,
                     ParamValue = block.ParamValue
                 };
-                _graphService.AddBlock(i);
+                GraphService.AddBlock(i);
                 blockIds[block.BlockId] = i.BlockId;
             }
-            _graphService.SaveChanges();
+            GraphService.SaveChanges();
 
             foreach (var tag in xmlGraph.Tags)
             {
@@ -90,25 +88,25 @@ namespace TmpXmlExportImportService
                     Caption = tag.Caption,
                     TagBlockId = tag.TagBlockId != null ? blockIds[tag.TagBlockId.Value] : (int?) null
                 };
-                _graphService.AddTag(i);
+                GraphService.AddTag(i);
                 tagIds[tag.TagId] = i.TagId;
             }
-            _graphService.SaveChanges();
+            GraphService.SaveChanges();
 
             foreach (var tag in xmlGraph.Tags)
             {
                 int id = tagIds[tag.TagId];
-                _graphService.TrackingTags
+                GraphService.TrackingTags
                     .First(t => t.TagId == id).ParentId = (tag.ParentTagId != null)
                         ? tagIds[tag.ParentTagId.Value]
                         : (int?) null;
-                _graphService.SaveChanges();
+                GraphService.SaveChanges();
             }
 
             foreach (var block in xmlGraph.Blocks)
             {
                 var id = blockIds[block.BlockId];
-                var bb = _graphService.TrackingBlocks.First(b => b.BlockId == id);
+                var bb = GraphService.TrackingBlocks.First(b => b.BlockId == id);
                 var toi = block.Particles.Where(p => p is XmlSourceText || p is XmlUserText).ToList();
                 var i = toi.Select(p =>
                 {
@@ -124,25 +122,25 @@ namespace TmpXmlExportImportService
                     return res;
                 }).ToList();
                 bb.Particles = i;
-                _graphService.SaveChanges();
+                GraphService.SaveChanges();
                 for (int index = 0; index < i.Count; index++)
                     partIds[toi[index].ParticleId] = i[index].ParticleId;
 
                 var trueTags = block.Tags.Select(t => tagIds[t]);
                 
-                bb.Tags = _graphService.TrackingTags.Where(t => trueTags.Contains(t.TagId)).ToList();
+                bb.Tags = GraphService.TrackingTags.Where(t => trueTags.Contains(t.TagId)).ToList();
                 bb.References = block.References.Select(r => new Reference
                 {
                     CaptionsString = r.CaptionString,
                     ReferencedBlockId = blockIds[r.ReferenceBlockId]
                 }).ToList();
             }
-            _graphService.SaveChanges();
+            GraphService.SaveChanges();
 
             foreach (var block in xmlGraph.Blocks)
             {
                 var ii = blockIds[block.BlockId];
-                var bb = _graphService.TrackingBlocks.First(b => b.BlockId == ii);
+                var bb = GraphService.TrackingBlocks.First(b => b.BlockId == ii);
                 foreach (var p in block.Particles.OfType<XmlQuoteSource>())
                 {
                     var res = new QuoteSourceParticle
@@ -153,11 +151,11 @@ namespace TmpXmlExportImportService
                     bb.Particles.Add(res);
                 }
             }
-            _graphService.SaveChanges();
+            GraphService.SaveChanges();
 
             foreach (var relation in xmlGraph.Relations)
             {
-                _graphService.AddRelation(new Relation
+                GraphService.AddRelation(new Relation
                 {
                     RelationTypeId = relationTypeIds[relation.RelationType],
                     RelationBlockId = (relation.RelationBlockId != null) 
@@ -167,7 +165,7 @@ namespace TmpXmlExportImportService
                     SecondBlockId = blockIds[relation.SecondBlockId]
                 });
             }
-            _graphService.SaveChanges();
+            GraphService.SaveChanges();
         }
 
         public static void SerializeGraph(XmlGraph s, string path)
