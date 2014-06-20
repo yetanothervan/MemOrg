@@ -196,11 +196,14 @@ namespace GraphOrganizeService.Chapter
             {
                 if (pagesInBook.Contains(addingPage))
                 {
-                    result._removedEdge.Add(addingEdge);
+                    if (addingEdge != null)
+                        result._removedEdge.Add(addingEdge);
                     remainingPages.Remove(addingPage);
                     return;
                 }
                 pagesInBook.Add(addingPage);
+                result._vertexes.Add(addingPage);
+                remainingPages.Remove(addingPage);
             }
 
             if (addingEdge != null)
