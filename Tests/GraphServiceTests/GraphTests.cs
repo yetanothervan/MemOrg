@@ -41,27 +41,5 @@ namespace GraphServiceTests
             Assert.AreNotSame(null, books);
             Assert.AreEqual(3, books.Count());
         }
-
-        [Test]
-        public void Books_LoadedCorrect_CountCorrect2()
-        {
-            var gs = GetGraphService("..\\..\\GraphTestBooks.xml");
-
-            var books = gs.GetGraph().Books;
-
-            Assert.AreNotSame(null, books);
-            Assert.AreEqual(3, books.Count());
-        }
-
-        [Test]
-        public void Books_LoadedCorrect_CountCorrect3()
-        {
-            var gs = GetGraphService("..\\..\\GraphTestBooks.xml");
-
-            var books = gs.GetGraph().Books;
-
-            Assert.AreNotSame(null, books);
-            Assert.AreEqual(2, books.Count());
-        }
     }
 }
