@@ -4,7 +4,5 @@
     {
         void SaveGraph();
         void LoadGraph();
-        void SaveGraph(string path);
-        void LoadGraph(string path);
     }
 }

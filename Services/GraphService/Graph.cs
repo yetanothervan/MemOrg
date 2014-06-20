@@ -29,7 +29,7 @@ namespace GraphService
             get { return _books ?? (_books = GetBooks()); }
         }
 
-        public IList<IBook> GetBooks()
+        private IList<IBook> GetBooks()
         {
             var books = Enumerable.Cast<IBook>(
                     _graphService.BlockSources.GroupBy(o => o.ParamName)
@@ -57,7 +57,7 @@ namespace GraphService
             return books;
         }
 
-        public static void EnumerateChapters(IEnumerable<IBook> books)
+        private static void EnumerateChapters(IEnumerable<IBook> books)
         {
             foreach (var book in books)
                 for (int i = 0; i < book.Chapters.Count; ++i)
@@ -69,7 +69,7 @@ namespace GraphService
                 }
         }
 
-        public void FeelBooksWithChapters(IEnumerable<IBook> books)
+        private void FeelBooksWithChapters(IEnumerable<IBook> books)
         {
             foreach (var book in books.Cast<Book>())
             {
@@ -85,7 +85,7 @@ namespace GraphService
             }
         }
 
-        public void ProvideWithReferences(IChapter chapter)
+        private void ProvideWithReferences(IChapter chapter)
         {
             var blocks = chapter.PagesBlocks.Select(c => c.Block.BlockId).ToList();
             var relnoblocksOfChapter = _graphService.RelationsNoBlock
@@ -145,7 +145,7 @@ namespace GraphService
             }
         }
 
-        public void FillChapterWithPageBlocks(Chapter chapter)
+        private void FillChapterWithPageBlocks(Chapter chapter)
         {
             //all blocks with chapter's block as source
             var chaptersBlocks = _graphService.BlockAll
@@ -221,7 +221,7 @@ namespace GraphService
             }
         }
 
-        public void TunePageRels(IChapter chapter)
+        private void TunePageRels(IChapter chapter)
         {
             foreach (var page in chapter.PagesBlocks.Where(p => p.IsBlockRel).ToList())
             {
@@ -262,7 +262,7 @@ namespace GraphService
             }
         }
 
-        private BlockQuoteParticleSources DetermineBlockQuatasSources(Block pageBlock, Chapter chapter)
+        public BlockQuoteParticleSources DetermineBlockQuatasSources(Block pageBlock, Chapter chapter)
         {
             if (pageBlock.Particles.Count == 0) return BlockQuoteParticleSources.NoSources;
             

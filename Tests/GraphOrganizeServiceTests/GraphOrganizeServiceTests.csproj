@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2BAB4351-FF4E-4E97-9855-3009BA3F72BE}</ProjectGuid>
+    <ProjectGuid>{D8927372-CA57-4294-AAE6-C48D7CA0EC8B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GraphServiceTests</RootNamespace>
-    <AssemblyName>GraphServiceTests</AssemblyName>
+    <RootNamespace>GraphOrganizeServiceTests</RootNamespace>
+    <AssemblyName>GraphOrganizeServiceTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
@@ -51,13 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphTests.cs" />
+    <Compile Include="ChapterLayoutGraphTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="GraphTestBooks.xml">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -81,7 +76,7 @@
       <Name>MemOrg.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Services\GraphService\GraphService.csproj">
-      <Project>{263eeccc-f725-420b-8db0-5913b9258cad}</Project>
+      <Project>{263EECCC-F725-420B-8DB0-5913B9258CAD}</Project>
       <Name>GraphService</Name>
     </ProjectReference>
   </ItemGroup>
