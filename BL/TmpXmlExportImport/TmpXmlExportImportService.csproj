@@ -76,7 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="graph.xml" />
-    <Content Include="graphtest.xml" />
+    <Content Include="graphtest.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

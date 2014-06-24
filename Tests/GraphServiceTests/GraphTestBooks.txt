@@ -1,0 +1,21 @@
+﻿books	chapters	particles
+
+b1		b1c1		b1c1p1, b1c1p2, b1c1p3, b1c1p4
+		b1c2		b1c2p1
+		b1c3		b1c3p1
+
+b2		b2c1		b2c1p1
+		b2c2
+
+b3		b3c1
+		b3c2
+		b3c3
+
+
+blocks
+
+noParticles { null }
+chapterOnly { b1c1p1 }
+neightbor { b1c1p2, b1c2p1 }
+myBook { b1c1p3, b1c3p1 }
+otherBook { b1c1p4, b2c1p1 }

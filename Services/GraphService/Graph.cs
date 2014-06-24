@@ -42,7 +42,7 @@ namespace GraphService
             //feel chapters with page-blocks
             foreach (var book in books.Cast<Book>())
                 foreach (var chapter in book.Chapters.Cast<Chapter>())
-                    FillChapterWithPageBlocks(chapter);
+                    FillChapterWithPageBlocks(chapter, GraphService);
 
             //tune page-rels
             foreach (var book in books.Cast<Book>())
@@ -145,10 +145,10 @@ namespace GraphService
             }
         }
 
-        private void FillChapterWithPageBlocks(Chapter chapter)
+        private static void FillChapterWithPageBlocks(Chapter chapter, IGraphService graphService)
         {
             //all blocks with chapter's block as source
-            var chaptersBlocks = _graphService.BlockAll
+            var chaptersBlocks = graphService.BlockAll
                 .Where(block => block.Particles
                     .Any(p => p is QuoteSourceParticle
                               && (p as QuoteSourceParticle).SourceTextParticle.Block.BlockId
@@ -168,9 +168,9 @@ namespace GraphService
                 {
                     MyChapterInternal = chapter,
                     Block = block,
-                    Tag = _graphService.TagsBlock
+                    Tag = graphService.TagsBlock
                         .FirstOrDefault(t => t.TagBlock.BlockId == block.BlockId),
-                    Relation = _graphService.RelationsBlock
+                    Relation = graphService.RelationsBlock
                         .FirstOrDefault(r => r.RelationBlock.BlockId == block.BlockId),
                     MySources = sources
                 };
@@ -262,7 +262,7 @@ namespace GraphService
             }
         }
 
-        public BlockQuoteParticleSources DetermineBlockQuatasSources(Block pageBlock, Chapter chapter)
+        public static BlockQuoteParticleSources DetermineBlockQuatasSources(Block pageBlock, IChapter chapter)
         {
             if (pageBlock.Particles.Count == 0) return BlockQuoteParticleSources.NoSources;
             
@@ -295,12 +295,12 @@ namespace GraphService
             return mySources;
         }
 
-        private bool IsQuoteInBook(IBook book, QuoteSourceParticle qp)
+        private static bool IsQuoteInBook(IBook book, QuoteSourceParticle qp)
         {
             return book.Chapters.Any(c => c.ChapterPage.Block.BlockId == qp.SourceTextParticle.Block.BlockId);
         }
 
-        private static bool IsQuoteInMyNeghtborChapter(Chapter chapter, QuoteSourceParticle qp)
+        private static bool IsQuoteInMyNeghtborChapter(IChapter chapter, QuoteSourceParticle qp)
         {
             if ((chapter.PrevChapter != null &&
                  qp.SourceTextParticle.Block.BlockId
@@ -313,7 +313,7 @@ namespace GraphService
             return false;
         }
 
-        private static bool IsQuoteInMyChapter(QuoteSourceParticle qp, Chapter chapter)
+        private static bool IsQuoteInMyChapter(QuoteSourceParticle qp, IChapter chapter)
         {
             if (qp.SourceTextParticle.Block.BlockId
                 == chapter.ChapterPage.Block.BlockId) return true;
