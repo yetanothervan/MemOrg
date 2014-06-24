@@ -158,5 +158,25 @@ namespace GraphServiceTests
             Assert.AreEqual(BlockQuoteParticleSources.OtherBook, res1);
             Assert.AreEqual(BlockQuoteParticleSources.OtherBook, res2);
         }
+
+        [Test]
+        public void FillChapterWithPageBlocks_OtherBook_ChapterContainsPage()
+        {
+            var gs = GetGraphService("..\\..\\GraphTestBooks.xml");
+
+            var chapterB1C1 = gs.GetGraph().Books.First(b => b.Caption == "b1")
+                .Chapters.First(c => c.ChapterPage.Block.Caption == "b1c1");
+
+            var chapterB2C1 = gs.GetGraph().Books.First(b => b.Caption == "b2")
+                .Chapters.First(c => c.ChapterPage.Block.Caption == "b2c1");
+
+            var blockOtherBook = gs.BlockAll.First(b => b.Caption == "otherBook");
+
+            Graph.FillChapterWithPageBlocks(chapterB1C1 as Chapter, gs);
+            Graph.FillChapterWithPageBlocks(chapterB2C1 as Chapter, gs);
+            
+            Assert.AreEqual(true, chapterB1C1.PagesBlocks.Any(p => p.Block.BlockId == blockOtherBook.BlockId));
+            Assert.AreEqual(false, chapterB2C1.PagesBlocks.Any(p => p.Block.BlockId == blockOtherBook.BlockId));
+        }
     }
 }

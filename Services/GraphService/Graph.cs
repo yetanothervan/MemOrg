@@ -145,7 +145,7 @@ namespace GraphService
             }
         }
 
-        private static void FillChapterWithPageBlocks(Chapter chapter, IGraphService graphService)
+        public static void FillChapterWithPageBlocks(Chapter chapter, IGraphService graphService)
         {
             //all blocks with chapter's block as source
             var chaptersBlocks = graphService.BlockAll
@@ -158,11 +158,13 @@ namespace GraphService
             {
                 var sources = DetermineBlockQuatasSources(block, chapter);
 
-                if (sources == BlockQuoteParticleSources.OtherBook)
-                    continue;
-
-                if (sources != BlockQuoteParticleSources.MyChapterOnly
-                    && chapter.MyBook.GetPageByBlock(block.BlockId) != null) continue;
+                //if first particle is not belongs to chapter - continue 
+                if (sources == BlockQuoteParticleSources.NeightborChapter
+                    || sources == BlockQuoteParticleSources.NeightborChapter
+                    || sources == BlockQuoteParticleSources.OtherBook)
+                    if (block.Particles.OfType<QuoteSourceParticle>()
+                        .OrderBy(o => o.Order).First().SourceTextParticle.Block.BlockId !=
+                        chapter.ChapterPage.Block.BlockId) continue;
 
                 var page = new Page
                 {
