@@ -178,5 +178,19 @@ namespace GraphServiceTests
             Assert.AreEqual(true, chapterB1C1.PagesBlocks.Any(p => p.Block.BlockId == blockOtherBook.BlockId));
             Assert.AreEqual(false, chapterB2C1.PagesBlocks.Any(p => p.Block.BlockId == blockOtherBook.BlockId));
         }
+
+        [Ignore]
+        [Test]
+        public void FillChapterWithPageBlocks_OtherTests()
+        {
+            Assert.AreEqual(true, false);
+        }
+
+        [Ignore]
+        [Test]
+        public void OtherTests()
+        {
+            Assert.AreEqual(true, false);
+        }
     }
 }

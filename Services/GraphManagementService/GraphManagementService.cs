@@ -176,11 +176,16 @@ namespace GraphManagementService
             {
                 second = new Block { Caption = captionSecond };
                 if (isUserText)
-                    second.Particles.Add(new UserTextParticle
+                {
+                    second.Particles = new Collection<Particle>
                     {
-                        Block = second,
-                        Order = 0
-                    });
+                        new UserTextParticle
+                        {
+                            Block = second,
+                            Order = 0
+                        }
+                    };
+                }
                 _graphService.AddBlock(second);
                 _graphService.SaveChanges();
             }
