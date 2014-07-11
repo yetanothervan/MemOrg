@@ -8,6 +8,7 @@ namespace MemOrg.Interfaces
         void AddNewChapter(string caption, string bookName, int chapterNumber);
         void UpdateParticleText(int particleId, string newText);
         void AddSourceParticle(Block sourceBlock);
+        void AddUserTextParticle(Block userTextBlock);
         bool RemoveParticle(Particle particle);
         Block ExtractNewBlockFromParticle(Particle particle, int start, int length, string caption);
         void ExtractParticleToExistBlock(Particle particle, Block targetBlock, int start, int length);

@@ -26,6 +26,11 @@ namespace EF
             get { return _context.RelationTypes.AsNoTracking(); }
         }
 
+        public IQueryable<RelationType> Tracking
+        {
+            get { return _context.RelationTypes; }
+        }
+
         public void AddRelationType(RelationType relationType)
         {
             _context.RelationTypes.Add(relationType);

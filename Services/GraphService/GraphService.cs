@@ -124,6 +124,11 @@ namespace GraphService
             get { return _particlesRepository.Tracking; }
         }
 
+        public IQueryable<RelationType> TrackingRelationTypes
+        {
+            get { return _relationRepository.Tracking; }
+        }
+
         public IPage CreateStumpPage(Block block, Tag tag)
         {
             return new Page {Block = block, Tag = tag};

@@ -32,7 +32,7 @@ namespace ChapterViewer
             SaveCommand = new DelegateCommand(Save, () => TextChanged);
             DiscardCommand = new DelegateCommand(Discard, () => TextChanged);
             CloseEditingCommand = new DelegateCommand(CloseEditing);
-            AddTextCommand = new DelegateCommand(AddText, () => _curPage != null && _curPage.IsBlockSource);
+            AddTextCommand = new DelegateCommand(AddText, () => _curPage != null && (_curPage.IsBlockSource || _curPage.IsBlockUserText));
             ToBlockCommand = new DelegateCommand(ToBlock, () => _paragraphSelection != null && _curPage.IsBlockSource);
             ToRelCommand = new DelegateCommand(ToRel, () => _curPage != null && _curPage.IsBlockSource);
             DeleteCommand = new DelegateCommand(Delete, () => (CurrentParagpaph != null && CurrentParagpaph.Deletable));
@@ -271,14 +271,18 @@ namespace ChapterViewer
         public DelegateCommand AddTextCommand { get; set; }
         private void AddText()
         {
-            if (_curPage != null && _curPage.Block != null && _curPage.IsBlockSource)
+            if (_curPage == null || _curPage.Block == null) return;
+            
+            if (_curPage.IsBlockSource)
                 ManagementService.AddSourceParticle(_curPage.Block);
+            else if (_curPage.IsBlockUserText)
+                ManagementService.AddUserTextParticle(_curPage.Block);
 
             var maxOrderParagraph =
-               _particleParagraphs.Where(p => p.MyParticle != null)
+                _particleParagraphs.Where(p => p.MyParticle != null)
                     .Aggregate((curmax, x) =>
                         (curmax == null || x.MyParticle.Order > curmax.MyParticle.Order) ? x : curmax);
-            
+
             CurrentParagpaph = maxOrderParagraph;
         }
 

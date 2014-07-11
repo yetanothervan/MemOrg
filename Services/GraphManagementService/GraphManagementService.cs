@@ -59,6 +59,17 @@ namespace GraphManagementService
             _eventAggregator.GetEvent<BlockChanged>().Publish(block);
         }
 
+        public void AddUserTextParticle(Block userTextBlock)
+        {
+            var block = _graphService.TrackingBlocks.FirstOrDefault(b => b.BlockId == userTextBlock.BlockId);
+            if (block == null) return;
+            var max = block.Particles.Count > 0 ? block.Particles.Max(o => o.Order) : 0;
+            var particle = new UserTextParticle() { Block = block, Order = ++max };
+            block.Particles.Add(particle);
+            _graphService.SaveChanges();
+            _eventAggregator.GetEvent<BlockChanged>().Publish(block);
+        }
+
         public bool RemoveParticle(Particle particle)
         {
             Block particleSource = null;
@@ -112,7 +123,9 @@ namespace GraphManagementService
             var body = ExtractSourcePartition(particle, start, length);
             var block = _graphService.TrackingBlocks.FirstOrDefault(b => b.BlockId == targetBlock.BlockId);
             if (block == null) return;
+            if (block.Particles == null) block.Particles = new Collection<Particle>();
             var max = block.Particles.Count > 0 ? block.Particles.Max(o => o.Order) : 0;
+            
             block.Particles.Add(new QuoteSourceParticle
             {
                 Block = block,
@@ -127,7 +140,8 @@ namespace GraphManagementService
         public void AddNewRelation(string relType, Block first, string captionFirst, Block second, string captionSecond,
             Particle particle, int start, int length)
         {
-            var relTypeBase = _graphService.RelationTypes.FirstOrDefault(rt => rt.Caption == relType);
+            var relTypeBase = _graphService.TrackingRelationTypes
+                .FirstOrDefault(rt => rt.Caption == relType);
             if (relTypeBase == null)
             {
                 relTypeBase = new RelationType {Caption = relType};
@@ -227,6 +241,8 @@ namespace GraphManagementService
             var text1 = sp.Content.Substring(0, start).Trim();
             var text2 = sp.Content.Substring(start, length).Trim();
             var text3 = sp.Content.Substring(start + length).Trim();
+
+            if (String.IsNullOrEmpty(text1) && String.IsNullOrEmpty(text3)) return sp;
 
             int order1 = -1;
             int order2;

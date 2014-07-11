@@ -109,7 +109,8 @@ namespace GraphOrganizeService
                 if (cell != null && cell.Content != null)
                 {
                     var list = cell.Content as IReadOnlyList<GridLinkPart>;
-                    if (list == null) throw new ArgumentException();
+                    if (list == null) //throw new ArgumentException(); //!!!
+                        return;
                     var newList = new List<GridLinkPart>();
                     newList.AddRange(list);
                     foreach (var part in page.GridLinkParts.Where(part => !newList.Contains(part)))
