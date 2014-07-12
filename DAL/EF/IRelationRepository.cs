@@ -11,6 +11,7 @@ namespace EF
     {
         IQueryable<Relation> All { get; }
         IQueryable<RelationType> RelationTypes { get; }
+        IQueryable<RelationType> Tracking { get; }
         void AddRelationType(RelationType relationType);
         void AddRelation(Relation relation);
     }

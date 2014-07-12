@@ -80,6 +80,7 @@ namespace MemOrg.Interfaces
         void RemoveParticle(Particle particle);
         IQueryable<Tag> TrackingTags { get; }
         IQueryable<Particle> TrackingParticles { get; }
+        IQueryable<RelationType> TrackingRelationTypes { get; }
 
         IPage CreateStumpPage(Block block, Tag tag);
         void SaveChanges();
