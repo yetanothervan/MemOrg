@@ -31,6 +31,5 @@ namespace GraphOrganizeServiceTests
             return result;
         }
 
-
     }
 }
